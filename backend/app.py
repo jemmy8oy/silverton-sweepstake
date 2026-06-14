@@ -2,7 +2,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 
 from services.cache import clear_cache, get_cached, set_cached
-from services.data_loader import build_team_lookup, load_draw, load_team_aliases
+from services.data_loader import build_team_lookup, hydrate_draw, hydrate_fixture_teams, load_draw
 from services.football_api import get_fixtures as provider_get_fixtures
 from services.football_api import refresh_all
 from services.sweepstake import (
@@ -23,11 +23,17 @@ CORS(app)
 def _base_payload():
     cached = get_cached("base_payload")
     if cached:
-        return cached
+        draw = hydrate_draw(cached.get("draw", {}))
+        fixtures = [hydrate_fixture_teams(fixture) for fixture in cached.get("fixtures", [])]
+        team_lookup = build_team_lookup(draw)
+        enriched = enrich_fixtures(fixtures, team_lookup)
+        payload = {"draw": draw, "fixtures": fixtures, "enriched": enriched}
+        set_cached("base_payload", payload, ttl_seconds=60)
+        return payload
 
     draw = load_draw()
     fixtures = provider_get_fixtures()
-    team_lookup = build_team_lookup(draw, load_team_aliases())
+    team_lookup = build_team_lookup(draw)
     enriched = enrich_fixtures(fixtures, team_lookup)
     payload = {"draw": draw, "fixtures": fixtures, "enriched": enriched}
     set_cached("base_payload", payload, ttl_seconds=60)

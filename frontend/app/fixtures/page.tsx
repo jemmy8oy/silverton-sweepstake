@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { getFixtures, getOwners } from "@/lib/api";
+import OwnerAvatar from "@/components/OwnerAvatar";
+import { teamCode } from "@/lib/format";
+import TeamLogo from "@/components/TeamLogo";
 import type { EnrichedFixture, OwnerSummary } from "@/lib/types";
 
 type FixturesSearchParams = {
@@ -17,11 +20,6 @@ async function safe<T>(request: Promise<T>, fallback: T): Promise<T> {
 
 function firstParam(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
-}
-
-function teamCode(team: string) {
-  const words = team.replace(/[^A-Za-z ]/g, "").split(/\s+/).filter(Boolean);
-  return (words.length === 1 ? words[0].slice(0, 3) : words.map((word) => word[0]).join("").slice(0, 3)).toUpperCase();
 }
 
 function isToday(kickoff: string) {
@@ -52,15 +50,6 @@ function scoreLabel(fixture: EnrichedFixture) {
   return `${fixture.homeScore} - ${fixture.awayScore}`;
 }
 
-function ownerInitials(owner: string) {
-  return owner
-    .split(/\s+/)
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-}
-
 function tabHref(tab: string, owner: string) {
   const params = new URLSearchParams();
   if (tab !== "today") {
@@ -85,33 +74,25 @@ function ownerHref(owner: string, tab: string) {
   return query ? `/fixtures?${query}` : "/fixtures";
 }
 
-function TeamCrest({ team }: { team: string }) {
-  return (
-    <div className="fixture-crest" aria-label={team}>
-      <span>{teamCode(team)}</span>
-    </div>
-  );
+function TeamCrest({ team, code, logo }: { team: string; code?: string; logo?: string | null }) {
+  return <TeamLogo team={team} code={code} logo={logo} className="fixture-crest" />;
 }
 
 function PotBadge({ pot }: { pot: number | null }) {
   return <span className="fixture-pot">{pot ? `Pot ${pot}` : "No pot"}</span>;
 }
 
-function OwnerAvatar({ owner }: { owner: string }) {
-  return (
-    <span className="owner-avatar-small" aria-hidden="true">
-      {ownerInitials(owner || "?")}
-    </span>
-  );
+function SmallOwnerAvatar({ owner }: { owner: string }) {
+  return <OwnerAvatar owner={owner} className="owner-avatar-small" />;
 }
 
 function OwnersBand({ fixture }: { fixture: EnrichedFixture }) {
   if (fixture.isSelfMatch) {
     return (
-      <div className="fixture-owner-band self">
-        <OwnerAvatar owner={fixture.homeOwner} />
+        <div className="fixture-owner-band self">
+        <SmallOwnerAvatar owner={fixture.homeOwner} />
         <div>
-          <strong>Self-match conflict</strong>
+          <strong>Friendly Fire</strong>
           <span>{fixture.homeOwner} owns both</span>
         </div>
       </div>
@@ -122,13 +103,13 @@ function OwnersBand({ fixture }: { fixture: EnrichedFixture }) {
     return (
       <div className="fixture-owner-band battle">
         <div>
-          <OwnerAvatar owner={fixture.homeOwner} />
+          <SmallOwnerAvatar owner={fixture.homeOwner} />
           <span>{fixture.homeOwner}</span>
         </div>
-        <strong>Owner v Owner</strong>
+        <div></div>
         <div>
           <span>{fixture.awayOwner}</span>
-          <OwnerAvatar owner={fixture.awayOwner} />
+          <SmallOwnerAvatar owner={fixture.awayOwner} />
         </div>
       </div>
     );
@@ -137,13 +118,13 @@ function OwnersBand({ fixture }: { fixture: EnrichedFixture }) {
   return (
     <div className="fixture-owner-row">
       <div>
-        <OwnerAvatar owner={fixture.homeOwner} />
+        <SmallOwnerAvatar owner={fixture.homeOwner} />
         <span>{fixture.homeOwner || "Unassigned"}</span>
       </div>
       <span>v</span>
       <div>
         <span>{fixture.awayOwner || "Unassigned"}</span>
-        <OwnerAvatar owner={fixture.awayOwner} />
+        <SmallOwnerAvatar owner={fixture.awayOwner} />
       </div>
     </div>
   );
@@ -159,8 +140,8 @@ function FixtureCard({ fixture }: { fixture: EnrichedFixture }) {
 
       <div className="fixture-teams">
         <div className="fixture-team">
-          <TeamCrest team={fixture.homeTeam} />
-          <strong>{teamCode(fixture.homeTeam)}</strong>
+          <TeamCrest team={fixture.homeTeam} code={fixture.homeTeamCode ?? fixture.homeCode} logo={fixture.homeTeamLogo ?? fixture.homeLogo} />
+          <strong>{teamCode(fixture.homeTeam, fixture.homeTeamCode ?? fixture.homeCode)}</strong>
           <PotBadge pot={fixture.homePot} />
         </div>
 
@@ -170,8 +151,8 @@ function FixtureCard({ fixture }: { fixture: EnrichedFixture }) {
         </div>
 
         <div className="fixture-team">
-          <TeamCrest team={fixture.awayTeam} />
-          <strong>{teamCode(fixture.awayTeam)}</strong>
+          <TeamCrest team={fixture.awayTeam} code={fixture.awayTeamCode ?? fixture.awayCode} logo={fixture.awayTeamLogo ?? fixture.awayLogo} />
+          <strong>{teamCode(fixture.awayTeam, fixture.awayTeamCode ?? fixture.awayCode)}</strong>
           <PotBadge pot={fixture.awayPot} />
         </div>
       </div>

@@ -1,6 +1,8 @@
 export type MatchEvent = {
   team: string;
-  type: "goal" | "red_card" | string;
+  teamCode?: string;
+  teamLogo?: string | null;
+  type: "goal" | "red_card" | "yellow_card" | string;
   minute: number;
   player?: string;
 };
@@ -11,7 +13,11 @@ export type Fixture = {
   id: string;
   kickoff: string;
   homeTeam: string;
+  homeCode?: string;
+  homeLogo?: string | null;
   awayTeam: string;
+  awayCode?: string;
+  awayLogo?: string | null;
   homeScore: number | null;
   awayScore: number | null;
   status: FixtureStatus;
@@ -22,6 +28,10 @@ export type Fixture = {
 };
 
 export type EnrichedFixture = Fixture & {
+  homeTeamCode?: string;
+  homeTeamLogo?: string | null;
+  awayTeamCode?: string;
+  awayTeamLogo?: string | null;
   homeOwner: string;
   awayOwner: string;
   homePot: number | null;
@@ -34,6 +44,8 @@ export type EnrichedFixture = Fixture & {
 
 export type TeamStats = {
   team: string;
+  code?: string;
+  logo?: string | null;
   owner: string;
   pot: number;
   played: number;
@@ -44,6 +56,7 @@ export type TeamStats = {
   goalsAgainst: number;
   goalDifference: number;
   points: number;
+  yellowCards: number;
   redCards: number;
   furthestStage: string;
   furthestStageRank: number;
@@ -52,6 +65,8 @@ export type TeamStats = {
 
 export type DrawTeam = {
   team: string;
+  code?: string;
+  logo?: string | null;
   pot: number;
 };
 
@@ -72,6 +87,8 @@ export type OwnerSummary = {
   points: number;
   goalsFor: number;
   goalsAgainst: number;
+  yellowCards: number;
+  redCards: number;
   upcomingMatches: EnrichedFixture[];
   liveMatches: EnrichedFixture[];
   completedResults: EnrichedFixture[];

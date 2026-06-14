@@ -1,4 +1,5 @@
 import type {
+  DrawTeam,
   EnrichedFixture,
   Leaderboards,
   OwnerSummary,
@@ -30,7 +31,7 @@ async function fetchJson<T>(path: string): Promise<T> {
 }
 
 export function getDraw() {
-  return fetchJson<Record<string, Array<{ team: string; pot: number }>>>("/api/draw");
+  return fetchJson<Record<string, DrawTeam[]>>("/api/draw");
 }
 
 export function getOwners() {

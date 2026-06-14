@@ -6,7 +6,7 @@ from typing import Any
 
 import requests
 
-from .data_loader import load_fixtures, load_team_aliases
+from .data_loader import hydrate_fixture_teams, hydrate_team_ref, load_fixtures
 
 BASE = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world"
 TIMEOUT_SECONDS = 10
@@ -43,8 +43,7 @@ def get_match_summary(event_id: str) -> dict[str, Any]:
     return response.json()
 
 
-def extract_fixtures(scoreboard: dict[str, Any], aliases: dict[str, str] | None = None) -> list[dict[str, Any]]:
-    aliases = aliases or load_team_aliases()
+def extract_fixtures(scoreboard: dict[str, Any]) -> list[dict[str, Any]]:
     fixtures = []
 
     for event in scoreboard.get("events", []):
@@ -65,14 +64,19 @@ def extract_fixtures(scoreboard: dict[str, Any], aliases: dict[str, str] | None 
         home_score = _score_or_none(home) if status != "scheduled" else None
         away_score = _score_or_none(away) if status != "scheduled" else None
 
+        home_team = hydrate_team_ref(name=home["team"].get("displayName"), code=home["team"].get("abbreviation"))
+        away_team = hydrate_team_ref(name=away["team"].get("displayName"), code=away["team"].get("abbreviation"))
+
         fixtures.append({
             "id": event["id"],
             "kickoff": event["date"],
             "status": status,
             "espnStatus": status_name,
             "minute": competition.get("status", {}).get("displayClock") if status == "live" else None,
-            "homeTeam": _normalise_team(home["team"]["displayName"], aliases),
-            "awayTeam": _normalise_team(away["team"]["displayName"], aliases),
+            "homeTeam": home_team["team"],
+            "homeCode": home_team["code"],
+            "awayTeam": away_team["team"],
+            "awayCode": away_team["code"],
             "homeScore": home_score,
             "awayScore": away_score,
             "stage": _normalise_stage(event),
@@ -105,23 +109,22 @@ def refresh_all() -> dict[str, Any]:
 
 
 def hydrate_fixtures(start: date = TOURNAMENT_START, end: date = TOURNAMENT_END) -> list[dict[str, Any]]:
-    aliases = load_team_aliases()
-    fixtures = extract_fixtures(get_scoreboard_range(start, end), aliases)
+    fixtures = extract_fixtures(get_scoreboard_range(start, end))
 
     for fixture in fixtures:
         if fixture["status"] not in ("finished", "live"):
             continue
         try:
             summary = get_match_summary(fixture["id"])
-            fixture["events"] = extract_match_events(summary, aliases)
+            fixture["events"] = extract_match_events(summary)
         except requests.RequestException:
             fixture["events"] = []
 
-    return sorted(fixtures, key=lambda item: item["kickoff"])
+    hydrated = [hydrate_fixture_teams(fixture) for fixture in fixtures]
+    return sorted(hydrated, key=lambda item: item["kickoff"])
 
 
-def extract_match_events(summary: dict[str, Any], aliases: dict[str, str] | None = None) -> list[dict[str, Any]]:
-    aliases = aliases or load_team_aliases()
+def extract_match_events(summary: dict[str, Any]) -> list[dict[str, Any]]:
     events = []
     seen = set()
 
@@ -131,15 +134,18 @@ def extract_match_events(summary: dict[str, Any], aliases: dict[str, str] | None
             event_type = "goal"
         elif play_type == "red-card":
             event_type = "red_card"
+        elif play_type == "yellow-card":
+            event_type = "yellow_card"
         else:
             continue
 
-        team = _normalise_team(play.get("team", {}).get("displayName", ""), aliases)
-        if not team:
+        team = hydrate_team_ref(name=play.get("team", {}).get("displayName"), code=play.get("team", {}).get("abbreviation"))
+        if not team["team"]:
             continue
 
         event = {
-            "team": team,
+            "team": team["team"],
+            "teamCode": team["code"],
             "type": event_type,
             "minute": _event_minute(play),
         }
@@ -173,10 +179,6 @@ def _score_or_none(competitor: dict[str, Any]) -> int | None:
         return int(score)
     except (TypeError, ValueError):
         return None
-
-
-def _normalise_team(team: str, aliases: dict[str, str]) -> str:
-    return aliases.get(team, team)
 
 
 def _normalise_stage(event: dict[str, Any]) -> str:
