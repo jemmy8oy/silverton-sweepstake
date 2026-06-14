@@ -45,6 +45,11 @@ a {
   text-decoration: none;
 }
 
+img {
+  display: block;
+  max-width: 100%;
+}
+
 .material-symbols-outlined {
   font-family: "Material Symbols Outlined";
   font-size: 24px;
@@ -476,7 +481,15 @@ h3 {
   border-radius: 999px;
   display: grid;
   flex: 0 0 auto;
+  overflow: hidden;
   place-items: center;
+  position: relative;
+}
+
+.team-mark img {
+  height: 74%;
+  object-fit: contain;
+  width: 74%;
 }
 
 .team-mark span {
@@ -1144,8 +1157,16 @@ h3 {
   box-shadow: 0 8px 20px rgb(0 0 0 / 18%);
   display: grid;
   height: 52px;
+  overflow: hidden;
   place-items: center;
+  position: relative;
   width: 52px;
+}
+
+.fixture-crest img {
+  height: 76%;
+  object-fit: contain;
+  width: 76%;
 }
 
 .fixture-crest span {
@@ -1271,6 +1292,27 @@ h3 {
   width: 30px;
 }
 
+.owner-avatar,
+.owner-avatar-small,
+.owner-avatar-large,
+.leader-avatar {
+  overflow: hidden;
+}
+
+.owner-avatar-image {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.owner-avatar-fallback {
+  align-items: center;
+  display: grid;
+  height: 100%;
+  place-items: center;
+  width: 100%;
+}
+
 .fixture-owner-row {
   align-items: center;
   color: var(--outline);
@@ -1372,6 +1414,89 @@ h3 {
   gap: 24px;
 }
 
+.owners-tabbed-view {
+  display: grid;
+  gap: 20px;
+}
+
+.owners-tabs {
+  display: grid;
+  gap: 12px;
+  grid-auto-columns: minmax(220px, 1fr);
+  grid-auto-flow: column;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scroll-snap-type: x proximity;
+}
+
+.owner-tab {
+  align-items: center;
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: 16px;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  gap: 14px;
+  min-height: 84px;
+  padding: 14px 16px;
+  scroll-snap-align: start;
+  text-align: left;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.owner-tab:hover {
+  border-color: rgb(78 222 163 / 38%);
+  transform: translateY(-1px);
+}
+
+.owner-tab.active {
+  background: rgb(78 222 163 / 10%);
+  border-color: rgb(78 222 163 / 55%);
+  box-shadow: 0 0 0 1px rgb(78 222 163 / 18%);
+}
+
+.owner-tab-avatar {
+  align-items: center;
+  background: var(--surface-container-high);
+  border: 1px solid rgb(78 222 163 / 30%);
+  border-radius: 999px;
+  color: var(--on-surface);
+  display: grid;
+  flex: 0 0 auto;
+  height: 48px;
+  place-items: center;
+  width: 48px;
+}
+
+.owner-tab-copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.owner-tab-copy strong,
+.owner-tab-copy span {
+  display: block;
+}
+
+.owner-tab-copy strong {
+  font-size: 18px;
+  line-height: 1.05;
+}
+
+.owner-tab-copy span {
+  color: var(--on-surface-variant);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.owner-tab-panel {
+  min-width: 0;
+}
+
 .owner-back-link {
   align-items: center;
   color: var(--secondary);
@@ -1435,7 +1560,7 @@ h3 {
   width: 104px;
 }
 
-.owner-avatar-large > span {
+.owner-avatar-large > .owner-avatar-fallback {
   color: var(--primary);
   font-family: "Archivo Narrow", sans-serif;
   font-size: 42px;
@@ -1576,6 +1701,68 @@ h3 {
   text-transform: uppercase;
 }
 
+.journey-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.journey-summary {
+  align-items: center;
+  cursor: pointer;
+  list-style: none;
+  margin: 0;
+}
+
+.journey-summary::-webkit-details-marker {
+  display: none;
+}
+
+.journey-summary-main,
+.journey-summary-meta {
+  align-items: center;
+  display: flex;
+}
+
+.journey-summary-main {
+  gap: 8px;
+}
+
+.journey-summary-meta {
+  color: var(--on-surface-variant);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  font-weight: 800;
+  gap: 10px;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+.journey-chevron {
+  transition: transform 160ms ease;
+}
+
+.journey-panel[open] .journey-chevron {
+  transform: rotate(180deg);
+}
+
+.journey-panel-body {
+  display: grid;
+  gap: 12px;
+}
+
+.journey-panel-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.journey-panel-actions a {
+  color: var(--secondary);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
 .owner-teams-grid {
   display: grid;
   gap: 16px;
@@ -1643,12 +1830,45 @@ h3 {
 }
 
 .owner-team-code {
-  color: var(--primary);
-  font-family: "Archivo Narrow", sans-serif;
-  font-size: 42px;
-  font-weight: 800;
-  line-height: 1;
+  align-items: center;
+  display: flex;
+  justify-content: center;
   margin: 20px 0 8px;
+}
+
+.owner-team-logo {
+  align-items: center;
+  background:
+    linear-gradient(145deg, rgb(78 222 163 / 14%), rgb(239 194 0 / 10%)),
+    var(--surface);
+  border: 2px solid var(--outline-variant);
+  border-radius: 18px;
+  display: grid;
+  height: 72px;
+  overflow: hidden;
+  place-items: center;
+  position: relative;
+  width: 72px;
+}
+
+.owner-team-logo img {
+  height: 76%;
+  object-fit: contain;
+  width: 76%;
+}
+
+.owner-team-logo-image {
+  height: 54px;
+  object-fit: contain;
+  width: 54px;
+}
+
+.owner-team-logo-fallback {
+  align-items: center;
+  display: grid;
+  height: 100%;
+  place-items: center;
+  width: 100%;
 }
 
 .owner-team-card h3 {
@@ -1803,12 +2023,34 @@ h3 {
 }
 
 .mini-stat-team div {
+  align-items: center;
   color: var(--primary);
+  display: flex;
   font-family: "Archivo Narrow", sans-serif;
   font-size: 34px;
   font-weight: 800;
+  justify-content: center;
   line-height: 1;
   margin-bottom: 6px;
+}
+
+.mini-stat-team-logo {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--outline-variant);
+  border-radius: 12px;
+  display: grid;
+  height: 40px;
+  overflow: hidden;
+  place-items: center;
+  position: relative;
+  width: 40px;
+}
+
+.mini-stat-team-logo img {
+  height: 76%;
+  object-fit: contain;
+  width: 76%;
 }
 
 .mini-stat-team strong {
@@ -1955,12 +2197,8 @@ h3 {
   text-transform: uppercase;
 }
 
-.leader-table th:nth-child(3) {
+.leader-table th:not(:first-child) {
   text-align: center;
-}
-
-.leader-table th:last-child {
-  text-align: right;
 }
 
 .leader-table tbody tr {
@@ -1978,19 +2216,20 @@ h3 {
   vertical-align: middle;
 }
 
-.leader-rank,
-.leader-points {
+.leader-points,
+.leader-stat {
   font-family: "Archivo Narrow", sans-serif;
   font-size: 26px;
   font-weight: 800;
 }
 
-.leader-rank.first {
-  color: var(--secondary);
+.leader-points {
+  text-align: center;
 }
 
-.leader-points {
-  text-align: right;
+.leader-stat,
+.leader-next {
+  text-align: center;
 }
 
 .leader-owner-cell {
@@ -2019,22 +2258,18 @@ h3 {
   border: 2px solid var(--secondary);
 }
 
-.leader-owner-cell strong,
-.leader-owner-cell span {
+.leader-owner-cell strong {
   display: block;
-}
-
-.leader-owner-cell span {
-  color: var(--on-surface-variant);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
-  margin-top: 3px;
 }
 
 .leader-alive-bubbles {
   display: flex;
   justify-content: center;
   margin-left: 8px;
+}
+
+.leader-next .leader-team-bubble {
+  margin: 0 auto;
 }
 
 .leader-team-bubble {
@@ -2049,12 +2284,63 @@ h3 {
   font-weight: 800;
   height: 28px;
   margin-left: -8px;
+  overflow: hidden;
   place-items: center;
+  position: relative;
   width: 28px;
+}
+
+.leader-team-bubble img {
+  height: 74%;
+  object-fit: contain;
+  width: 74%;
 }
 
 .leader-team-bubble:first-child {
   margin-left: 0;
+}
+
+.team-badge {
+  align-items: center;
+  background: var(--surface-container-high);
+  border: 1px solid var(--outline-variant);
+  border-radius: 999px;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 6px 10px;
+}
+
+.team-badge.is-out {
+  filter: grayscale(0.75);
+  opacity: 0.72;
+}
+
+.team-badge > span:last-child {
+  color: var(--on-surface-variant);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.team-badge-logo {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--outline-variant);
+  border-radius: 999px;
+  display: grid;
+  height: 20px;
+  overflow: hidden;
+  place-items: center;
+  position: relative;
+  width: 20px;
+}
+
+.team-badge-logo img {
+  height: 78%;
+  object-fit: contain;
+  width: 78%;
 }
 
 .leader-split-grid {

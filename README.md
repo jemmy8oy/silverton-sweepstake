@@ -62,11 +62,11 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:5001
 
 ## Mock Data
 
-The draw and fallback fixtures live in:
+The draw, country reference, and fallback fixtures live in:
 
 - `backend/data/draw.json`
+- `backend/data/countries.json`
 - `backend/data/fixtures.json`
-- `backend/data/team_aliases.json`
 
 Fixtures are enriched by the backend with owner, pot, matchup, and readable kickoff fields. The frontend should not calculate ownership itself.
 
@@ -79,5 +79,7 @@ https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world
 ```
 
 `GET /api/fixtures/today` caches ESPN's daily scoreboard for 300 seconds in `backend/cache`. If ESPN is unavailable, the backend falls back to local JSON fixtures so the app still renders during development.
+
+Country names and three-letter abbreviations are canonicalized through `backend/data/countries.json`. ESPN `team.abbreviation` is used during fixture hydration, and the country reference keeps draw/team names aligned with what the frontend renders.
 
 To switch providers later, keep returning the normalized fixture shape from `football_api.py` and the existing sweepstake enrichment will continue to work.

@@ -15,13 +15,17 @@ STAGE_RANKS = {
 
 
 def enrich_fixture(fixture: dict[str, Any], team_lookup: dict[str, dict[str, Any]]) -> dict[str, Any]:
-    home = team_lookup.get(fixture["homeTeam"], {})
-    away = team_lookup.get(fixture["awayTeam"], {})
+    home = team_lookup.get(fixture.get("homeCode")) or team_lookup.get(fixture["homeTeam"], {})
+    away = team_lookup.get(fixture.get("awayCode")) or team_lookup.get(fixture["awayTeam"], {})
     home_owner = home.get("owner", "Unassigned")
     away_owner = away.get("owner", "Unassigned")
 
     return {
         **fixture,
+        "homeTeamCode": fixture.get("homeCode"),
+        "homeTeamLogo": fixture.get("homeLogo"),
+        "awayTeamCode": fixture.get("awayCode"),
+        "awayTeamLogo": fixture.get("awayLogo"),
         "homeOwner": home_owner,
         "awayOwner": away_owner,
         "homePot": home.get("pot"),
@@ -37,9 +41,11 @@ def enrich_fixtures(fixtures: list[dict[str, Any]], team_lookup: dict[str, dict[
     return sorted((enrich_fixture(fixture, team_lookup) for fixture in fixtures), key=lambda item: item["kickoff"])
 
 
-def _empty_team_stats(team: str, owner: str, pot: int) -> dict[str, Any]:
+def _empty_team_stats(team: str, code: str | None, logo: str | None, owner: str, pot: int) -> dict[str, Any]:
     return {
         "team": team,
+        "code": code,
+        "logo": logo,
         "owner": owner,
         "pot": pot,
         "played": 0,
@@ -50,6 +56,7 @@ def _empty_team_stats(team: str, owner: str, pot: int) -> dict[str, Any]:
         "goalsAgainst": 0,
         "goalDifference": 0,
         "points": 0,
+        "yellowCards": 0,
         "redCards": 0,
         "furthestStage": "Group stage",
         "furthestStageRank": STAGE_RANKS["Group stage"],
@@ -61,13 +68,15 @@ def compute_team_stats(draw: dict[str, list[dict[str, Any]]], fixtures: list[dic
     stats: dict[str, dict[str, Any]] = {}
     for owner, teams in draw.items():
         for team in teams:
-            stats[team["team"]] = _empty_team_stats(team["team"], owner, team["pot"])
+            stats[team["team"]] = _empty_team_stats(team["team"], team.get("code"), team.get("logo"), owner, team["pot"])
 
     for fixture in fixtures:
         for event in fixture.get("events", []):
             team = event.get("team")
             if team in stats and event.get("type") == "red_card":
                 stats[team]["redCards"] += 1
+            if team in stats and event.get("type") == "yellow_card":
+                stats[team]["yellowCards"] += 1
 
         if fixture["status"] not in ("finished", "live"):
             continue
@@ -140,6 +149,8 @@ def build_owner_summaries(draw: dict[str, list[dict[str, Any]]], fixtures: list[
             "points": sum(team["points"] for team in owned_stats),
             "goalsFor": sum(team["goalsFor"] for team in owned_stats),
             "goalsAgainst": sum(team["goalsAgainst"] for team in owned_stats),
+            "yellowCards": sum(team["yellowCards"] for team in owned_stats),
+            "redCards": sum(team["redCards"] for team in owned_stats),
             "upcomingMatches": _matches_for_owner(owner, enriched, "scheduled"),
             "liveMatches": _matches_for_owner(owner, enriched, "live"),
             "completedResults": _matches_for_owner(owner, enriched, "finished"),

@@ -6,7 +6,9 @@
     "espnStatus": "STATUS_FULL_TIME",
     "minute": null,
     "homeTeam": "Mexico",
+    "homeCode": "MEX",
     "awayTeam": "South Africa",
+    "awayCode": "RSA",
     "homeScore": 2,
     "awayScore": 0,
     "stage": "Group stage",
@@ -14,35 +16,71 @@
     "events": [
       {
         "team": "Mexico",
+        "teamCode": "MEX",
         "type": "goal",
         "minute": 9,
-        "player": "Julián Quiñones"
+        "player": "Julián Quiñones",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/mex.png"
       },
       {
         "team": "South Africa",
+        "teamCode": "RSA",
+        "type": "yellow_card",
+        "minute": 17,
+        "player": "Teboho Mokoena",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/rsa.png"
+      },
+      {
+        "team": "Mexico",
+        "teamCode": "MEX",
+        "type": "yellow_card",
+        "minute": 23,
+        "player": "Brian Gutiérrez",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/mex.png"
+      },
+      {
+        "team": "South Africa",
+        "teamCode": "RSA",
         "type": "red_card",
         "minute": 49,
-        "player": "Sphephelo Sithole"
+        "player": "Sphephelo Sithole",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/rsa.png"
       },
       {
         "team": "Mexico",
+        "teamCode": "MEX",
         "type": "goal",
         "minute": 67,
-        "player": "Raúl Jiménez"
+        "player": "Raúl Jiménez",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/mex.png"
       },
       {
         "team": "South Africa",
+        "teamCode": "RSA",
+        "type": "yellow_card",
+        "minute": 74,
+        "player": "Nkosinathi Sibisi",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/rsa.png"
+      },
+      {
+        "team": "South Africa",
+        "teamCode": "RSA",
         "type": "red_card",
         "minute": 84,
-        "player": "Themba Zwane"
+        "player": "Themba Zwane",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/rsa.png"
       },
       {
         "team": "Mexico",
+        "teamCode": "MEX",
         "type": "red_card",
         "minute": 90,
-        "player": "César Montes"
+        "player": "César Montes",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/mex.png"
       }
-    ]
+    ],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/mex.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/rsa.png"
   },
   {
     "id": "760414",
@@ -51,7 +89,9 @@
     "espnStatus": "STATUS_FULL_TIME",
     "minute": null,
     "homeTeam": "South Korea",
+    "homeCode": "KOR",
     "awayTeam": "Czech Republic",
+    "awayCode": "CZE",
     "homeScore": 2,
     "awayScore": 1,
     "stage": "Group stage",
@@ -59,23 +99,39 @@
     "events": [
       {
         "team": "Czech Republic",
+        "teamCode": "CZE",
         "type": "goal",
         "minute": 59,
-        "player": "Ladislav Krejcí"
+        "player": "Ladislav Krejcí",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/cze.png"
       },
       {
         "team": "South Korea",
+        "teamCode": "KOR",
         "type": "goal",
         "minute": 67,
-        "player": "Hwang In-Beom"
+        "player": "Hwang In-Beom",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/kor.png"
       },
       {
         "team": "South Korea",
+        "teamCode": "KOR",
         "type": "goal",
         "minute": 80,
-        "player": "Oh Hyeon-Gyu"
+        "player": "Oh Hyeon-Gyu",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/kor.png"
+      },
+      {
+        "team": "South Korea",
+        "teamCode": "KOR",
+        "type": "yellow_card",
+        "minute": 90,
+        "player": "Lee Gi-Hyuk",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/kor.png"
       }
-    ]
+    ],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/kor.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/cze.png"
   },
   {
     "id": "760416",
@@ -84,25 +140,73 @@
     "espnStatus": "STATUS_FULL_TIME",
     "minute": null,
     "homeTeam": "Canada",
+    "homeCode": "CAN",
     "awayTeam": "Bosnia and Herzegovina",
+    "awayCode": "BIH",
     "homeScore": 1,
     "awayScore": 1,
     "stage": "Group stage",
     "group": null,
     "events": [
       {
+        "team": "Canada",
+        "teamCode": "CAN",
+        "type": "yellow_card",
+        "minute": 11,
+        "player": "Alistair Johnston",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/can.png"
+      },
+      {
         "team": "Bosnia and Herzegovina",
+        "teamCode": "BIH",
         "type": "goal",
         "minute": 21,
-        "player": "Jovo Lukic"
+        "player": "Jovo Lukic",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/bih.png"
+      },
+      {
+        "team": "Bosnia and Herzegovina",
+        "teamCode": "BIH",
+        "type": "yellow_card",
+        "minute": 45,
+        "player": "Ermedin Demirovic",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/bih.png"
+      },
+      {
+        "team": "Bosnia and Herzegovina",
+        "teamCode": "BIH",
+        "type": "yellow_card",
+        "minute": 45,
+        "player": "Jovo Lukic",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/bih.png"
       },
       {
         "team": "Canada",
+        "teamCode": "CAN",
+        "type": "yellow_card",
+        "minute": 53,
+        "player": "Luc de Fougerolles",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/can.png"
+      },
+      {
+        "team": "Canada",
+        "teamCode": "CAN",
         "type": "goal",
         "minute": 78,
-        "player": "Cyle Larin"
+        "player": "Cyle Larin",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/can.png"
+      },
+      {
+        "team": "Bosnia and Herzegovina",
+        "teamCode": "BIH",
+        "type": "yellow_card",
+        "minute": 90,
+        "player": "Nikola Katic",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/bih.png"
       }
-    ]
+    ],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/can.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/bih.png"
   },
   {
     "id": "760417",
@@ -111,7 +215,9 @@
     "espnStatus": "STATUS_FULL_TIME",
     "minute": null,
     "homeTeam": "United States",
+    "homeCode": "USA",
     "awayTeam": "Paraguay",
+    "awayCode": "PAR",
     "homeScore": 4,
     "awayScore": 1,
     "stage": "Group stage",
@@ -119,35 +225,95 @@
     "events": [
       {
         "team": "United States",
+        "teamCode": "USA",
         "type": "goal",
         "minute": 7,
-        "player": "Damián Bobadilla"
-      },
-      {
-        "team": "United States",
-        "type": "goal",
-        "minute": 31,
-        "player": "Folarin Balogun"
-      },
-      {
-        "team": "United States",
-        "type": "goal",
-        "minute": 45,
-        "player": "Folarin Balogun"
+        "player": "Damián Bobadilla",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png"
       },
       {
         "team": "Paraguay",
-        "type": "goal",
-        "minute": 73,
-        "player": "Maurício"
+        "teamCode": "PAR",
+        "type": "yellow_card",
+        "minute": 10,
+        "player": "Juan Jose Cáceres",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/par.png"
       },
       {
         "team": "United States",
+        "teamCode": "USA",
+        "type": "goal",
+        "minute": 31,
+        "player": "Folarin Balogun",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png"
+      },
+      {
+        "team": "United States",
+        "teamCode": "USA",
+        "type": "goal",
+        "minute": 45,
+        "player": "Folarin Balogun",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png"
+      },
+      {
+        "team": "Paraguay",
+        "teamCode": "PAR",
+        "type": "yellow_card",
+        "minute": 53,
+        "player": "Miguel Almirón",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/par.png"
+      },
+      {
+        "team": "United States",
+        "teamCode": "USA",
+        "type": "yellow_card",
+        "minute": 59,
+        "player": "Tyler Adams",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png"
+      },
+      {
+        "team": "Paraguay",
+        "teamCode": "PAR",
+        "type": "goal",
+        "minute": 73,
+        "player": "Maurício",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/par.png"
+      },
+      {
+        "team": "Paraguay",
+        "teamCode": "PAR",
+        "type": "yellow_card",
+        "minute": 79,
+        "player": "Diego Gómez",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/par.png"
+      },
+      {
+        "team": "Paraguay",
+        "teamCode": "PAR",
+        "type": "yellow_card",
+        "minute": 88,
+        "player": "Alex Arce",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/par.png"
+      },
+      {
+        "team": "Paraguay",
+        "teamCode": "PAR",
+        "type": "yellow_card",
+        "minute": 90,
+        "player": "Júnior Alonso",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/par.png"
+      },
+      {
+        "team": "United States",
+        "teamCode": "USA",
         "type": "goal",
         "minute": 90,
-        "player": "Giovanni Reyna"
+        "player": "Giovanni Reyna",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png"
       }
-    ]
+    ],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/par.png"
   },
   {
     "id": "760420",
@@ -156,25 +322,57 @@
     "espnStatus": "STATUS_FULL_TIME",
     "minute": null,
     "homeTeam": "Qatar",
+    "homeCode": "QAT",
     "awayTeam": "Switzerland",
+    "awayCode": "SUI",
     "homeScore": 1,
     "awayScore": 1,
     "stage": "Group stage",
     "group": null,
     "events": [
       {
+        "team": "Qatar",
+        "teamCode": "QAT",
+        "type": "yellow_card",
+        "minute": 16,
+        "player": "Mahmoud Abunada",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/qat.png"
+      },
+      {
         "team": "Switzerland",
+        "teamCode": "SUI",
         "type": "goal",
         "minute": 17,
-        "player": "Breel Embolo"
+        "player": "Breel Embolo",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/sui.png"
       },
       {
         "team": "Qatar",
+        "teamCode": "QAT",
+        "type": "yellow_card",
+        "minute": 23,
+        "player": "Jassem Gaber",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/qat.png"
+      },
+      {
+        "team": "Switzerland",
+        "teamCode": "SUI",
+        "type": "yellow_card",
+        "minute": 42,
+        "player": "Denis Zakaria",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/sui.png"
+      },
+      {
+        "team": "Qatar",
+        "teamCode": "QAT",
         "type": "goal",
         "minute": 90,
-        "player": "Miro Muheim"
+        "player": "Miro Muheim",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/qat.png"
       }
-    ]
+    ],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/qat.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/sui.png"
   },
   {
     "id": "760419",
@@ -183,7 +381,9 @@
     "espnStatus": "STATUS_FULL_TIME",
     "minute": null,
     "homeTeam": "Brazil",
+    "homeCode": "BRA",
     "awayTeam": "Morocco",
+    "awayCode": "MAR",
     "homeScore": 1,
     "awayScore": 1,
     "stage": "Group stage",
@@ -191,17 +391,39 @@
     "events": [
       {
         "team": "Morocco",
+        "teamCode": "MAR",
         "type": "goal",
         "minute": 21,
-        "player": "Ismael Saibari"
+        "player": "Ismael Saibari",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/mar.png"
       },
       {
         "team": "Brazil",
+        "teamCode": "BRA",
         "type": "goal",
         "minute": 32,
-        "player": "Vinícius Júnior"
+        "player": "Vinícius Júnior",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/bra.png"
+      },
+      {
+        "team": "Brazil",
+        "teamCode": "BRA",
+        "type": "yellow_card",
+        "minute": 37,
+        "player": "Casemiro",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/bra.png"
+      },
+      {
+        "team": "Brazil",
+        "teamCode": "BRA",
+        "type": "yellow_card",
+        "minute": 43,
+        "player": "Roger Ibañez",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/bra.png"
       }
-    ]
+    ],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/bra.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/mar.png"
   },
   {
     "id": "760418",
@@ -210,7 +432,9 @@
     "espnStatus": "STATUS_FULL_TIME",
     "minute": null,
     "homeTeam": "Haiti",
+    "homeCode": "HAI",
     "awayTeam": "Scotland",
+    "awayCode": "SCO",
     "homeScore": 0,
     "awayScore": 1,
     "stage": "Group stage",
@@ -218,11 +442,47 @@
     "events": [
       {
         "team": "Scotland",
+        "teamCode": "SCO",
         "type": "goal",
         "minute": 28,
-        "player": "John McGinn"
+        "player": "John McGinn",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/sco.png"
+      },
+      {
+        "team": "Haiti",
+        "teamCode": "HAI",
+        "type": "yellow_card",
+        "minute": 39,
+        "player": "Jean-Ricner Bellegarde",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/hai.png"
+      },
+      {
+        "team": "Scotland",
+        "teamCode": "SCO",
+        "type": "yellow_card",
+        "minute": 46,
+        "player": "Aaron Hickey",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/sco.png"
+      },
+      {
+        "team": "Scotland",
+        "teamCode": "SCO",
+        "type": "yellow_card",
+        "minute": 90,
+        "player": "Findlay Curtis",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/sco.png"
+      },
+      {
+        "team": "Scotland",
+        "teamCode": "SCO",
+        "type": "yellow_card",
+        "minute": 90,
+        "player": "Kenny McLean",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/sco.png"
       }
-    ]
+    ],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/hai.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/sco.png"
   },
   {
     "id": "760421",
@@ -231,7 +491,9 @@
     "espnStatus": "STATUS_FULL_TIME",
     "minute": null,
     "homeTeam": "Australia",
+    "homeCode": "AUS",
     "awayTeam": "Turkey",
+    "awayCode": "TUR",
     "homeScore": 2,
     "awayScore": 0,
     "stage": "Group stage",
@@ -239,17 +501,31 @@
     "events": [
       {
         "team": "Australia",
+        "teamCode": "AUS",
         "type": "goal",
         "minute": 27,
-        "player": "Nestory Irankunda"
+        "player": "Nestory Irankunda",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/aus.png"
       },
       {
         "team": "Australia",
+        "teamCode": "AUS",
         "type": "goal",
         "minute": 75,
-        "player": "Connor Metcalfe"
+        "player": "Connor Metcalfe",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/aus.png"
+      },
+      {
+        "team": "Turkey",
+        "teamCode": "TUR",
+        "type": "yellow_card",
+        "minute": 86,
+        "player": "Yunus Akgün",
+        "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/tur.png"
       }
-    ]
+    ],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/aus.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/tur.png"
   },
   {
     "id": "760422",
@@ -258,12 +534,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Germany",
+    "homeCode": "GER",
     "awayTeam": "Curacao",
+    "awayCode": "CUW",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/ger.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/cuw.png"
   },
   {
     "id": "760425",
@@ -272,12 +552,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Netherlands",
+    "homeCode": "NED",
     "awayTeam": "Japan",
+    "awayCode": "JPN",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/ned.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/jpn.png"
   },
   {
     "id": "760423",
@@ -286,12 +570,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Ivory Coast",
+    "homeCode": "CIV",
     "awayTeam": "Ecuador",
+    "awayCode": "ECU",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/civ.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/ecu.png"
   },
   {
     "id": "760424",
@@ -300,12 +588,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Sweden",
+    "homeCode": "SWE",
     "awayTeam": "Tunisia",
+    "awayCode": "TUN",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/swe.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/tun.png"
   },
   {
     "id": "760428",
@@ -314,12 +606,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Spain",
+    "homeCode": "ESP",
     "awayTeam": "Cape Verde",
+    "awayCode": "CPV",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/esp.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/cpv.png"
   },
   {
     "id": "760426",
@@ -328,12 +624,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Belgium",
+    "homeCode": "BEL",
     "awayTeam": "Egypt",
+    "awayCode": "EGY",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/bel.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/egy.png"
   },
   {
     "id": "760429",
@@ -342,12 +642,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Saudi Arabia",
+    "homeCode": "KSA",
     "awayTeam": "Uruguay",
+    "awayCode": "URU",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/ksa.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/uru.png"
   },
   {
     "id": "760427",
@@ -356,12 +660,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Iran",
+    "homeCode": "IRN",
     "awayTeam": "New Zealand",
+    "awayCode": "NZL",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/irn.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/nzl.png"
   },
   {
     "id": "760432",
@@ -370,12 +678,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "France",
+    "homeCode": "FRA",
     "awayTeam": "Senegal",
+    "awayCode": "SEN",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/fra.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/sen.png"
   },
   {
     "id": "760430",
@@ -384,12 +696,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Iraq",
+    "homeCode": "IRQ",
     "awayTeam": "Norway",
+    "awayCode": "NOR",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/irq.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/nor.png"
   },
   {
     "id": "760433",
@@ -398,12 +714,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Argentina",
+    "homeCode": "ARG",
     "awayTeam": "Algeria",
+    "awayCode": "ALG",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/arg.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/alg.png"
   },
   {
     "id": "760431",
@@ -412,12 +732,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Austria",
+    "homeCode": "AUT",
     "awayTeam": "Jordan",
+    "awayCode": "JOR",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/aut.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/jor.png"
   },
   {
     "id": "760435",
@@ -426,12 +750,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Portugal",
+    "homeCode": "POR",
     "awayTeam": "DR Congo",
+    "awayCode": "COD",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/por.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/cod.png"
   },
   {
     "id": "760437",
@@ -440,12 +768,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "England",
+    "homeCode": "ENG",
     "awayTeam": "Croatia",
+    "awayCode": "CRO",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/eng.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/cro.png"
   },
   {
     "id": "760434",
@@ -454,12 +786,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Ghana",
+    "homeCode": "GHA",
     "awayTeam": "Panama",
+    "awayCode": "PAN",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gha.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/pan.png"
   },
   {
     "id": "760436",
@@ -468,12 +804,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Uzbekistan",
+    "homeCode": "UZB",
     "awayTeam": "Colombia",
+    "awayCode": "COL",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/uzb.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/col.png"
   },
   {
     "id": "760438",
@@ -482,12 +822,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Czech Republic",
+    "homeCode": "CZE",
     "awayTeam": "South Africa",
+    "awayCode": "RSA",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/cze.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/rsa.png"
   },
   {
     "id": "760439",
@@ -496,12 +840,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Switzerland",
+    "homeCode": "SUI",
     "awayTeam": "Bosnia and Herzegovina",
+    "awayCode": "BIH",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/sui.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/bih.png"
   },
   {
     "id": "760440",
@@ -510,12 +858,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Canada",
+    "homeCode": "CAN",
     "awayTeam": "Qatar",
+    "awayCode": "QAT",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/can.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/qat.png"
   },
   {
     "id": "760441",
@@ -524,12 +876,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Mexico",
+    "homeCode": "MEX",
     "awayTeam": "South Korea",
+    "awayCode": "KOR",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/mex.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/kor.png"
   },
   {
     "id": "760442",
@@ -538,12 +894,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "United States",
+    "homeCode": "USA",
     "awayTeam": "Australia",
+    "awayCode": "AUS",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/aus.png"
   },
   {
     "id": "760445",
@@ -552,12 +912,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Scotland",
+    "homeCode": "SCO",
     "awayTeam": "Morocco",
+    "awayCode": "MAR",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/sco.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/mar.png"
   },
   {
     "id": "760444",
@@ -566,12 +930,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Brazil",
+    "homeCode": "BRA",
     "awayTeam": "Haiti",
+    "awayCode": "HAI",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/bra.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/hai.png"
   },
   {
     "id": "760443",
@@ -580,12 +948,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Turkey",
+    "homeCode": "TUR",
     "awayTeam": "Paraguay",
+    "awayCode": "PAR",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/tur.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/par.png"
   },
   {
     "id": "760447",
@@ -594,12 +966,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Netherlands",
+    "homeCode": "NED",
     "awayTeam": "Sweden",
+    "awayCode": "SWE",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/ned.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/swe.png"
   },
   {
     "id": "760448",
@@ -608,12 +984,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Germany",
+    "homeCode": "GER",
     "awayTeam": "Ivory Coast",
+    "awayCode": "CIV",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/ger.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/civ.png"
   },
   {
     "id": "760446",
@@ -622,12 +1002,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Ecuador",
+    "homeCode": "ECU",
     "awayTeam": "Curacao",
+    "awayCode": "CUW",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/ecu.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/cuw.png"
   },
   {
     "id": "760449",
@@ -636,12 +1020,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Tunisia",
+    "homeCode": "TUN",
     "awayTeam": "Japan",
+    "awayCode": "JPN",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/tun.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/jpn.png"
   },
   {
     "id": "760453",
@@ -650,12 +1038,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Spain",
+    "homeCode": "ESP",
     "awayTeam": "Saudi Arabia",
+    "awayCode": "KSA",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/esp.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/ksa.png"
   },
   {
     "id": "760451",
@@ -664,12 +1056,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Belgium",
+    "homeCode": "BEL",
     "awayTeam": "Iran",
+    "awayCode": "IRN",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/bel.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/irn.png"
   },
   {
     "id": "760450",
@@ -678,12 +1074,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Uruguay",
+    "homeCode": "URU",
     "awayTeam": "Cape Verde",
+    "awayCode": "CPV",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/uru.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/cpv.png"
   },
   {
     "id": "760452",
@@ -692,12 +1092,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "New Zealand",
+    "homeCode": "NZL",
     "awayTeam": "Egypt",
+    "awayCode": "EGY",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/nzl.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/egy.png"
   },
   {
     "id": "760456",
@@ -706,12 +1110,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Argentina",
+    "homeCode": "ARG",
     "awayTeam": "Austria",
+    "awayCode": "AUT",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/arg.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/aut.png"
   },
   {
     "id": "760457",
@@ -720,12 +1128,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "France",
+    "homeCode": "FRA",
     "awayTeam": "Iraq",
+    "awayCode": "IRQ",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/fra.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/irq.png"
   },
   {
     "id": "760454",
@@ -734,12 +1146,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Norway",
+    "homeCode": "NOR",
     "awayTeam": "Senegal",
+    "awayCode": "SEN",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/nor.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/sen.png"
   },
   {
     "id": "760455",
@@ -748,12 +1164,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Jordan",
+    "homeCode": "JOR",
     "awayTeam": "Algeria",
+    "awayCode": "ALG",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/jor.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/alg.png"
   },
   {
     "id": "760461",
@@ -762,12 +1182,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Portugal",
+    "homeCode": "POR",
     "awayTeam": "Uzbekistan",
+    "awayCode": "UZB",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/por.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/uzb.png"
   },
   {
     "id": "760458",
@@ -776,12 +1200,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "England",
+    "homeCode": "ENG",
     "awayTeam": "Ghana",
+    "awayCode": "GHA",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/eng.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gha.png"
   },
   {
     "id": "760460",
@@ -790,12 +1218,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Panama",
+    "homeCode": "PAN",
     "awayTeam": "Croatia",
+    "awayCode": "CRO",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/pan.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/cro.png"
   },
   {
     "id": "760459",
@@ -804,12 +1236,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Colombia",
+    "homeCode": "COL",
     "awayTeam": "DR Congo",
+    "awayCode": "COD",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/col.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/cod.png"
   },
   {
     "id": "760462",
@@ -818,12 +1254,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Bosnia and Herzegovina",
+    "homeCode": "BIH",
     "awayTeam": "Qatar",
+    "awayCode": "QAT",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/bih.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/qat.png"
   },
   {
     "id": "760463",
@@ -832,12 +1272,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Switzerland",
+    "homeCode": "SUI",
     "awayTeam": "Canada",
+    "awayCode": "CAN",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/sui.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/can.png"
   },
   {
     "id": "760464",
@@ -846,12 +1290,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Morocco",
+    "homeCode": "MAR",
     "awayTeam": "Haiti",
+    "awayCode": "HAI",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/mar.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/hai.png"
   },
   {
     "id": "760465",
@@ -860,12 +1308,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Scotland",
+    "homeCode": "SCO",
     "awayTeam": "Brazil",
+    "awayCode": "BRA",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/sco.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/bra.png"
   },
   {
     "id": "760467",
@@ -874,12 +1326,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Czech Republic",
+    "homeCode": "CZE",
     "awayTeam": "Mexico",
+    "awayCode": "MEX",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/cze.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/mex.png"
   },
   {
     "id": "760466",
@@ -888,12 +1344,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "South Africa",
+    "homeCode": "RSA",
     "awayTeam": "South Korea",
+    "awayCode": "KOR",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/rsa.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/kor.png"
   },
   {
     "id": "760473",
@@ -902,12 +1362,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Curacao",
+    "homeCode": "CUW",
     "awayTeam": "Ivory Coast",
+    "awayCode": "CIV",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/cuw.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/civ.png"
   },
   {
     "id": "760468",
@@ -916,12 +1380,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Ecuador",
+    "homeCode": "ECU",
     "awayTeam": "Germany",
+    "awayCode": "GER",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/ecu.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/ger.png"
   },
   {
     "id": "760471",
@@ -930,12 +1398,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Japan",
+    "homeCode": "JPN",
     "awayTeam": "Sweden",
+    "awayCode": "SWE",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/jpn.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/swe.png"
   },
   {
     "id": "760472",
@@ -944,12 +1416,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Tunisia",
+    "homeCode": "TUN",
     "awayTeam": "Netherlands",
+    "awayCode": "NED",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/tun.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/ned.png"
   },
   {
     "id": "760469",
@@ -958,12 +1434,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Paraguay",
+    "homeCode": "PAR",
     "awayTeam": "Australia",
+    "awayCode": "AUS",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/par.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/aus.png"
   },
   {
     "id": "760470",
@@ -972,12 +1452,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Turkey",
+    "homeCode": "TUR",
     "awayTeam": "United States",
+    "awayCode": "USA",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/tur.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png"
   },
   {
     "id": "760475",
@@ -986,12 +1470,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Norway",
+    "homeCode": "NOR",
     "awayTeam": "France",
+    "awayCode": "FRA",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/nor.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/fra.png"
   },
   {
     "id": "760474",
@@ -1000,12 +1488,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Senegal",
+    "homeCode": "SEN",
     "awayTeam": "Iraq",
+    "awayCode": "IRQ",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/sen.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/irq.png"
   },
   {
     "id": "760478",
@@ -1014,12 +1506,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Cape Verde",
+    "homeCode": "CPV",
     "awayTeam": "Saudi Arabia",
+    "awayCode": "KSA",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/cpv.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/ksa.png"
   },
   {
     "id": "760479",
@@ -1028,12 +1524,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Uruguay",
+    "homeCode": "URU",
     "awayTeam": "Spain",
+    "awayCode": "ESP",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/uru.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/esp.png"
   },
   {
     "id": "760476",
@@ -1042,12 +1542,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Egypt",
+    "homeCode": "EGY",
     "awayTeam": "Iran",
+    "awayCode": "IRN",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/egy.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/irn.png"
   },
   {
     "id": "760477",
@@ -1056,12 +1560,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "New Zealand",
+    "homeCode": "NZL",
     "awayTeam": "Belgium",
+    "awayCode": "BEL",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/nzl.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/bel.png"
   },
   {
     "id": "760480",
@@ -1070,12 +1578,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Croatia",
+    "homeCode": "CRO",
     "awayTeam": "Ghana",
+    "awayCode": "GHA",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/cro.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gha.png"
   },
   {
     "id": "760485",
@@ -1084,12 +1596,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Panama",
+    "homeCode": "PAN",
     "awayTeam": "England",
+    "awayCode": "ENG",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/pan.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/eng.png"
   },
   {
     "id": "760481",
@@ -1098,12 +1614,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Colombia",
+    "homeCode": "COL",
     "awayTeam": "Portugal",
+    "awayCode": "POR",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/col.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/por.png"
   },
   {
     "id": "760482",
@@ -1112,12 +1632,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "DR Congo",
+    "homeCode": "COD",
     "awayTeam": "Uzbekistan",
+    "awayCode": "UZB",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/cod.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/uzb.png"
   },
   {
     "id": "760484",
@@ -1126,12 +1650,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Algeria",
+    "homeCode": "ALG",
     "awayTeam": "Austria",
+    "awayCode": "AUT",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/alg.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/aut.png"
   },
   {
     "id": "760483",
@@ -1140,12 +1668,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Jordan",
+    "homeCode": "JOR",
     "awayTeam": "Argentina",
+    "awayCode": "ARG",
     "homeScore": null,
     "awayScore": null,
     "stage": "Group stage",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/jor.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/arg.png"
   },
   {
     "id": "760486",
@@ -1154,12 +1686,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Group A 2nd Place",
+    "homeCode": "GAN",
     "awayTeam": "Group B 2nd Place",
+    "awayCode": "GBN",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 32",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gan.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gbn.png"
   },
   {
     "id": "760487",
@@ -1168,12 +1704,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Group C Winner",
+    "homeCode": "GCW",
     "awayTeam": "Group F 2nd Place",
+    "awayCode": "GFN",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 32",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gcw.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gfn.png"
   },
   {
     "id": "760489",
@@ -1182,12 +1722,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Group E Winner",
+    "homeCode": "GEW",
     "awayTeam": "Third Place Group A/B/C/D/F",
+    "awayCode": "TPG",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 32",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gew.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/tpg.png"
   },
   {
     "id": "760488",
@@ -1196,12 +1740,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Group F Winner",
+    "homeCode": "GFW",
     "awayTeam": "Group C 2nd Place",
+    "awayCode": "GCN",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 32",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gfw.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gcn.png"
   },
   {
     "id": "760490",
@@ -1210,12 +1758,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Group E 2nd Place",
+    "homeCode": "GEN",
     "awayTeam": "Group I 2nd Place",
+    "awayCode": "GIN",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 32",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gen.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gin.png"
   },
   {
     "id": "760492",
@@ -1224,12 +1776,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Group I Winner",
+    "homeCode": "GIW",
     "awayTeam": "Third Place Group C/D/F/G/H",
+    "awayCode": "TPG",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 32",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/giw.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/tpg.png"
   },
   {
     "id": "760491",
@@ -1238,12 +1794,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Group A Winner",
+    "homeCode": "GAW",
     "awayTeam": "Third Place Group C/E/F/H/I",
+    "awayCode": "TPG",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 32",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gaw.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/tpg.png"
   },
   {
     "id": "760495",
@@ -1252,12 +1812,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Group L Winner",
+    "homeCode": "GLW",
     "awayTeam": "Third Place Group E/H/I/J/K",
+    "awayCode": "TPG",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 32",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/glw.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/tpg.png"
   },
   {
     "id": "760493",
@@ -1266,12 +1830,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Group G Winner",
+    "homeCode": "GGW",
     "awayTeam": "Third Place Group A/E/H/I/J",
+    "awayCode": "TPG",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 32",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/ggw.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/tpg.png"
   },
   {
     "id": "760494",
@@ -1280,12 +1848,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Group D Winner",
+    "homeCode": "GDW",
     "awayTeam": "Third Place Group B/E/F/I/J",
+    "awayCode": "TPG",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 32",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gdw.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/tpg.png"
   },
   {
     "id": "760497",
@@ -1294,12 +1866,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Group H Winner",
+    "homeCode": "GHW",
     "awayTeam": "Group J 2nd Place",
+    "awayCode": "GJN",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 32",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/ghw.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gjn.png"
   },
   {
     "id": "760496",
@@ -1308,12 +1884,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Group K 2nd Place",
+    "homeCode": "GKN",
     "awayTeam": "Group L 2nd Place",
+    "awayCode": "GLN",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 32",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gkn.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gln.png"
   },
   {
     "id": "760498",
@@ -1322,12 +1902,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Group B Winner",
+    "homeCode": "GBW",
     "awayTeam": "Third Place Group E/F/G/I/J",
+    "awayCode": "TPG",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 32",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gbw.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/tpg.png"
   },
   {
     "id": "760499",
@@ -1336,12 +1920,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Group D 2nd Place",
+    "homeCode": "GDN",
     "awayTeam": "Group G 2nd Place",
+    "awayCode": "GGN",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 32",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gdn.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/ggn.png"
   },
   {
     "id": "760500",
@@ -1350,12 +1938,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Group J Winner",
+    "homeCode": "GJW",
     "awayTeam": "Group H 2nd Place",
+    "awayCode": "GHN",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 32",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gjw.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/ghn.png"
   },
   {
     "id": "760501",
@@ -1364,12 +1956,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Group K Winner",
+    "homeCode": "GKW",
     "awayTeam": "Third Place Group D/E/I/J/L",
+    "awayCode": "TPG",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 32",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/gkw.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/tpg.png"
   },
   {
     "id": "760502",
@@ -1378,12 +1974,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Round of 32 1 Winner",
+    "homeCode": "ROW",
     "awayTeam": "Round of 32 3 Winner",
+    "awayCode": "ROW",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 16",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png"
   },
   {
     "id": "760503",
@@ -1392,12 +1992,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Round of 32 2 Winner",
+    "homeCode": "ROW",
     "awayTeam": "Round of 32 5 Winner",
+    "awayCode": "ROW",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 16",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png"
   },
   {
     "id": "760504",
@@ -1406,12 +2010,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Round of 32 4 Winner",
+    "homeCode": "ROW",
     "awayTeam": "Round of 32 6 Winner",
+    "awayCode": "ROW",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 16",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png"
   },
   {
     "id": "760505",
@@ -1420,12 +2028,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Round of 32 7 Winner",
+    "homeCode": "ROW",
     "awayTeam": "Round of 32 8 Winner",
+    "awayCode": "ROW",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 16",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png"
   },
   {
     "id": "760506",
@@ -1434,12 +2046,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Round of 32 11 Winner",
+    "homeCode": "ROW",
     "awayTeam": "Round of 32 12 Winner",
+    "awayCode": "ROW",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 16",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png"
   },
   {
     "id": "760507",
@@ -1448,12 +2064,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Round of 32 9 Winner",
+    "homeCode": "ROW",
     "awayTeam": "Round of 32 10 Winner",
+    "awayCode": "ROW",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 16",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png"
   },
   {
     "id": "760509",
@@ -1462,12 +2082,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Round of 32 14 Winner",
+    "homeCode": "ROW",
     "awayTeam": "Round of 32 16 Winner",
+    "awayCode": "ROW",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 16",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png"
   },
   {
     "id": "760508",
@@ -1476,12 +2100,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Round of 32 13 Winner",
+    "homeCode": "ROW",
     "awayTeam": "Round of 32 15 Winner",
+    "awayCode": "ROW",
     "homeScore": null,
     "awayScore": null,
     "stage": "Round Of 16",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png"
   },
   {
     "id": "760510",
@@ -1490,12 +2118,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Round of 16 1 Winner",
+    "homeCode": "ROW",
     "awayTeam": "Round of 16 2 Winner",
+    "awayCode": "ROW",
     "homeScore": null,
     "awayScore": null,
     "stage": "Quarterfinals",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png"
   },
   {
     "id": "760511",
@@ -1504,12 +2136,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Round of 16 5 Winner",
+    "homeCode": "ROW",
     "awayTeam": "Round of 16 6 Winner",
+    "awayCode": "ROW",
     "homeScore": null,
     "awayScore": null,
     "stage": "Quarterfinals",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png"
   },
   {
     "id": "760512",
@@ -1518,12 +2154,16 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Round of 16 3 Winner",
+    "homeCode": "ROW",
     "awayTeam": "Round of 16 4 Winner",
+    "awayCode": "ROW",
     "homeScore": null,
     "awayScore": null,
     "stage": "Quarterfinals",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png"
   },
   {
     "id": "760513",
@@ -1532,11 +2172,15 @@
     "espnStatus": "STATUS_SCHEDULED",
     "minute": null,
     "homeTeam": "Round of 16 7 Winner",
+    "homeCode": "ROW",
     "awayTeam": "Round of 16 8 Winner",
+    "awayCode": "ROW",
     "homeScore": null,
     "awayScore": null,
     "stage": "Quarterfinals",
     "group": null,
-    "events": []
+    "events": [],
+    "homeLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png",
+    "awayLogo": "https://a.espncdn.com/i/teamlogos/countries/500/row.png"
   }
 ]

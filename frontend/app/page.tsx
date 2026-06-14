@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getFixtures, getLeaderboards, getLiveFixtures, getOwners, getTodayFixtures, getUnderdog } from "@/lib/api";
+import TeamLogo from "@/components/TeamLogo";
 import type { EnrichedFixture, Leaderboards, OwnerSummary, UnderdogTracker } from "@/lib/types";
 
 async function safe<T>(request: Promise<T>, fallback: T): Promise<T> {
@@ -8,11 +9,6 @@ async function safe<T>(request: Promise<T>, fallback: T): Promise<T> {
   } catch {
     return fallback;
   }
-}
-
-function teamCode(team: string) {
-  const words = team.replace(/[^A-Za-z ]/g, "").split(/\s+/).filter(Boolean);
-  return (words.length === 1 ? words[0].slice(0, 3) : words.map((word) => word[0]).join("").slice(0, 3)).toUpperCase();
 }
 
 function statusLabel(fixture: EnrichedFixture) {
@@ -32,12 +28,8 @@ function scoreLabel(fixture: EnrichedFixture) {
   return `${fixture.homeScore} - ${fixture.awayScore}`;
 }
 
-function TeamMark({ team, size = "md" }: { team: string; size?: "sm" | "md" | "lg" }) {
-  return (
-    <div className={`team-mark ${size}`} aria-label={team}>
-      <span>{teamCode(team)}</span>
-    </div>
-  );
+function TeamMark({ team, code, logo, size = "md" }: { team: string; code?: string; logo?: string | null; size?: "sm" | "md" | "lg" }) {
+  return <TeamLogo team={team} code={code} logo={logo} className={`team-mark ${size}`} />;
 }
 
 function OwnerLine({ owner }: { owner: string }) {
@@ -58,7 +50,7 @@ function FeaturedMatch({ fixture }: { fixture: EnrichedFixture | null }) {
 
       <div className="featured-teams">
         <div className="featured-team">
-          <TeamMark team={fixture.homeTeam} size="lg" />
+          <TeamMark team={fixture.homeTeam} code={fixture.homeTeamCode ?? fixture.homeCode} logo={fixture.homeTeamLogo ?? fixture.homeLogo} size="lg" />
           <div>
             <h3>{fixture.homeTeam}</h3>
             <OwnerLine owner={fixture.homeOwner} />
@@ -71,7 +63,7 @@ function FeaturedMatch({ fixture }: { fixture: EnrichedFixture | null }) {
         </div>
 
         <div className="featured-team">
-          <TeamMark team={fixture.awayTeam} size="lg" />
+          <TeamMark team={fixture.awayTeam} code={fixture.awayTeamCode ?? fixture.awayCode} logo={fixture.awayTeamLogo ?? fixture.awayLogo} size="lg" />
           <div>
             <h3>{fixture.awayTeam}</h3>
             <OwnerLine owner={fixture.awayOwner} />
@@ -91,12 +83,12 @@ function MiniMatch({ fixture }: { fixture: EnrichedFixture }) {
       </div>
       <div className="mini-teams">
         <div>
-          <TeamMark team={fixture.homeTeam} size="sm" />
+          <TeamMark team={fixture.homeTeam} code={fixture.homeTeamCode ?? fixture.homeCode} logo={fixture.homeTeamLogo ?? fixture.homeLogo} size="sm" />
           <OwnerLine owner={fixture.homeOwner} />
         </div>
         <span>{scoreLabel(fixture)}</span>
         <div>
-          <TeamMark team={fixture.awayTeam} size="sm" />
+          <TeamMark team={fixture.awayTeam} code={fixture.awayTeamCode ?? fixture.awayCode} logo={fixture.awayTeamLogo ?? fixture.awayLogo} size="sm" />
           <OwnerLine owner={fixture.awayOwner} />
         </div>
       </div>
@@ -140,10 +132,10 @@ function UnderdogPanel({ tracker }: { tracker: UnderdogTracker }) {
       <div className="panel-title gold">Underdog Prize</div>
       {leader ? (
         <div className="underdog-card">
-          <TeamMark team={leader.team} size="sm" />
+          <TeamMark team={leader.team} code={leader.code} logo={leader.logo} size="sm" />
           <div>
             <strong>{leader.team}</strong>
-            <span>Owner: {leader.owner}</span>
+            <span>{leader.owner}</span>
           </div>
           <em>Pot {leader.pot}</em>
         </div>
@@ -160,23 +152,20 @@ function BattleCard({ fixture, tone }: { fixture: EnrichedFixture; tone: "green"
       <div className="battle-stripe" />
       <div className="battle-body">
         <div className="battle-meta">
-          <span>{fixture.isSelfMatch ? "Same owner" : "Rivalry match"}</span>
+          <span>{fixture.isSelfMatch ? "Friendly Fire" : "Rivalry match"}</span>
           <strong>{fixture.readableKickoff}</strong>
         </div>
         <div className="battle-teams">
           <div>
-            <TeamMark team={fixture.homeTeam} />
+            <TeamMark team={fixture.homeTeam} code={fixture.homeTeamCode ?? fixture.homeCode} logo={fixture.homeTeamLogo ?? fixture.homeLogo} />
             <strong>{fixture.homeOwner}</strong>
           </div>
           <span>VS</span>
           <div>
-            <TeamMark team={fixture.awayTeam} />
+            <TeamMark team={fixture.awayTeam} code={fixture.awayTeamCode ?? fixture.awayCode} logo={fixture.awayTeamLogo ?? fixture.awayLogo} />
             <strong>{fixture.awayOwner}</strong>
           </div>
         </div>
-        <p>
-          {fixture.homeTeam} against {fixture.awayTeam}. Bragging rights are available.
-        </p>
       </div>
     </article>
   );
@@ -246,7 +235,7 @@ export default async function HomePage() {
 
 
       <section className="battle-section">
-        <h2>Next Owner-vs-Owner Battles</h2>
+        <h2>Next Up</h2>
         <div className="battle-grid">
           {battles.length ? (
             battles.map((fixture, index) => (

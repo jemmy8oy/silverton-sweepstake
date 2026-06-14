@@ -1,4 +1,6 @@
 import { getLeaderboards, getUnderdog } from "@/lib/api";
+import OwnerAvatar from "@/components/OwnerAvatar";
+import TeamLogo from "@/components/TeamLogo";
 import type { Leaderboards, OwnerSummary, TeamStats, UnderdogTracker } from "@/lib/types";
 
 async function safe<T>(request: Promise<T>, fallback: T): Promise<T> {
@@ -7,20 +9,6 @@ async function safe<T>(request: Promise<T>, fallback: T): Promise<T> {
   } catch {
     return fallback;
   }
-}
-
-function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-}
-
-function teamCode(team: string) {
-  const words = team.replace(/[^A-Za-z ]/g, "").split(/\s+/).filter(Boolean);
-  return (words.length === 1 ? words[0].slice(0, 3) : words.map((word) => word[0]).join("").slice(0, 3)).toUpperCase();
 }
 
 function ratio(part: number, total: number) {
@@ -50,32 +38,67 @@ const emptyLeaderboards: Leaderboards = {
   teamsStillAliveByOwner: []
 };
 
-function TeamBubble({ team }: { team: string }) {
-  return <span className="leader-team-bubble">{teamCode(team)}</span>;
+function TeamBubble({ team, code, logo }: { team: string; code?: string; logo?: string | null }) {
+  return <TeamLogo team={team} code={code} logo={logo} className="leader-team-bubble" />;
+}
+
+function nextTeam(owner: OwnerSummary) {
+  const fixture = owner.upcomingMatches[0];
+  if (!fixture) {
+    return null;
+  }
+
+  const ownsHome = fixture.homeOwner === owner.owner && fixture.awayOwner !== owner.owner;
+  if (ownsHome) {
+    return {
+      team: fixture.homeTeam,
+      code: fixture.homeTeamCode ?? fixture.homeCode,
+      logo: fixture.homeTeamLogo ?? fixture.homeLogo
+    };
+  }
+
+  if (fixture.awayOwner === owner.owner) {
+    return {
+      team: fixture.awayTeam,
+      code: fixture.awayTeamCode ?? fixture.awayCode,
+      logo: fixture.awayTeamLogo ?? fixture.awayLogo
+    };
+  }
+
+  return {
+    team: fixture.homeTeam,
+    code: fixture.homeTeamCode ?? fixture.homeCode,
+    logo: fixture.homeTeamLogo ?? fixture.homeLogo
+  };
 }
 
 function OverallRow({ owner, rank }: { owner: OwnerSummary; rank: number }) {
-  const aliveTeams = owner.teams.filter((team) => team.alive).slice(0, 4);
+  const next = nextTeam(owner);
+  const played = owner.wins + owner.draws + owner.losses;
+  const goalDifference = owner.goalsFor - owner.goalsAgainst;
 
   return (
     <tr>
-      <td className={rank === 1 ? "leader-rank first" : "leader-rank"}>#{rank}</td>
       <td>
         <div className="leader-owner-cell">
-          <span className={rank === 1 ? "leader-avatar first" : "leader-avatar"}>{initials(owner.owner)}</span>
+          <OwnerAvatar owner={owner.owner} className={rank === 1 ? "leader-avatar first" : "leader-avatar"} />
           <div>
             <strong>{owner.owner}</strong>
-            <span>{owner.teams.map((team) => team.team).slice(0, 3).join(", ")}</span>
           </div>
         </div>
       </td>
-      <td>
-        <div className="leader-alive-bubbles">
-          {aliveTeams.length ? aliveTeams.map((team) => <TeamBubble key={team.team} team={team.team} />) : <span className="muted">None</span>}
-        </div>
-      </td>
-      <td>{owner.wins}W {owner.draws}D {owner.losses}L</td>
+      <td className="leader-stat">{played}</td>
+      <td className="leader-stat">{owner.wins}</td>
+      <td className="leader-stat">{owner.draws}</td>
+      <td className="leader-stat">{owner.losses}</td>
+      <td className="leader-stat">{owner.goalsFor}/{owner.goalsAgainst}</td>
+      <td className="leader-stat">{goalDifference > 0 ? `+${goalDifference}` : goalDifference}</td>
+      <td className="leader-stat">{owner.yellowCards}</td>
+      <td className="leader-stat">{owner.redCards}</td>
       <td className="leader-points">{owner.points}</td>
+      <td className="leader-next">
+        {next ? <TeamBubble team={next.team} code={next.code} logo={next.logo} /> : <span className="muted">-</span>}
+      </td>
     </tr>
   );
 }
@@ -84,10 +107,10 @@ function UnderdogRow({ team }: { team: TeamStats }) {
   return (
     <div className="underdog-row">
       <div>
-        <TeamBubble team={team.team} />
+        <TeamBubble team={team.team} code={team.code} logo={team.logo} />
         <div>
           <strong>{team.team}</strong>
-          <span>Owner: {team.owner}</span>
+          <span>{team.owner}</span>
         </div>
       </div>
       <div>
@@ -194,11 +217,17 @@ export default async function LeaderboardsPage() {
               <table className="leader-table">
                 <thead>
                   <tr>
-                    <th>Rank</th>
                     <th>Owner</th>
-                    <th>Teams Alive</th>
-                    <th>Record</th>
-                    <th>Points</th>
+                    <th>PL</th>
+                    <th>W</th>
+                    <th>D</th>
+                    <th>L</th>
+                    <th>+/-</th>
+                    <th>GD</th>
+                    <th>YC</th>
+                    <th>RC</th>
+                    <th>PTS</th>
+                    <th>Next</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -206,7 +235,7 @@ export default async function LeaderboardsPage() {
                     overall.map((owner, index) => <OverallRow key={owner.owner} owner={owner} rank={index + 1} />)
                   ) : (
                     <tr>
-                      <td colSpan={5}>No leaderboard data yet.</td>
+                      <td colSpan={11}>No leaderboard data yet.</td>
                     </tr>
                   )}
                 </tbody>

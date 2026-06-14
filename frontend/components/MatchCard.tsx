@@ -1,9 +1,10 @@
-import { scoreLabel, statusLabel, teamCode } from "@/lib/format";
+import { scoreLabel, statusLabel } from "@/lib/format";
 import type { EnrichedFixture } from "@/lib/types";
+import TeamLogo from "./TeamLogo";
 
 export default function MatchCard({ fixture }: { fixture: EnrichedFixture }) {
   const matchupLabel = fixture.isSelfMatch
-    ? "Self-match conflict"
+    ? "Friendly Fire"
     : fixture.isOwnerVsOwner
       ? "Owner v owner"
       : "Shared stakes";
@@ -20,7 +21,7 @@ export default function MatchCard({ fixture }: { fixture: EnrichedFixture }) {
 
       <div className="fixture-scoreboard">
         <div className="team-station">
-          <div className="team-mark">{teamCode(fixture.homeTeam)}</div>
+          <TeamLogo team={fixture.homeTeam} code={fixture.homeTeamCode ?? fixture.homeCode} logo={fixture.homeTeamLogo ?? fixture.homeLogo} className="team-mark md" />
           <strong>{fixture.homeTeam}</strong>
           <span>{fixture.homeOwner}{fixture.homePot ? ` · Pot ${fixture.homePot}` : ""}</span>
         </div>
@@ -28,7 +29,7 @@ export default function MatchCard({ fixture }: { fixture: EnrichedFixture }) {
           {fixture.homeScore ?? "-"} <span>-</span> {fixture.awayScore ?? "-"}
         </div>
         <div className="team-station">
-          <div className="team-mark">{teamCode(fixture.awayTeam)}</div>
+          <TeamLogo team={fixture.awayTeam} code={fixture.awayTeamCode ?? fixture.awayCode} logo={fixture.awayTeamLogo ?? fixture.awayLogo} className="team-mark md" />
           <strong>{fixture.awayTeam}</strong>
           <span>{fixture.awayOwner}{fixture.awayPot ? ` · Pot ${fixture.awayPot}` : ""}</span>
         </div>

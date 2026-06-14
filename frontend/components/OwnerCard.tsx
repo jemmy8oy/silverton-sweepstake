@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { aliveRatio, initials, recordLabel } from "@/lib/format";
+import { aliveRatio, recordLabel } from "@/lib/format";
 import type { OwnerSummary } from "@/lib/types";
+import OwnerAvatar from "./OwnerAvatar";
 import TeamBadge from "./TeamBadge";
 
 export default function OwnerCard({ owner }: { owner: OwnerSummary }) {
@@ -9,7 +10,7 @@ export default function OwnerCard({ owner }: { owner: OwnerSummary }) {
   return (
     <article className="owner-card">
       <div className="owner-card-head">
-        <div className="owner-avatar" aria-hidden="true">{initials(owner.owner)}</div>
+        <OwnerAvatar owner={owner.owner} className="owner-avatar" />
         <div>
           <h3>{owner.owner}</h3>
           <div className="owner-meta">
@@ -37,7 +38,7 @@ export default function OwnerCard({ owner }: { owner: OwnerSummary }) {
 
       <div className="team-list compact">
         {owner.teams.slice(0, 8).map((team) => (
-          <TeamBadge key={team.team} team={team.team} pot={team.pot} alive={team.alive} />
+          <TeamBadge key={team.team} team={team.team} code={team.code} logo={team.logo} pot={team.pot} alive={team.alive} />
         ))}
       </div>
 
