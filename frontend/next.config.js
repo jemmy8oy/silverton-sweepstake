@@ -1,7 +1,12 @@
+const BASE_PATH = "/silverton-sweepstake";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
-  basePath: "/silverton-sweepstake",
+  basePath: BASE_PATH,
+  env: {
+    NEXT_PUBLIC_BASE_PATH: BASE_PATH,
+  },
   images: {
     remotePatterns: [
       {

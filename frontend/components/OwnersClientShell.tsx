@@ -6,18 +6,21 @@ import OwnerAvatar from "@/components/OwnerAvatar";
 import OwnerProfilePanel from "@/components/OwnerProfilePanel";
 import type { OwnerSummary } from "@/lib/types";
 
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 function ownerPath(owner: string) {
-  return `/owners/${encodeURIComponent(owner)}`;
+  return `${BASE_PATH}/owners/${encodeURIComponent(owner)}`;
 }
 
 function ownerFromPath(pathname: string, owners: OwnerSummary[]) {
-  const [, base, ...rest] = pathname.split("/");
-  if (base !== "owners" || rest.length === 0) {
+  // Works with both usePathname() (basePath stripped) and window.location.pathname (basePath included).
+  const parts = pathname.split("/").filter(Boolean);
+  const ownersIdx = parts.indexOf("owners");
+  if (ownersIdx === -1 || ownersIdx === parts.length - 1) {
     return owners[0]?.owner ?? "";
   }
-
-  const value = decodeURIComponent(rest.join("/"));
-  return owners.find((owner) => owner.owner === value)?.owner ?? owners[0]?.owner ?? "";
+  const value = decodeURIComponent(parts.slice(ownersIdx + 1).join("/"));
+  return owners.find((o) => o.owner === value)?.owner ?? owners[0]?.owner ?? "";
 }
 
 export default function OwnersClientShell({ owners }: { owners: OwnerSummary[] }) {

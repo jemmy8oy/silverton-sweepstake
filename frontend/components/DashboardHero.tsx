@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { EnrichedFixture, OwnerSummary } from "@/lib/types";
 
 export default function DashboardHero({
@@ -21,8 +22,8 @@ export default function DashboardHero({
           Track the chaos, glory, and punishment shots. May the underdogs rise and the owners tremble.
         </p>
         <div className="hero-actions">
-          <a href="/fixtures" className="button-link">View scores</a>
-          <a href="/leaderboards" className="secondary-link">Standings</a>
+          <Link href="/fixtures" className="button-link">View scores</Link>
+          <Link href="/leaderboards" className="secondary-link">Standings</Link>
         </div>
       </div>
       <div className="hero-stats">

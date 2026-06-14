@@ -1,13 +1,14 @@
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 const OWNER_AVATAR_SRC: Record<string, string> = {
   // Drop files into `frontend/public/owners/` and point each owner at the public path here.
-  // Example:
-  Arnav: "/owners/arnav.png",
-  Scarlett: "/owners/scarlett.jpeg",
-  Riccardo: "/owners/riccy.jpg",
-  James: "/owners/james.jpg",
-  Noor: "/owners/noor.jpg",
-  Ridge: "/owners/ridge.png",
-  Ollie: "/owners/ollie.jpeg"
+  Arnav: `${BASE_PATH}/owners/arnav.png`,
+  Scarlett: `${BASE_PATH}/owners/scarlett.jpeg`,
+  Riccardo: `${BASE_PATH}/owners/riccy.jpg`,
+  James: `${BASE_PATH}/owners/james.jpg`,
+  Noor: `${BASE_PATH}/owners/noor.jpg`,
+  Ridge: `${BASE_PATH}/owners/ridge.png`,
+  Ollie: `${BASE_PATH}/owners/ollie.jpeg`,
 };
 
 export function ownerAvatarSrc(owner: string): string | null {
