@@ -1,0 +1,64 @@
+{
+  "Arnav": [
+    {"team": "England", "pot": 1},
+    {"team": "Belgium", "pot": 1},
+    {"team": "Senegal", "pot": 2},
+    {"team": "Egypt", "pot": 3},
+    {"team": "Algeria", "pot": 3},
+    {"team": "Czech Republic", "pot": 4},
+    {"team": "DR Congo", "pot": 4}
+  ],
+  "James": [
+    {"team": "Canada", "pot": 1},
+    {"team": "Mexico", "pot": 1},
+    {"team": "Austria", "pot": 2},
+    {"team": "Croatia", "pot": 2},
+    {"team": "Panama", "pot": 3},
+    {"team": "Bosnia and Herzegovina", "pot": 4}
+  ],
+  "Noor": [
+    {"team": "Netherlands", "pot": 1},
+    {"team": "Japan", "pot": 2},
+    {"team": "Morocco", "pot": 2},
+    {"team": "South Africa", "pot": 3},
+    {"team": "Norway", "pot": 3},
+    {"team": "Iraq", "pot": 4},
+    {"team": "Ghana", "pot": 4}
+  ],
+  "Ollie": [
+    {"team": "Spain", "pot": 1},
+    {"team": "Argentina", "pot": 1},
+    {"team": "Switzerland", "pot": 2},
+    {"team": "Saudi Arabia", "pot": 3},
+    {"team": "Tunisia", "pot": 3},
+    {"team": "Turkey", "pot": 4},
+    {"team": "Cape Verde", "pot": 4}
+  ],
+  "Riccardo": [
+    {"team": "United States", "pot": 1},
+    {"team": "Australia", "pot": 2},
+    {"team": "South Korea", "pot": 2},
+    {"team": "Ivory Coast", "pot": 3},
+    {"team": "Scotland", "pot": 3},
+    {"team": "New Zealand", "pot": 4},
+    {"team": "Curacao", "pot": 4}
+  ],
+  "Ridge": [
+    {"team": "Germany", "pot": 1},
+    {"team": "Portugal", "pot": 1},
+    {"team": "Uruguay", "pot": 2},
+    {"team": "Ecuador", "pot": 2},
+    {"team": "Uzbekistan", "pot": 3},
+    {"team": "Sweden", "pot": 4},
+    {"team": "Haiti", "pot": 4}
+  ],
+  "Scarlett": [
+    {"team": "Brazil", "pot": 1},
+    {"team": "France", "pot": 1},
+    {"team": "Iran", "pot": 2},
+    {"team": "Colombia", "pot": 2},
+    {"team": "Paraguay", "pot": 3},
+    {"team": "Qatar", "pot": 3},
+    {"team": "Jordan", "pot": 4}
+  ]
+}
