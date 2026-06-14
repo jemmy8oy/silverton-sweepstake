@@ -61,7 +61,6 @@ jobs:
           sbom: false
           build-args: |
             NEXT_PUBLIC_API_BASE_URL=http://silverton-sweepstake-backend
-            NEXT_BASE_PATH=/silverton-sweepstake
           tags: |
             ${{ vars.OCIR_REGISTRY }}/${{ vars.OCIR_NAMESPACE }}/${{ env.FRONTEND_IMAGE }}:latest
             ${{ vars.OCIR_REGISTRY }}/${{ vars.OCIR_NAMESPACE }}/${{ env.FRONTEND_IMAGE }}:${{ steps.gitversion.outputs.semVer }}
