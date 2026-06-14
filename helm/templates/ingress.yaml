@@ -1,0 +1,42 @@
+{{- if .Values.ingress.enabled }}
+{{- $root := . }}
+{{- range .Values.apps }}
+{{- $app := . }}
+{{- if .ingress }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "silverton-sweepstake.fullname" $root }}-{{ .name }}
+  labels:
+    {{- include "silverton-sweepstake.labels" $root | nindent 4 }}
+  annotations:
+    {{- with $root.Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- if .ingress.rewriteTarget }}
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: {{ .ingress.rewriteTarget | quote }}
+    {{- end }}
+spec:
+  ingressClassName: {{ $root.Values.ingress.className | default "nginx" }}
+  {{- with $root.Values.ingress.tls }}
+  tls:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  rules:
+    {{- range $root.Values.ingress.hosts }}
+    - host: {{ .host }}
+      http:
+        paths:
+          - path: {{ $app.ingress.path }}
+            pathType: {{ $app.ingress.pathType | default "Prefix" }}
+            backend:
+              service:
+                name: {{ include "silverton-sweepstake.fullname" $root }}-{{ $app.name }}
+                port:
+                  number: {{ $app.service.port }}
+    {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

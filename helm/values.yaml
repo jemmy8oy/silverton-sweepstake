@@ -1,0 +1,64 @@
+# Controls deployment names: "{fullnameOverride}-frontend" and "{fullnameOverride}-backend"
+fullnameOverride: "silverton-sweepstake"
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: balenthiran.co.uk
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  tls:
+    - hosts:
+        - balenthiran.co.uk
+      secretName: balenthiran-tls
+
+registryPrefix: "lhr.ocir.io/lr7uc6l49odc"
+
+# Image pull secret for the private OCIR registry.
+# Create the secret before deploying:
+#   kubectl create secret docker-registry ocir-secret \
+#     --docker-server=lhr.ocir.io \
+#     --docker-username=<tenancy-namespace>/<oci-username> \
+#     --docker-password=<auth-token>
+imagePullSecrets:
+  - name: ocir-secret
+
+apps:
+  - name: backend
+    image:
+      repository: lhr.ocir.io/lr7uc6l49odc/silverton-sweepstake-backend
+      tag: latest
+      pullPolicy: Always
+    containerPort: 8000
+    replicas: 1
+    service:
+      port: 80
+      targetPort: 8000
+    # Regex path with rewrite so /silverton-sweepstake/api/draw → /api/draw at the Flask layer.
+    ingress:
+      path: /silverton-sweepstake/api(/|$)(.*)
+      pathType: ImplementationSpecific
+      rewriteTarget: /api/$2
+    resources: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+
+  - name: frontend
+    image:
+      repository: lhr.ocir.io/lr7uc6l49odc/silverton-sweepstake-frontend
+      tag: latest
+      pullPolicy: Always
+    containerPort: 3000
+    replicas: 1
+    service:
+      port: 80
+      targetPort: 3000
+    ingress:
+      path: /silverton-sweepstake
+      pathType: Prefix
+    resources: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
