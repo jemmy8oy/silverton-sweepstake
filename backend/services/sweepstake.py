@@ -10,6 +10,10 @@ STAGE_RANKS = {
     "Round of 16": 3,
     "Quarter-final": 4,
     "Semi-final": 5,
+    # Third-place playoff is contested by the semi-final losers, so it ranks
+    # alongside the semis. It must be present (and >= a knockout rank) or its
+    # loser is never marked eliminated. Keep in sync with football_api stage map.
+    "Third place": 5,
     "Final": 6
 }
 
@@ -116,12 +120,47 @@ def compute_team_stats(draw: dict[str, list[dict[str, Any]]], fixtures: list[dic
             home["points"] += 1
             away["points"] += 1
 
+    eliminated = _eliminated_teams(fixtures)
     for team_stats in stats.values():
         team_stats["goalDifference"] = team_stats["goalsFor"] - team_stats["goalsAgainst"]
-        # Placeholder until real tournament standings are integrated.
-        team_stats["alive"] = team_stats["losses"] < 2
+        team_stats["alive"] = team_stats["team"] not in eliminated
 
     return stats
+
+
+def _eliminated_teams(fixtures: list[dict[str, Any]]) -> set[str]:
+    # A team is only definitively out when it loses a knockout tie. Group-stage
+    # results don't eliminate on their own (advancement needs full standings),
+    # so we never falsely knock a team out during the groups — a strict
+    # improvement over the old "two losses = out" placeholder.
+    eliminated: set[str] = set()
+    for fixture in fixtures:
+        if fixture.get("status") != "finished":
+            continue
+        if STAGE_RANKS.get(fixture.get("stage", "Group stage"), 1) < STAGE_RANKS["Round of 32"]:
+            continue
+        loser = _knockout_loser(fixture)
+        if loser:
+            eliminated.add(loser)
+    return eliminated
+
+
+def _knockout_loser(fixture: dict[str, Any]) -> str | None:
+    home, away = fixture.get("homeTeam"), fixture.get("awayTeam")
+    home_winner, away_winner = fixture.get("homeWinner"), fixture.get("awayWinner")
+
+    # Prefer ESPN's authoritative winner flag (it resolves penalty shootouts).
+    if home_winner is True and away_winner is False:
+        return away
+    if away_winner is True and home_winner is False:
+        return home
+
+    # Fall back to the regulation score only when it's decisive. A drawn score
+    # with no winner flag means we can't tell who advanced, so keep both alive.
+    home_score, away_score = fixture.get("homeScore"), fixture.get("awayScore")
+    if home_score is not None and away_score is not None and home_score != away_score:
+        return away if home_score > away_score else home
+    return None
 
 
 def build_owner_summaries(draw: dict[str, list[dict[str, Any]]], fixtures: list[dict[str, Any]], enriched: list[dict[str, Any]]) -> list[dict[str, Any]]:

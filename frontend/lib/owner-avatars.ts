@@ -1,7 +1,10 @@
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 const OWNER_AVATAR_SRC: Record<string, string> = {
-  // Drop files into `frontend/public/owners/` and point each owner at the public path here.
+  // Public-dir paths, including basePath: next/image's optimizer resolves the
+  // `url` param against the served origin, and the static files live under
+  // basePath. (next/image does NOT prepend basePath to the optimizer url here,
+  // so it must be included or the optimizer 400s.)
   Arnav: `${BASE_PATH}/owners/arnav.png`,
   Scarlett: `${BASE_PATH}/owners/scarlett.jpeg`,
   Riccardo: `${BASE_PATH}/owners/riccy.jpg`,
