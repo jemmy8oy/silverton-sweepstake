@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { BottomNavLinks, SideNavLinks } from "@/components/SiteNav";
+import LiveRefresher from "@/components/LiveRefresher";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
       <body>
+        <LiveRefresher />
         <aside className="side-nav" aria-label="Primary navigation">
           <div className="side-brand">
             <Link href="/" className="brand-mark" aria-label="Silverton Sweepstake home">
