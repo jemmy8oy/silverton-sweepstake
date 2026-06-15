@@ -91,6 +91,10 @@ def extract_fixtures(scoreboard: dict[str, Any]) -> list[dict[str, Any]]:
         status = _normalise_status(status_name)
         home_score = _score_or_none(home) if status != "scheduled" else None
         away_score = _score_or_none(away) if status != "scheduled" else None
+        # ESPN sets `winner` on finished games and resolves penalty shootouts, so
+        # it is more reliable than comparing regulation scores for knockouts.
+        home_winner = bool(home.get("winner")) if status == "finished" else None
+        away_winner = bool(away.get("winner")) if status == "finished" else None
 
         home_team = hydrate_team_ref(name=home["team"].get("displayName"), code=home["team"].get("abbreviation"))
         away_team = hydrate_team_ref(name=away["team"].get("displayName"), code=away["team"].get("abbreviation"))
@@ -107,6 +111,8 @@ def extract_fixtures(scoreboard: dict[str, Any]) -> list[dict[str, Any]]:
             "awayCode": away_team["code"],
             "homeScore": home_score,
             "awayScore": away_score,
+            "homeWinner": home_winner,
+            "awayWinner": away_winner,
             "stage": _normalise_stage(event),
             "group": None,
             "events": []
@@ -123,11 +129,6 @@ def get_fixtures() -> list[dict[str, Any]]:
 
 def get_live_fixtures() -> list[dict[str, Any]]:
     return [fixture for fixture in get_fixtures() if fixture["status"] == "live"]
-
-
-def get_standings() -> dict[str, Any]:
-    # TODO: ESPN's public site API is enough for fixtures, but standings may need another endpoint/provider.
-    return {"source": "espn", "groups": []}
 
 
 def refresh_all() -> dict[str, Any]:
@@ -226,11 +227,30 @@ def _score_or_none(competitor: dict[str, Any]) -> int | None:
         return None
 
 
+# ESPN season slugs vary in hyphenation ("quarter-finals" vs "quarterfinals"),
+# so we match on an alphanumeric-only key. The canonical values MUST match the
+# keys in sweepstake.STAGE_RANKS or elimination/underdog ranking silently breaks
+# (a plain .title() yields "Round Of 16", which would not match "Round of 16").
+_STAGE_BY_SLUG = {
+    "groupstage": "Group stage",
+    "roundof32": "Round of 32",
+    "roundof16": "Round of 16",
+    "quarterfinals": "Quarter-final",
+    "quarterfinal": "Quarter-final",
+    "semifinals": "Semi-final",
+    "semifinal": "Semi-final",
+    "final": "Final",
+    "thirdplace": "Third place",
+    "3rdplace": "Third place",
+}
+
+
 def _normalise_stage(event: dict[str, Any]) -> str:
     slug = event.get("season", {}).get("slug")
-    if slug == "group-stage":
-        return "Group stage"
     if slug:
+        key = re.sub(r"[^a-z0-9]", "", slug.lower())
+        if key in _STAGE_BY_SLUG:
+            return _STAGE_BY_SLUG[key]
         return slug.replace("-", " ").title()
     return (event.get("league") or {}).get("name") or "World Cup"
 
