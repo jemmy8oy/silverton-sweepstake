@@ -1,5 +1,6 @@
 import OwnerAvatar from "@/components/OwnerAvatar";
 import TeamLogo from "@/components/TeamLogo";
+import CollapsibleSection from "@/components/CollapsibleSection";
 import type { EnrichedFixture, OwnerSummary, OwnerTeam, TeamStats } from "@/lib/types";
 
 function winRate(owner: OwnerSummary) {
@@ -120,53 +121,45 @@ export default function OwnerProfilePanel({ owner, rank }: { owner: OwnerSummary
 
       <div className="owner-card-grid">
         <section className="owner-main-panel">
-          <div className="owner-section-heading">
-            <span className="material-symbols-outlined" aria-hidden="true">
-              groups
-            </span>
-            <h3>Their Teams</h3>
-          </div>
-          <div className="owner-teams-grid">
-            {owner.teams.map((team) => (
-              <TeamTile key={team.team} team={team} />
-            ))}
-          </div>
-
-          <details className="journey-panel">
-            <summary className="owner-section-heading journey-heading journey-summary">
-              <span className="journey-summary-main">
-                <span className="material-symbols-outlined" aria-hidden="true">
-                  stadium
-                </span>
-                <h3>Tournament Journey</h3>
-              </span>
-              <span className="journey-summary-meta">
-                <span>{journey.length} matches</span>
-                <span className="material-symbols-outlined journey-chevron" aria-hidden="true">
-                  expand_more
-                </span>
-              </span>
-            </summary>
-            <div className="journey-panel-body">
-              <div className="journey-list">
-                {journey.length ? (
-                  journey.map((fixture) => <JourneyRow key={`${owner.owner}-${fixture.id}`} fixture={fixture} owner={owner.owner} />)
-                ) : (
-                  <div className="journey-empty">No matches attached to this owner yet.</div>
-                )}
-              </div>
+          <CollapsibleSection
+            title="Their Teams"
+            icon="groups"
+            collapseOnMobile
+            meta={<span>{owner.teamsStillAlive}/{owner.teamCount} alive</span>}
+          >
+            <div className="owner-teams-grid">
+              {owner.teams.map((team) => (
+                <TeamTile key={team.team} team={team} />
+              ))}
             </div>
-          </details>
+          </CollapsibleSection>
+
+          <CollapsibleSection
+            title="Tournament Journey"
+            icon="stadium"
+            collapseOnMobile
+            defaultOpen={false}
+            meta={<span>{journey.length} matches</span>}
+          >
+            <div className="journey-list">
+              {journey.length ? (
+                journey.map((fixture) => <JourneyRow key={`${owner.owner}-${fixture.id}`} fixture={fixture} owner={owner.owner} />)
+              ) : (
+                <div className="journey-empty">No matches attached to this owner yet.</div>
+              )}
+            </div>
+          </CollapsibleSection>
         </section>
 
         <aside className="owner-side-panel">
-          <section className="head-to-head-card">
-            <div className="owner-section-heading compact">
-              <span className="material-symbols-outlined" aria-hidden="true">
-                swords
-              </span>
-              <h3>Head-to-Heads</h3>
-            </div>
+          <CollapsibleSection
+            title="Head-to-Heads"
+            icon="swords"
+            collapseOnMobile
+            className="head-to-head-card"
+            headingClassName="compact"
+            meta={<span>{headToHeads.length}</span>}
+          >
             <div className="h2h-list">
               {headToHeads.length ? (
                 headToHeads.map((fixture) => {
@@ -182,7 +175,7 @@ export default function OwnerProfilePanel({ owner, rank }: { owner: OwnerSummary
                 <p>No rival clashes yet.</p>
               )}
             </div>
-          </section>
+          </CollapsibleSection>
 
           <section className="owner-best-worst">
             <MiniStatTeam label="MVP Team" team={owner.bestTeam} tone="good" />
