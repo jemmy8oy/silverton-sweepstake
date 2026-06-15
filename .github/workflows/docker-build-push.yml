@@ -19,6 +19,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Required for GitVersion to read full git history
+          token: ${{ secrets.GITHUB_TOKEN }} # Built-in token used to push the tag update back
 
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v1
@@ -39,6 +40,7 @@ jobs:
           username: ${{ secrets.OCIR_USERNAME }}
           password: ${{ secrets.OCIR_AUTH_TOKEN }}
 
+      # --- 1. Build & Push Backend ---
       - name: Build and push Backend
         uses: docker/build-push-action@v5
         with:
@@ -52,6 +54,7 @@ jobs:
           cache-from: type=gha,scope=backend
           cache-to: type=gha,mode=max,scope=backend
 
+      # --- 2. Build & Push Frontend ---
       - name: Build and push Frontend
         uses: docker/build-push-action@v5
         with:
@@ -67,3 +70,32 @@ jobs:
           cache-from: type=gha,scope=frontend
           cache-to: type=gha,mode=max,scope=frontend
 
+      # --- 3. THE GITOPS AUTO-UPDATE LOOP ---
+      - name: Install yq (YAML Processor)
+        uses: mikefarah/yq@v4.44.1
+
+      - name: Update Helm Chart Values File
+        run: |
+          NEW_VERSION="${{ steps.gitversion.outputs.semVer }}"
+          VALUES_FILE="helm/values.yaml"
+          
+          echo "Patching array image tags in $VALUES_FILE to version: $NEW_VERSION"
+          
+          # Use yq to parse and update the tag properties inside your nested app objects cleanly
+          yq -i '(.apps[] | select(.name == "backend") | .image.tag) = "'"$NEW_VERSION"'"' $VALUES_FILE
+          yq -i '(.apps[] | select(.name == "frontend") | .image.tag) = "'"$NEW_VERSION"'"' $VALUES_FILE
+
+      - name: Commit and Push Image Tag Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add helm/values.yaml
+          
+          # Only commit if a new version was actually written to prevent recursive/ghost pipeline runs
+          if git diff --staged --quiet; then
+            echo "No manifest changes required. Version is already up to date."
+          else
+            git commit -m "chore(gitops): release version ${{ steps.gitversion.outputs.semVer }} [skip ci]"
+            git push origin main
+          fi
