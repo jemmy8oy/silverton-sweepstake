@@ -1,11 +1,16 @@
 import json
+import os
 import re
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date
 from pathlib import Path
 from typing import Any
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
+from .cache import atomic_write_text
 from .data_loader import hydrate_fixture_teams, hydrate_team_ref, load_fixtures
 
 BASE = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world"
@@ -13,6 +18,29 @@ TIMEOUT_SECONDS = 10
 TOURNAMENT_START = date(2026, 6, 11)
 TOURNAMENT_END = date(2026, 7, 19)
 FIXTURES_PATH = Path(__file__).resolve().parents[1] / "data" / "fixtures.json"
+
+# Bounded concurrency for the per-fixture summary calls. ESPN's public API is
+# unauthenticated and rate-limited, so keep the fan-out small and polite.
+SUMMARY_WORKERS = int(os.environ.get("ESPN_SUMMARY_WORKERS", "6"))
+
+
+def _build_session() -> requests.Session:
+    session = requests.Session()
+    retry = Retry(
+        total=3,
+        backoff_factor=0.5,
+        status_forcelist=(429, 500, 502, 503, 504),
+        allowed_methods=("GET",),
+        raise_on_status=False,
+    )
+    adapter = HTTPAdapter(max_retries=retry, pool_connections=SUMMARY_WORKERS, pool_maxsize=SUMMARY_WORKERS)
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+    return session
+
+
+# Reused across calls so connection pooling and retry policy apply everywhere.
+_SESSION = _build_session()
 
 
 def get_scoreboard(date_yyyymmdd: str | None = None) -> dict[str, Any]:
@@ -22,7 +50,7 @@ def get_scoreboard(date_yyyymmdd: str | None = None) -> dict[str, Any]:
     if date_yyyymmdd:
         params["dates"] = date_yyyymmdd
 
-    response = requests.get(url, params=params, timeout=TIMEOUT_SECONDS)
+    response = _SESSION.get(url, params=params, timeout=TIMEOUT_SECONDS)
     response.raise_for_status()
     return response.json()
 
@@ -38,7 +66,7 @@ def get_today_scoreboard() -> dict[str, Any]:
 
 def get_match_summary(event_id: str) -> dict[str, Any]:
     url = f"{BASE}/summary"
-    response = requests.get(url, params={"event": event_id}, timeout=TIMEOUT_SECONDS)
+    response = _SESSION.get(url, params={"event": event_id}, timeout=TIMEOUT_SECONDS)
     response.raise_for_status()
     return response.json()
 
@@ -104,24 +132,41 @@ def get_standings() -> dict[str, Any]:
 
 def refresh_all() -> dict[str, Any]:
     fixtures = hydrate_fixtures()
-    FIXTURES_PATH.write_text(json.dumps(fixtures, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    # Atomic replace: the background poller writes this file while request
+    # threads read it via load_fixtures(), so a plain write would expose
+    # half-written JSON and cause intermittent 500s during each poll cycle.
+    atomic_write_text(FIXTURES_PATH, json.dumps(fixtures, indent=2, ensure_ascii=False) + "\n")
     return {"source": "espn", "fixtures": len(fixtures), "message": "Persisted ESPN tournament fixtures."}
 
 
 def hydrate_fixtures(start: date = TOURNAMENT_START, end: date = TOURNAMENT_END) -> list[dict[str, Any]]:
     fixtures = extract_fixtures(get_scoreboard_range(start, end))
 
+    # Match summaries (goals, cards) are only relevant once a game is under way.
+    # Fetch them concurrently with a bounded pool so a full tournament refresh is
+    # a handful of seconds rather than one blocking request per fixture.
+    pending = [fixture for fixture in fixtures if fixture["status"] in ("finished", "live")]
     for fixture in fixtures:
-        if fixture["status"] not in ("finished", "live"):
-            continue
-        try:
-            summary = get_match_summary(fixture["id"])
-            fixture["events"] = extract_match_events(summary)
-        except requests.RequestException:
-            fixture["events"] = []
+        fixture["events"] = []
+
+    if pending:
+        with ThreadPoolExecutor(max_workers=SUMMARY_WORKERS) as executor:
+            futures = {executor.submit(_safe_match_events, fixture["id"]): fixture for fixture in pending}
+            for future in as_completed(futures):
+                futures[future]["events"] = future.result()
 
     hydrated = [hydrate_fixture_teams(fixture) for fixture in fixtures]
     return sorted(hydrated, key=lambda item: item["kickoff"])
+
+
+def _safe_match_events(event_id: str) -> list[dict[str, Any]]:
+    # Degrade a single fixture's events to empty on any failure (network OR a
+    # malformed/parse error in the summary payload) so one bad event can't abort
+    # the whole tournament refresh.
+    try:
+        return extract_match_events(get_match_summary(event_id))
+    except (requests.RequestException, ValueError, KeyError, TypeError):
+        return []
 
 
 def extract_match_events(summary: dict[str, Any]) -> list[dict[str, Any]]:

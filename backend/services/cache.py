@@ -1,4 +1,6 @@
 import json
+import os
+import tempfile
 import time
 from pathlib import Path
 from typing import Any, Callable
@@ -31,7 +33,20 @@ def get_cached(key: str) -> Any | None:
 def set_cached(key: str, data: Any, ttl_seconds: int) -> None:
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     payload = {"expires_at": time.time() + ttl_seconds, "data": data}
-    _cache_path(key).write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    atomic_write_text(_cache_path(key), json.dumps(payload, indent=2))
+
+
+def atomic_write_text(path: Path, contents: str) -> None:
+    # Write to a temp file in the same directory, then atomically replace the
+    # target so concurrent readers never observe a half-written JSON document.
+    fd, tmp_name = tempfile.mkstemp(dir=str(path.parent), prefix=f".{path.name}.", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            handle.write(contents)
+        os.replace(tmp_name, path)
+    except BaseException:
+        Path(tmp_name).unlink(missing_ok=True)
+        raise
 
 
 def cached_or_fetch(key: str, ttl_seconds: int, fetch_fn: Callable[[], Any]) -> Any:
