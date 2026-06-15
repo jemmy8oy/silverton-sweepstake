@@ -7,5 +7,6 @@ venv/
 node_modules/
 .next/
 out/
+*.tsbuildinfo
 backend/cache/*.json
 !backend/cache/.gitkeep

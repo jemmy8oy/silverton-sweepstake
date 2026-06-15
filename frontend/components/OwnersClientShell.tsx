@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { usePathname } from "next/navigation";
 import OwnerAvatar from "@/components/OwnerAvatar";
 import OwnerProfilePanel from "@/components/OwnerProfilePanel";
@@ -27,22 +27,23 @@ export default function OwnersClientShell({ owners }: { owners: OwnerSummary[] }
   const pathname = usePathname();
   const [activeOwner, setActiveOwner] = useState(() => ownerFromPath(pathname, owners));
 
-  useEffect(() => {
-    const nextOwner = ownerFromPath(pathname, owners);
-    setActiveOwner(nextOwner);
-  }, [pathname, owners]);
-
+  // Sync the selection from the URL only on real route changes. We deliberately
+  // do NOT depend on `owners`: LiveRefresher re-fetches the owners list every
+  // 30s, and reacting to that new array reference would snap the user's
+  // selection back to the top owner. Selection is held by owner name and
+  // re-resolved on every render, so it survives list refreshes regardless.
   useEffect(() => {
     if (!owners.length) {
       return;
     }
-
     if (pathname === "/owners") {
-      const target = ownerPath(owners[0].owner);
-      window.history.replaceState(null, "", target);
+      window.history.replaceState(null, "", ownerPath(owners[0].owner));
       setActiveOwner(owners[0].owner);
+    } else {
+      setActiveOwner(ownerFromPath(pathname, owners));
     }
-  }, [pathname, owners]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   useEffect(() => {
     const onPopState = () => {
@@ -54,15 +55,42 @@ export default function OwnersClientShell({ owners }: { owners: OwnerSummary[] }
   }, [owners]);
 
   const activeIndex = owners.findIndex((owner) => owner.owner === activeOwner);
-  const selectedOwner = owners[Math.max(activeIndex, 0)] ?? null;
+  const selectedIndex = Math.max(activeIndex, 0);
+  const selectedOwner = owners[selectedIndex] ?? null;
 
   if (!selectedOwner) {
     return null;
   }
 
+  function selectOwner(owner: string) {
+    setActiveOwner(owner);
+    window.history.pushState(null, "", ownerPath(owner));
+  }
+
+  function onTabKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
+    let next: number | null = null;
+    if (event.key === "ArrowRight") {
+      next = (selectedIndex + 1) % owners.length;
+    } else if (event.key === "ArrowLeft") {
+      next = (selectedIndex - 1 + owners.length) % owners.length;
+    } else if (event.key === "Home") {
+      next = 0;
+    } else if (event.key === "End") {
+      next = owners.length - 1;
+    }
+    if (next === null) {
+      return;
+    }
+    event.preventDefault();
+    selectOwner(owners[next].owner);
+    // APG: arrow/Home/End must move focus to the newly selected tab. This also
+    // scrolls the pill into view within the horizontal strip on mobile.
+    document.getElementById(`owner-tab-${next}`)?.focus();
+  }
+
   return (
     <div className="owners-tabbed-view">
-      <div className="owners-tabs" role="tablist" aria-label="Owner tabs">
+      <div className="owners-tabs" role="tablist" aria-label="Select an owner" onKeyDown={onTabKeyDown}>
         {owners.map((owner, index) => {
           const isActive = owner.owner === selectedOwner.owner;
 
@@ -71,27 +99,30 @@ export default function OwnersClientShell({ owners }: { owners: OwnerSummary[] }
               key={owner.owner}
               type="button"
               role="tab"
+              id={`owner-tab-${index}`}
               aria-selected={isActive}
+              aria-controls="owner-tab-panel"
+              tabIndex={isActive ? 0 : -1}
               className={isActive ? "owner-tab active" : "owner-tab"}
-              onClick={() => {
-                setActiveOwner(owner.owner);
-                window.history.pushState(null, "", ownerPath(owner.owner));
-              }}
+              onClick={() => selectOwner(owner.owner)}
             >
               <OwnerAvatar owner={owner.owner} className="owner-tab-avatar" />
               <span className="owner-tab-copy">
                 <strong>{owner.owner}</strong>
-                <span>
-                  #{index + 1} • {owner.points} pts • {owner.teamsStillAlive}/{owner.teamCount} alive
-                </span>
+                <span className="owner-tab-rank">#{index + 1}</span>
               </span>
             </button>
           );
         })}
       </div>
 
-      <div className="owner-tab-panel">
-        <OwnerProfilePanel owner={selectedOwner} rank={Math.max(activeIndex, 0) + 1} />
+      <div
+        className="owner-tab-panel"
+        id="owner-tab-panel"
+        role="tabpanel"
+        aria-labelledby={`owner-tab-${selectedIndex}`}
+      >
+        <OwnerProfilePanel owner={selectedOwner} rank={selectedIndex + 1} />
       </div>
     </div>
   );

@@ -1,10 +1,16 @@
-from flask import Flask, jsonify
+import hmac
+import logging
+import os
+
+from flask import Flask, jsonify, request
 from flask_cors import CORS
+from requests import RequestException
 
 from services.cache import clear_cache, get_cached, set_cached
-from services.data_loader import build_team_lookup, hydrate_draw, hydrate_fixture_teams, load_draw
+from services.data_loader import build_team_lookup, load_draw
 from services.football_api import get_fixtures as provider_get_fixtures
 from services.football_api import refresh_all
+from services.scheduler import start_scheduler
 from services.sweepstake import (
     build_leaderboards,
     build_owner_summaries,
@@ -16,27 +22,32 @@ from services.sweepstake import (
     today_fixtures,
 )
 
+BASE_PAYLOAD_TTL_SECONDS = int(os.environ.get("BASE_PAYLOAD_TTL_SECONDS", "30"))
+ADMIN_TOKEN = os.environ.get("ADMIN_TOKEN")
+
 app = Flask(__name__)
 CORS(app)
 
 
-def _base_payload():
-    cached = get_cached("base_payload")
-    if cached:
-        draw = hydrate_draw(cached.get("draw", {}))
-        fixtures = [hydrate_fixture_teams(fixture) for fixture in cached.get("fixtures", [])]
-        team_lookup = build_team_lookup(draw)
-        enriched = enrich_fixtures(fixtures, team_lookup)
-        payload = {"draw": draw, "fixtures": fixtures, "enriched": enriched}
-        set_cached("base_payload", payload, ttl_seconds=60)
-        return payload
-
+def _build_base_payload():
     draw = load_draw()
     fixtures = provider_get_fixtures()
     team_lookup = build_team_lookup(draw)
     enriched = enrich_fixtures(fixtures, team_lookup)
-    payload = {"draw": draw, "fixtures": fixtures, "enriched": enriched}
-    set_cached("base_payload", payload, ttl_seconds=60)
+    return {"draw": draw, "fixtures": fixtures, "enriched": enriched}
+
+
+def _base_payload():
+    # The cached payload is already fully hydrated/enriched, so a cache hit
+    # returns it directly. Crucially we do NOT re-set the cache on a hit — doing
+    # so previously extended the TTL on every request, so under steady traffic
+    # the cache never expired and freshly polled fixtures never surfaced.
+    cached = get_cached("base_payload")
+    if cached is not None:
+        return cached
+
+    payload = _build_base_payload()
+    set_cached("base_payload", payload, ttl_seconds=BASE_PAYLOAD_TTL_SECONDS)
     return payload
 
 
@@ -47,6 +58,11 @@ def _json_error(message: str, status: int = 500):
 @app.errorhandler(RuntimeError)
 def handle_runtime_error(error):
     return _json_error(str(error), 500)
+
+
+@app.errorhandler(RequestException)
+def handle_upstream_error(error):
+    return _json_error(f"Upstream data provider unavailable: {error}", 502)
 
 
 @app.get("/api/health")
@@ -107,11 +123,38 @@ def next_matchups():
     return jsonify(next_owner_vs_owner(_base_payload()["enriched"]))
 
 
+def _admin_authorised() -> bool:
+    # When ADMIN_TOKEN is configured, require a matching bearer/header token.
+    # When it is not configured, only allow the call in debug (local dev) so a
+    # deployed instance can't be hammered with unauthenticated refreshes.
+    if not ADMIN_TOKEN:
+        return app.debug
+    provided = request.headers.get("X-Admin-Token") or ""
+    auth = request.headers.get("Authorization", "")
+    if auth.startswith("Bearer "):
+        provided = provided or auth[len("Bearer "):]
+    return bool(provided) and hmac.compare_digest(provided, ADMIN_TOKEN)
+
+
 @app.post("/api/admin/refresh")
 def admin_refresh():
+    if not _admin_authorised():
+        return _json_error("Unauthorised: admin token required", 401)
     clear_cache()
     result = refresh_all()
     return jsonify({"ok": True, "refresh": result})
+
+
+# Start the background ESPN poller as a side effect of import so it runs under
+# gunicorn (which imports app:app per worker) as well as `flask run`.
+# Note: do not run gunicorn with --preload, or the poller thread would be
+# started in the master and not survive fork() into the workers.
+if not ADMIN_TOKEN and not app.debug:
+    logging.getLogger(__name__).warning(
+        "ADMIN_TOKEN is not set; /api/admin/refresh is disabled (returns 401). "
+        "Set ADMIN_TOKEN to enable manual refresh in production."
+    )
+start_scheduler()
 
 
 if __name__ == "__main__":
