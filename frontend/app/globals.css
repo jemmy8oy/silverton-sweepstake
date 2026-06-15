@@ -1297,6 +1297,7 @@ h3 {
 .owner-avatar-large,
 .leader-avatar {
   overflow: hidden;
+  position: relative;
 }
 
 .owner-avatar-image {
@@ -1467,6 +1468,7 @@ h3 {
   height: 36px;
   overflow: hidden;
   place-items: center;
+  position: relative;
   width: 36px;
 }
 

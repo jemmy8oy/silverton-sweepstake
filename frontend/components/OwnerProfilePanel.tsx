@@ -1,3 +1,4 @@
+import Image from "next/image";
 import OwnerAvatar from "@/components/OwnerAvatar";
 import TeamLogo from "@/components/TeamLogo";
 import CollapsibleSection from "@/components/CollapsibleSection";
@@ -43,7 +44,7 @@ function TeamTile({ team }: { team: OwnerTeam }) {
       <div className="owner-team-code">
         <div className="owner-team-logo" aria-label={team.team}>
           {team.logo ? (
-            <img src={team.logo} alt={`${team.team} logo`} className="owner-team-logo-image" loading="lazy" />
+            <Image src={team.logo} alt={`${team.team} logo`} width={54} height={54} className="owner-team-logo-image" />
           ) : (
             <TeamLogo team={team.team} code={team.code} logo={team.logo} className="owner-team-logo-fallback" />
           )}
