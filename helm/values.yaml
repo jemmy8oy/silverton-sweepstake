@@ -1,6 +1,5 @@
 # Controls deployment names: "{fullnameOverride}-frontend" and "{fullnameOverride}-backend"
 fullnameOverride: "silverton-sweepstake"
-
 ingress:
   enabled: true
   className: nginx
@@ -12,9 +11,7 @@ ingress:
     - hosts:
         - balenthiran.co.uk
       secretName: balenthiran-tls
-
 registryPrefix: "lhr.ocir.io/lr7uc6l49odc"
-
 # Image pull secret for the private OCIR registry.
 # Create the secret before deploying:
 #   kubectl create secret docker-registry ocir-secret \
@@ -23,12 +20,11 @@ registryPrefix: "lhr.ocir.io/lr7uc6l49odc"
 #     --docker-password=<auth-token>
 imagePullSecrets:
   - name: ocir-secret
-
 apps:
   - name: backend
     image:
       repository: lhr.ocir.io/lr7uc6l49odc/silverton-sweepstake-backend
-      tag: latest
+      tag: 0.1.11
       pullPolicy: Always
     containerPort: 8000
     replicas: 1
@@ -44,11 +40,10 @@ apps:
     nodeSelector: {}
     tolerations: []
     affinity: {}
-
   - name: frontend
     image:
       repository: lhr.ocir.io/lr7uc6l49odc/silverton-sweepstake-frontend
-      tag: latest
+      tag: 0.1.11
       pullPolicy: Always
     containerPort: 3000
     replicas: 1
