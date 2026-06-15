@@ -14,15 +14,21 @@ jobs:
   build-and-push:
     runs-on: ubuntu-24.04-arm  # Native ARM64 runner — no QEMU emulation overhead
 
-    permissions:
-      contents: write
-
     steps:
+      # --- 1. GENERATE SHORT-LIVED GITOPS BOT TOKEN ---
+      - name: Generate GitOps Token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: 4063127
+          private-key: ${{ secrets.GITOPS_APP_PRIVATE_KEY }} # Pulled from global Org secrets
+
+      # --- 2. CHECKOUT CODE USING THE APP TOKEN ---
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Required for GitVersion to read full git history
-          token: ${{ secrets.GITHUB_TOKEN }} # Built-in token used to push the tag update back
+          token: ${{ steps.app-token.outputs.token }} # 🔑 Overrides the restricted default token
 
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v1
@@ -43,7 +49,7 @@ jobs:
           username: ${{ secrets.OCIR_USERNAME }}
           password: ${{ secrets.OCIR_AUTH_TOKEN }}
 
-      # --- 1. Build & Push Backend ---
+      # --- 3. BUILD & PUSH BACKEND ---
       - name: Build and push Backend
         uses: docker/build-push-action@v5
         with:
@@ -57,7 +63,7 @@ jobs:
           cache-from: type=gha,scope=backend
           cache-to: type=gha,mode=max,scope=backend
 
-      # --- 2. Build & Push Frontend ---
+      # --- 4. BUILD & PUSH FRONTEND ---
       - name: Build and push Frontend
         uses: docker/build-push-action@v5
         with:
@@ -73,7 +79,7 @@ jobs:
           cache-from: type=gha,scope=frontend
           cache-to: type=gha,mode=max,scope=frontend
 
-      # --- 3. THE GITOPS AUTO-UPDATE LOOP ---
+      # --- 5. THE GITOPS AUTO-UPDATE LOOP ---
       - name: Install yq (YAML Processor)
         uses: mikefarah/yq@v4.44.1
 
@@ -84,7 +90,6 @@ jobs:
           
           echo "Patching array image tags in $VALUES_FILE to version: $NEW_VERSION"
           
-          # Use yq to parse and update the tag properties inside your nested app objects cleanly
           yq -i '(.apps[] | select(.name == "backend") | .image.tag) = "'"$NEW_VERSION"'"' $VALUES_FILE
           yq -i '(.apps[] | select(.name == "frontend") | .image.tag) = "'"$NEW_VERSION"'"' $VALUES_FILE
 
@@ -95,10 +100,11 @@ jobs:
           
           git add helm/values.yaml
           
-          # Only commit if a new version was actually written to prevent recursive/ghost pipeline runs
           if git diff --staged --quiet; then
             echo "No manifest changes required. Version is already up to date."
           else
             git commit -m "chore(gitops): release version ${{ steps.gitversion.outputs.semVer }} [skip ci]"
-            git push origin main
+            
+            # This cleanly pushes back using the App token set during checkout
+            git push origin HEAD
           fi
