@@ -88,7 +88,7 @@ def extract_fixtures(scoreboard: dict[str, Any]) -> list[dict[str, Any]]:
 
         status_payload = competition.get("status", {}).get("type", {})
         status_name = status_payload.get("name", "")
-        status = _normalise_status(status_name)
+        status = _normalise_status(status_payload)
         home_score = _score_or_none(home) if status != "scheduled" else None
         away_score = _score_or_none(away) if status != "scheduled" else None
         # ESPN sets `winner` on finished games and resolves penalty shootouts, so
@@ -208,11 +208,24 @@ def extract_match_events(summary: dict[str, Any]) -> list[dict[str, Any]]:
     return events
 
 
-def _normalise_status(status_name: str) -> str:
-    status = status_name.upper()
-    if "FINAL" in status or "FULL_TIME" in status or "POST" in status:
+def _normalise_status(status_type: dict[str, Any]) -> str:
+    # Prefer ESPN's canonical state ("pre" | "in" | "post") — it covers every
+    # in-play phase (first half, second half, extra time, penalties, ...).
+    # String-matching the status name missed phases like STATUS_FIRST_HALF and
+    # wrongly reported live games as scheduled.
+    state = (status_type.get("state") or "").lower()
+    if state == "in":
+        return "live"
+    if state == "post" or status_type.get("completed") is True:
         return "finished"
-    if "IN_PROGRESS" in status or "HALFTIME" in status or "LIVE" in status:
+    if state == "pre":
+        return "scheduled"
+
+    # Fallback for any payload missing `state`: match on the status name.
+    name = (status_type.get("name") or "").upper()
+    if "FINAL" in name or "FULL_TIME" in name or "POST" in name:
+        return "finished"
+    if "HALF" in name or "PROGRESS" in name or "LIVE" in name or "EXTRA" in name or "PENALT" in name:
         return "live"
     return "scheduled"
 
