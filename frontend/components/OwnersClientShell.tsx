@@ -27,22 +27,23 @@ export default function OwnersClientShell({ owners }: { owners: OwnerSummary[] }
   const pathname = usePathname();
   const [activeOwner, setActiveOwner] = useState(() => ownerFromPath(pathname, owners));
 
-  useEffect(() => {
-    const nextOwner = ownerFromPath(pathname, owners);
-    setActiveOwner(nextOwner);
-  }, [pathname, owners]);
-
+  // Sync the selection from the URL only on real route changes. We deliberately
+  // do NOT depend on `owners`: LiveRefresher re-fetches the owners list every
+  // 30s, and reacting to that new array reference would snap the user's
+  // selection back to the top owner. Selection is held by owner name and
+  // re-resolved on every render, so it survives list refreshes regardless.
   useEffect(() => {
     if (!owners.length) {
       return;
     }
-
     if (pathname === "/owners") {
-      const target = ownerPath(owners[0].owner);
-      window.history.replaceState(null, "", target);
+      window.history.replaceState(null, "", ownerPath(owners[0].owner));
       setActiveOwner(owners[0].owner);
+    } else {
+      setActiveOwner(ownerFromPath(pathname, owners));
     }
-  }, [pathname, owners]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   useEffect(() => {
     const onPopState = () => {

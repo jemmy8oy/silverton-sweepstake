@@ -10,6 +10,10 @@ STAGE_RANKS = {
     "Round of 16": 3,
     "Quarter-final": 4,
     "Semi-final": 5,
+    # Third-place playoff is contested by the semi-final losers, so it ranks
+    # alongside the semis. It must be present (and >= a knockout rank) or its
+    # loser is never marked eliminated. Keep in sync with football_api stage map.
+    "Third place": 5,
     "Final": 6
 }
 
