@@ -2169,13 +2169,16 @@ h3 {
   text-transform: uppercase;
 }
 
+/* Mobile-first: the board must fit the viewport with no horizontal scroll, so
+   it's deliberately tiny and tight. Comfortable sizing is restored at >=768px. */
 .leader-table-wrap {
   overflow-x: auto;
 }
 
 .leader-table {
   border-collapse: collapse;
-  min-width: 620px;
+  font-size: 11px;
+  table-layout: fixed;
   text-align: left;
   width: 100%;
 }
@@ -2188,9 +2191,9 @@ h3 {
 
 .leader-table th {
   font-family: "JetBrains Mono", monospace;
-  font-size: 12px;
+  font-size: 9px;
   font-weight: 800;
-  padding: 16px;
+  padding: 7px 2px;
   text-transform: uppercase;
 }
 
@@ -2198,29 +2201,35 @@ h3 {
   text-align: center;
 }
 
+/* Owner column gets the slack; stat columns are uniformly narrow. */
+.leader-table th:first-child,
+.leader-table td:first-child {
+  width: 30%;
+}
+
 .leader-table tbody tr {
   border-bottom: 1px solid var(--outline-variant);
-  transition: background 160ms ease, transform 160ms ease;
+  transition: background 160ms ease;
 }
 
 .leader-table tbody tr:hover {
   background: var(--surface-container-high);
-  transform: translateX(4px);
 }
 
 .leader-table td {
-  padding: 16px;
+  padding: 7px 2px;
   vertical-align: middle;
 }
 
 .leader-points,
 .leader-stat {
   font-family: "Archivo Narrow", sans-serif;
-  font-size: 26px;
+  font-size: 13px;
   font-weight: 800;
 }
 
 .leader-points {
+  font-size: 15px;
   text-align: center;
 }
 
@@ -2229,10 +2238,18 @@ h3 {
   text-align: center;
 }
 
+/* The "Next fixture" logo is a preview, not a standing — hide it on phones so
+   every actual stat column fits without scrolling. Restored on desktop. */
+.leader-table th:last-child,
+.leader-table td.leader-next {
+  display: none;
+}
+
 .leader-owner-cell {
   align-items: center;
   display: flex;
-  gap: 12px;
+  gap: 6px;
+  min-width: 0;
 }
 
 .leader-avatar {
@@ -2243,11 +2260,11 @@ h3 {
   display: grid;
   flex: 0 0 auto;
   font-family: "JetBrains Mono", monospace;
-  font-size: 12px;
+  font-size: 9px;
   font-weight: 800;
-  height: 42px;
+  height: 24px;
   place-items: center;
-  width: 42px;
+  width: 24px;
 }
 
 .leader-avatar.first {
@@ -2255,8 +2272,16 @@ h3 {
   border: 2px solid var(--secondary);
 }
 
+.leader-owner-cell > div {
+  min-width: 0;
+}
+
 .leader-owner-cell strong {
   display: block;
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .leader-alive-bubbles {
@@ -2754,6 +2779,54 @@ h3 {
 
   .leaderboards-shell {
     padding: 40px 32px;
+  }
+
+  /* Restore the roomy leaderboard on desktop, where there's space for it. */
+  .leader-table {
+    font-size: 13px;
+    table-layout: auto;
+  }
+
+  .leader-table th {
+    font-size: 11px;
+    padding: 14px 12px;
+  }
+
+  .leader-table td {
+    padding: 14px 12px;
+  }
+
+  .leader-table th:first-child,
+  .leader-table td:first-child {
+    width: auto;
+  }
+
+  .leader-points,
+  .leader-stat {
+    font-size: 22px;
+  }
+
+  .leader-points {
+    font-size: 24px;
+  }
+
+  .leader-table th:last-child,
+  .leader-table td.leader-next {
+    display: table-cell;
+  }
+
+  .leader-owner-cell {
+    gap: 10px;
+  }
+
+  .leader-avatar {
+    font-size: 12px;
+    height: 40px;
+    width: 40px;
+  }
+
+  .leader-owner-cell strong {
+    font-size: 15px;
   }
 }
 
