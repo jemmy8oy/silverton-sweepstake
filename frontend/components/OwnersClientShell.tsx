@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import OwnerAvatar from "@/components/OwnerAvatar";
 import OwnerProfilePanel from "@/components/OwnerProfilePanel";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/cn";
 import type { OwnerSummary } from "@/lib/types";
 
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -67,63 +69,40 @@ export default function OwnersClientShell({ owners }: { owners: OwnerSummary[] }
     window.history.pushState(null, "", ownerPath(owner));
   }
 
-  function onTabKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
-    let next: number | null = null;
-    if (event.key === "ArrowRight") {
-      next = (selectedIndex + 1) % owners.length;
-    } else if (event.key === "ArrowLeft") {
-      next = (selectedIndex - 1 + owners.length) % owners.length;
-    } else if (event.key === "Home") {
-      next = 0;
-    } else if (event.key === "End") {
-      next = owners.length - 1;
-    }
-    if (next === null) {
-      return;
-    }
-    event.preventDefault();
-    selectOwner(owners[next].owner);
-    // APG: arrow/Home/End must move focus to the newly selected tab. This also
-    // scrolls the pill into view within the horizontal strip on mobile.
-    document.getElementById(`owner-tab-${next}`)?.focus();
-  }
-
   return (
-    <div className="owners-tabbed-view">
-      <div className="owners-tabs" role="tablist" aria-label="Select an owner" onKeyDown={onTabKeyDown}>
+    <Tabs value={selectedOwner.owner} onValueChange={selectOwner} className="grid gap-6">
+      <TabsList
+        variant="line"
+        className="flex w-full gap-3 overflow-x-auto border-2 border-foreground bg-background p-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        aria-label="Select an owner"
+      >
         {owners.map((owner, index) => {
           const isActive = owner.owner === selectedOwner.owner;
 
           return (
-            <button
+            <TabsTrigger
               key={owner.owner}
-              type="button"
-              role="tab"
-              id={`owner-tab-${index}`}
-              aria-selected={isActive}
-              aria-controls="owner-tab-panel"
-              tabIndex={isActive ? 0 : -1}
-              className={isActive ? "owner-tab active" : "owner-tab"}
-              onClick={() => selectOwner(owner.owner)}
+              value={owner.owner}
+              className={cn(
+                "flex min-w-[196px] shrink-0 items-center gap-3 px-4 py-3 text-left",
+                isActive
+                  ? "border-foreground bg-accent text-accent-foreground"
+                  : "border-foreground bg-background hover:bg-secondary"
+              )}
             >
-              <OwnerAvatar owner={owner.owner} className="owner-tab-avatar" />
-              <span className="owner-tab-copy">
-                <strong>{owner.owner}</strong>
-                <span className="owner-tab-rank">#{index + 1}</span>
+              <OwnerAvatar owner={owner.owner} className="h-12 w-12 border-2 border-foreground" />
+              <span className="grid gap-1">
+                <strong className="font-display text-xl font-black tracking-[-0.04em] text-current">{owner.owner}</strong>
+                <span className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.16em] text-current/75">#{index + 1}</span>
               </span>
-            </button>
+            </TabsTrigger>
           );
         })}
-      </div>
+      </TabsList>
 
-      <div
-        className="owner-tab-panel"
-        id="owner-tab-panel"
-        role="tabpanel"
-        aria-labelledby={`owner-tab-${selectedIndex}`}
-      >
+      <TabsContent value={selectedOwner.owner} className="min-w-0">
         <OwnerProfilePanel owner={selectedOwner} rank={selectedIndex + 1} />
-      </div>
-    </div>
+      </TabsContent>
+    </Tabs>
   );
 }

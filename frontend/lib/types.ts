@@ -2,7 +2,7 @@ export type MatchEvent = {
   team: string;
   teamCode?: string;
   teamLogo?: string | null;
-  type: "goal" | "red_card" | "yellow_card" | string;
+  type: "goal" | "own_goal" | "red_card" | "yellow_card" | string;
   minute: number;
   player?: string;
 };
@@ -58,6 +58,7 @@ export type TeamStats = {
   points: number;
   yellowCards: number;
   redCards: number;
+  ownGoals: number;
   furthestStage: string;
   furthestStageRank: number;
   alive: boolean;
@@ -89,6 +90,7 @@ export type OwnerSummary = {
   goalsAgainst: number;
   yellowCards: number;
   redCards: number;
+  ownGoals: number;
   upcomingMatches: EnrichedFixture[];
   liveMatches: EnrichedFixture[];
   completedResults: EnrichedFixture[];
@@ -112,5 +114,13 @@ export type Leaderboards = {
   mostGoalsConceded: TeamStats[];
   mostRedCards: TeamStats[];
   worstPerformingTeam: TeamStats[];
+  firstEliminatedTeam: TeamStats | null;
+  wallOfShame: Array<{
+    owner: string;
+    exits: number;
+    redCards: number;
+    ownGoals: number;
+    totalShots: number;
+  }>;
   teamsStillAliveByOwner: Array<{ owner: string; teamsStillAlive: number; teamCount: number }>;
 };

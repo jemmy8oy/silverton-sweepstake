@@ -176,16 +176,22 @@ def extract_match_events(summary: dict[str, Any]) -> list[dict[str, Any]]:
 
     for play in summary.get("keyEvents", []):
         play_type = (play.get("type", {}).get("type") or "").lower()
-        if play.get("scoringPlay") is True or play_type in {"goal", "goal---header", "own-goal"}:
+        if play_type == "own-goal":
+            event_type = "own_goal"
+            team = _own_goal_responsible_team(summary, play)
+            beneficiary = hydrate_team_ref(name=play.get("team", {}).get("displayName"), code=play.get("team", {}).get("abbreviation"))
+        elif play.get("scoringPlay") is True or play_type in {"goal", "goal---header"}:
             event_type = "goal"
+            team = hydrate_team_ref(name=play.get("team", {}).get("displayName"), code=play.get("team", {}).get("abbreviation"))
         elif play_type == "red-card":
             event_type = "red_card"
+            team = hydrate_team_ref(name=play.get("team", {}).get("displayName"), code=play.get("team", {}).get("abbreviation"))
         elif play_type == "yellow-card":
             event_type = "yellow_card"
+            team = hydrate_team_ref(name=play.get("team", {}).get("displayName"), code=play.get("team", {}).get("abbreviation"))
         else:
             continue
 
-        team = hydrate_team_ref(name=play.get("team", {}).get("displayName"), code=play.get("team", {}).get("abbreviation"))
         if not team["team"]:
             continue
 
@@ -195,6 +201,9 @@ def extract_match_events(summary: dict[str, Any]) -> list[dict[str, Any]]:
             "type": event_type,
             "minute": _event_minute(play),
         }
+        if event_type == "own_goal" and beneficiary["team"]:
+            event["beneficiaryTeam"] = beneficiary["team"]
+            event["beneficiaryTeamCode"] = beneficiary["code"]
         player = _event_player(play)
         if player:
             event["player"] = player
@@ -206,6 +215,24 @@ def extract_match_events(summary: dict[str, Any]) -> list[dict[str, Any]]:
         events.append(event)
 
     return events
+
+def _own_goal_responsible_team(summary: dict[str, Any], play: dict[str, Any]) -> dict[str, Any]:
+    beneficiary = hydrate_team_ref(name=play.get("team", {}).get("displayName"), code=play.get("team", {}).get("abbreviation"))
+    competitors = (((summary.get("header") or {}).get("competitions") or [{}])[0].get("competitors") or [])
+
+    for competitor in competitors:
+        team = hydrate_team_ref(name=competitor.get("team", {}).get("displayName"), code=competitor.get("team", {}).get("abbreviation"))
+        if not team["team"]:
+            continue
+        if beneficiary["code"] and team["code"] == beneficiary["code"]:
+            continue
+        if team["team"] == beneficiary["team"]:
+            continue
+        return team
+
+    # Fallback if the summary payload is missing competitors. This preserves the
+    # prior behaviour rather than dropping the event entirely.
+    return beneficiary
 
 
 def _normalise_status(status_type: dict[str, Any]) -> str:

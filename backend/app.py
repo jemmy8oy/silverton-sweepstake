@@ -27,6 +27,7 @@ ADMIN_TOKEN = os.environ.get("ADMIN_TOKEN")
 
 app = Flask(__name__)
 CORS(app)
+_scheduler_bootstrapped = False
 
 
 def _build_base_payload():
@@ -53,6 +54,20 @@ def _base_payload():
 
 def _json_error(message: str, status: int = 500):
     return jsonify({"error": message}), status
+
+
+@app.before_request
+def ensure_scheduler_started():
+    global _scheduler_bootstrapped
+    if _scheduler_bootstrapped:
+        return None
+
+    # Avoid starting the poller as an import side effect. Under the Flask debug
+    # reloader that can leave an old parent process polling with stale code and
+    # overwriting fixtures.json after source changes.
+    start_scheduler()
+    _scheduler_bootstrapped = True
+    return None
 
 
 @app.errorhandler(RuntimeError)
@@ -145,16 +160,11 @@ def admin_refresh():
     return jsonify({"ok": True, "refresh": result})
 
 
-# Start the background ESPN poller as a side effect of import so it runs under
-# gunicorn (which imports app:app per worker) as well as `flask run`.
-# Note: do not run gunicorn with --preload, or the poller thread would be
-# started in the master and not survive fork() into the workers.
 if not ADMIN_TOKEN and not app.debug:
     logging.getLogger(__name__).warning(
         "ADMIN_TOKEN is not set; /api/admin/refresh is disabled (returns 401). "
         "Set ADMIN_TOKEN to enable manual refresh in production."
     )
-start_scheduler()
 
 
 if __name__ == "__main__":

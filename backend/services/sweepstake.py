@@ -62,6 +62,7 @@ def _empty_team_stats(team: str, code: str | None, logo: str | None, owner: str,
         "points": 0,
         "yellowCards": 0,
         "redCards": 0,
+        "ownGoals": 0,
         "furthestStage": "Group stage",
         "furthestStageRank": STAGE_RANKS["Group stage"],
         "alive": True
@@ -81,6 +82,10 @@ def compute_team_stats(draw: dict[str, list[dict[str, Any]]], fixtures: list[dic
                 stats[team]["redCards"] += 1
             if team in stats and event.get("type") == "yellow_card":
                 stats[team]["yellowCards"] += 1
+            if event.get("type") == "own_goal":
+                responsible_team = _own_goal_responsible_team_from_fixture(fixture, event)
+                if responsible_team in stats:
+                    stats[responsible_team]["ownGoals"] += 1
 
         if fixture["status"] not in ("finished", "live"):
             continue
@@ -121,11 +126,26 @@ def compute_team_stats(draw: dict[str, list[dict[str, Any]]], fixtures: list[dic
             away["points"] += 1
 
     eliminated = _eliminated_teams(fixtures)
+    group_stage_exits = _group_stage_exit_teams(stats, fixtures)
     for team_stats in stats.values():
         team_stats["goalDifference"] = team_stats["goalsFor"] - team_stats["goalsAgainst"]
-        team_stats["alive"] = team_stats["team"] not in eliminated
+        team_stats["alive"] = team_stats["team"] not in eliminated and team_stats["team"] not in group_stage_exits
 
     return stats
+
+
+def _own_goal_responsible_team_from_fixture(fixture: dict[str, Any], event: dict[str, Any]) -> str | None:
+    team = event.get("team")
+    if event.get("beneficiaryTeam"):
+        return team
+
+    # Backward compatibility for persisted fixtures created before the parser
+    # fix: those stored the benefiting team on own goals, so invert them here.
+    if team == fixture.get("homeTeam"):
+        return fixture.get("awayTeam")
+    if team == fixture.get("awayTeam"):
+        return fixture.get("homeTeam")
+    return team
 
 
 def _eliminated_teams(fixtures: list[dict[str, Any]]) -> set[str]:
@@ -145,6 +165,49 @@ def _eliminated_teams(fixtures: list[dict[str, Any]]) -> set[str]:
     return eliminated
 
 
+def _group_stage_exit_teams(stats: dict[str, dict[str, Any]], fixtures: list[dict[str, Any]]) -> set[str]:
+    knockout_teams = set()
+    scheduled_or_live = set()
+
+    for fixture in fixtures:
+        teams = (fixture.get("homeTeam"), fixture.get("awayTeam"))
+        stage_rank = STAGE_RANKS.get(fixture.get("stage", "Group stage"), 1)
+        if stage_rank >= STAGE_RANKS["Round of 32"]:
+            knockout_teams.update(team for team in teams if team)
+        if fixture.get("status") in ("scheduled", "live"):
+            scheduled_or_live.update(team for team in teams if team)
+
+    exits: set[str] = set()
+    for team, team_stats in stats.items():
+        if team_stats["furthestStageRank"] != STAGE_RANKS["Group stage"]:
+            continue
+        if team in knockout_teams:
+            continue
+        if team in scheduled_or_live:
+            continue
+        if team_stats["played"] < 3:
+            continue
+        exits.add(team)
+
+    return exits
+
+
+def _group_stage_exit_fixtures(stats: dict[str, dict[str, Any]], fixtures: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    exiting_teams = _group_stage_exit_teams(stats, fixtures)
+    latest_group_fixture_by_team: dict[str, dict[str, Any]] = {}
+
+    for fixture in fixtures:
+        if fixture.get("stage") != "Group stage" or fixture.get("status") != "finished":
+            continue
+        for team in (fixture.get("homeTeam"), fixture.get("awayTeam")):
+            if team in exiting_teams:
+                current = latest_group_fixture_by_team.get(team)
+                if current is None or fixture.get("kickoff", "") > current.get("kickoff", ""):
+                    latest_group_fixture_by_team[team] = fixture
+
+    return latest_group_fixture_by_team
+
+
 def _knockout_loser(fixture: dict[str, Any]) -> str | None:
     home, away = fixture.get("homeTeam"), fixture.get("awayTeam")
     home_winner, away_winner = fixture.get("homeWinner"), fixture.get("awayWinner")
@@ -161,6 +224,30 @@ def _knockout_loser(fixture: dict[str, Any]) -> str | None:
     if home_score is not None and away_score is not None and home_score != away_score:
         return away if home_score > away_score else home
     return None
+
+
+def _first_eliminated_team(team_stats: dict[str, dict[str, Any]], fixtures: list[dict[str, Any]]) -> dict[str, Any] | None:
+    group_stage_exit_fixtures = _group_stage_exit_fixtures(team_stats, fixtures)
+    elimination_events: list[tuple[str, str]] = []
+
+    for team, fixture in group_stage_exit_fixtures.items():
+        elimination_events.append((fixture.get("kickoff", ""), team))
+
+    for fixture in fixtures:
+        if fixture.get("status") != "finished":
+            continue
+        if STAGE_RANKS.get(fixture.get("stage", "Group stage"), 1) < STAGE_RANKS["Round of 32"]:
+            continue
+        loser = _knockout_loser(fixture)
+        if loser:
+            elimination_events.append((fixture.get("kickoff", ""), loser))
+
+    if not elimination_events:
+        return None
+
+    elimination_events.sort(key=lambda item: (item[0], item[1]))
+    first_team = elimination_events[0][1]
+    return team_stats.get(first_team)
 
 
 def build_owner_summaries(draw: dict[str, list[dict[str, Any]]], fixtures: list[dict[str, Any]], enriched: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -190,6 +277,7 @@ def build_owner_summaries(draw: dict[str, list[dict[str, Any]]], fixtures: list[
             "goalsAgainst": sum(team["goalsAgainst"] for team in owned_stats),
             "yellowCards": sum(team["yellowCards"] for team in owned_stats),
             "redCards": sum(team["redCards"] for team in owned_stats),
+            "ownGoals": sum(team["ownGoals"] for team in owned_stats),
             "upcomingMatches": _matches_for_owner(owner, enriched, "scheduled"),
             "liveMatches": _matches_for_owner(owner, enriched, "live"),
             "completedResults": _matches_for_owner(owner, enriched, "finished"),
@@ -220,11 +308,30 @@ def build_leaderboards(draw: dict[str, list[dict[str, Any]]], fixtures: list[dic
         "mostGoalsConceded": sorted(teams, key=lambda team: (-team["goalsAgainst"], team["team"]))[:10],
         "mostRedCards": sorted(teams, key=lambda team: (-team["redCards"], team["team"]))[:10],
         "worstPerformingTeam": sorted(teams, key=lambda team: (team["points"], team["goalDifference"], team["goalsFor"], team["team"]))[:10],
+        "firstEliminatedTeam": _first_eliminated_team(team_stats, fixtures),
+        "wallOfShame": _build_wall_of_shame(owner_summaries),
         "teamsStillAliveByOwner": [
             {"owner": owner["owner"], "teamsStillAlive": owner["teamsStillAlive"], "teamCount": owner["teamCount"]}
             for owner in owner_summaries
         ]
     }
+
+
+def _build_wall_of_shame(owner_summaries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    rows = []
+    for owner in owner_summaries:
+        red_cards = owner["redCards"]
+        own_goals = owner.get("ownGoals", 0)
+        total_shots = red_cards + own_goals
+        rows.append({
+            "owner": owner["owner"],
+            "exits": owner["teamCount"] - owner["teamsStillAlive"],
+            "redCards": red_cards,
+            "ownGoals": own_goals,
+            "totalShots": total_shots
+        })
+
+    return sorted(rows, key=lambda row: (-row["totalShots"], -row["redCards"], -row["ownGoals"], row["owner"]))
 
 
 def build_underdog_tracker(draw: dict[str, list[dict[str, Any]]], fixtures: list[dict[str, Any]]) -> dict[str, Any]:

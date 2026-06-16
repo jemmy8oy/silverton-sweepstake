@@ -12,6 +12,21 @@ The app uses:
 
 No Postgres, Redis, Celery, auth, or external API key is required.
 
+## Git Workflow
+
+Use the fork at `jemmy8oy/silverton-sweepstake` as the source of truth for this
+project.
+
+- Open PRs into `dev` for normal feature work.
+- Pushes to `dev` are not restricted because the team is small, but `dev` is the
+  active integration branch.
+- Do not push directly to `main`.
+- Merging into `main` requires a PR with at least 1 approval.
+- All three team members can approve PRs, so any 2 of the 3 can complete a
+  production merge.
+- Merges into `main` trigger a new build, so the approval gate is there to avoid
+  unnecessary build spam.
+
 ## Backend
 
 ```bash
