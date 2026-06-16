@@ -24,7 +24,7 @@ apps:
   - name: backend
     image:
       repository: lhr.ocir.io/lr7uc6l49odc/silverton-sweepstake-backend
-      tag: 0.1.11
+      tag: 0.1.13
       pullPolicy: Always
     containerPort: 8000
     replicas: 1
@@ -43,7 +43,7 @@ apps:
   - name: frontend
     image:
       repository: lhr.ocir.io/lr7uc6l49odc/silverton-sweepstake-frontend
-      tag: 0.1.11
+      tag: 0.1.13
       pullPolicy: Always
     containerPort: 3000
     replicas: 1
