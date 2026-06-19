@@ -5,7 +5,7 @@ import { Slot } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center border-2 border-foreground text-xs font-black whitespace-nowrap uppercase tracking-[0.14em] transition-all outline-none select-none brutal-focus disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-4 aria-invalid:ring-destructive/25 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center border-2 border-foreground text-[0.68rem] font-black whitespace-nowrap uppercase tracking-[0.12em] transition-all outline-none select-none brutal-focus disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-4 aria-invalid:ring-destructive/25 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5",
   {
     variants: {
       variant: {
@@ -18,14 +18,14 @@ const buttonVariants = cva(
         accent: "bg-accent text-accent-foreground hover:bg-primary hover:text-primary-foreground brutal-offset",
       },
       size: {
-        default: "min-h-11 gap-2 px-4 py-2.5",
-        xs: "min-h-8 gap-1.5 px-2.5 py-1.5 text-[0.65rem]",
-        sm: "min-h-9 gap-1.5 px-3 py-2 text-[0.7rem]",
-        lg: "min-h-12 gap-2 px-5 py-3 text-sm",
-        icon: "size-11",
-        "icon-xs": "size-8",
-        "icon-sm": "size-9",
-        "icon-lg": "size-12",
+        default: "min-h-9 gap-1.5 px-3 py-2",
+        xs: "min-h-7 gap-1 px-2 py-1 text-[0.58rem]",
+        sm: "min-h-8 gap-1.5 px-2.5 py-1.5 text-[0.62rem]",
+        lg: "min-h-10 gap-2 px-4 py-2.5 text-xs",
+        icon: "size-9",
+        "icon-xs": "size-7",
+        "icon-sm": "size-8",
+        "icon-lg": "size-10",
       },
     },
     defaultVariants: {

@@ -70,10 +70,10 @@ export default function OwnersClientShell({ owners }: { owners: OwnerSummary[] }
   }
 
   return (
-    <Tabs value={selectedOwner.owner} onValueChange={selectOwner} className="grid gap-6">
+    <Tabs value={selectedOwner.owner} onValueChange={selectOwner} className="grid gap-4">
       <TabsList
         variant="line"
-        className="flex w-full gap-3 overflow-x-auto border-2 border-foreground bg-background p-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex w-full gap-2 overflow-x-auto border-foreground bg-background p-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         aria-label="Select an owner"
       >
         {owners.map((owner, index) => {
@@ -84,16 +84,16 @@ export default function OwnersClientShell({ owners }: { owners: OwnerSummary[] }
               key={owner.owner}
               value={owner.owner}
               className={cn(
-                "flex min-w-[196px] shrink-0 items-center gap-3 px-4 py-3 text-left",
+                "flex min-w-[156px] shrink-0 items-center gap-2 px-2.5 py-2 text-left",
                 isActive
                   ? "border-foreground bg-accent text-accent-foreground"
                   : "border-foreground bg-background hover:bg-secondary"
               )}
             >
-              <OwnerAvatar owner={owner.owner} className="h-12 w-12 border-2 border-foreground" />
-              <span className="grid gap-1">
-                <strong className="font-display text-xl font-black tracking-[-0.04em] text-current">{owner.owner}</strong>
-                <span className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.16em] text-current/75">#{index + 1}</span>
+              <OwnerAvatar owner={owner.owner} className="h-9 w-9 border-2 border-foreground" />
+              <span className="grid gap-0.5">
+                <strong className="font-display text-sm font-black tracking-[-0.04em] text-current">{owner.owner}</strong>
+                <span className="font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-current/75">#{index + 1}</span>
               </span>
             </TabsTrigger>
           );

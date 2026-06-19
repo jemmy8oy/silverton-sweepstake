@@ -20,12 +20,6 @@ export default async function OwnersLayout({ children: _children }: { children: 
 
   return (
     <PageShell>
-      <PageHeader
-        eyebrow="Draw Overview"
-        title="Owners"
-        description="Switch between sweepstake entries, inspect their surviving teams, and compare how each route through the tournament is unfolding."
-      />
-
       <section aria-label="Sweepstake owners">
         {sortedOwners.length ? (
           <OwnersClientShell owners={sortedOwners} />

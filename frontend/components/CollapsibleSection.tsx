@@ -49,23 +49,23 @@ export default function CollapsibleSection({
       <AccordionItem value="content" className="border-b-0">
         <AccordionTrigger
           className={cn(
-            "px-5 py-4 hover:no-underline md:px-6",
-            headingClassName === "compact" && "py-3.5"
+            "px-3 py-3 hover:no-underline md:px-4",
+            headingClassName === "compact" && "py-2.5"
           )}
         >
-          <span className="flex min-w-0 items-center gap-3">
-            <span className="material-symbols-outlined text-[22px] text-[color:var(--color-signal-blue)]" aria-hidden="true">
+          <span className="flex min-w-0 items-center gap-2">
+            <span className="material-symbols-outlined text-[18px] text-[color:var(--color-signal-blue)]" aria-hidden="true">
               {icon}
             </span>
-            <span className="font-display text-3xl font-black normal-case tracking-[-0.04em] text-foreground md:text-4xl">
+            <span className="font-display text-xl font-black normal-case tracking-[-0.04em] text-foreground md:text-2xl">
               {title}
             </span>
           </span>
-          <span className="mr-3 flex items-center gap-3 font-mono text-[0.68rem] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+          <span className="mr-2 flex items-center gap-2 font-mono text-[0.58rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">
             {meta}
           </span>
         </AccordionTrigger>
-        <AccordionContent className="border-t-2 border-foreground px-5 py-5 md:px-6">
+        <AccordionContent className="border-t-2 border-foreground px-3 py-3 md:px-4">
           {children}
         </AccordionContent>
       </AccordionItem>

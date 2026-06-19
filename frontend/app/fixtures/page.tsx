@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowLeft, ArrowRight, CalendarDays, Filter, X } from "lucide-react";
 import { getFixtures, getOwners } from "@/lib/api";
 import EmptyState from "@/components/common/empty-state";
 import StatusBadge from "@/components/common/status-badge";
@@ -21,6 +22,8 @@ type FixturesSearchParams = {
 
 const FIXTURE_SPAN_MS = 3 * 60 * 60 * 1000;
 const DISPLAY_TIME_ZONE = "Europe/London";
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const FIXTURES_ACTION = `${BASE_PATH}/fixtures`;
 
 async function safe<T>(request: Promise<T>, fallback: T): Promise<T> {
   try {
@@ -168,25 +171,25 @@ function ownerHref(owner: string, selectedDate: string) {
 }
 
 function TeamCrest({ team, code, logo }: { team: string; code?: string; logo?: string | null }) {
-  return <TeamLogo team={team} code={code} logo={logo} className="h-14 w-14 border-2 border-foreground bg-background p-2 md:h-16 md:w-16" />;
+  return <TeamLogo team={team} code={code} logo={logo} className="h-10 w-10 border-2 border-foreground bg-background p-1.5 md:h-12 md:w-12" />;
 }
 
 function PotBadge({ pot }: { pot: number | null }) {
-  return <StatusBadge tone="muted">{pot ? `Pot ${pot}` : "No pot"}</StatusBadge>;
+  return <StatusBadge tone="muted">{pot ? `P${pot}` : "P-"}</StatusBadge>;
 }
 
 function SmallOwnerAvatar({ owner }: { owner: string }) {
-  return <OwnerAvatar owner={owner} className="h-9 w-9 border-2 border-foreground" />;
+  return <OwnerAvatar owner={owner} className="h-7 w-7 border-2 border-foreground" />;
 }
 
 function OwnersBand({ fixture }: { fixture: EnrichedFixture }) {
   if (fixture.isSelfMatch) {
     return (
-      <div className="mt-5 flex items-center gap-3 border-2 border-foreground bg-secondary px-4 py-3">
+      <div className="mt-2 flex items-center gap-2 border-t-2 border-foreground px-3 py-2.5">
         <SmallOwnerAvatar owner={fixture.homeOwner} />
         <div className="grid gap-0.5">
-          <strong>Friendly Fire</strong>
-          <span className="text-sm text-muted-foreground">{fixture.homeOwner} owns both teams</span>
+          <strong className="text-xs">Friendly Fire</strong>
+          <span className="text-[0.72rem] text-muted-foreground">{fixture.homeOwner} owns both teams</span>
         </div>
       </div>
     );
@@ -194,14 +197,14 @@ function OwnersBand({ fixture }: { fixture: EnrichedFixture }) {
 
   if (fixture.isOwnerVsOwner) {
     return (
-      <div className="mt-5 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 border-2 border-foreground bg-accent px-4 py-3">
-        <div className="flex min-w-0 items-center gap-3">
+      <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 border-t-2 border-foreground bg-accent/25 px-3 py-2.5">
+        <div className="flex min-w-0 items-center gap-2">
           <SmallOwnerAvatar owner={fixture.homeOwner} />
-          <span className="truncate text-sm">{fixture.homeOwner}</span>
+          <span className="truncate text-[0.72rem]">{fixture.homeOwner}</span>
         </div>
         <StatusBadge tone="default">Battle</StatusBadge>
-        <div className="flex min-w-0 items-center justify-end gap-3">
-          <span className="truncate text-right text-sm">{fixture.awayOwner}</span>
+        <div className="flex min-w-0 items-center justify-end gap-2">
+          <span className="truncate text-right text-[0.72rem]">{fixture.awayOwner}</span>
           <SmallOwnerAvatar owner={fixture.awayOwner} />
         </div>
       </div>
@@ -209,14 +212,14 @@ function OwnersBand({ fixture }: { fixture: EnrichedFixture }) {
   }
 
   return (
-    <div className="mt-5 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 border-2 border-foreground bg-background px-4 py-3">
-      <div className="flex min-w-0 items-center gap-3">
+    <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 border-t-2 border-foreground px-3 py-2.5">
+      <div className="flex min-w-0 items-center gap-2">
         <SmallOwnerAvatar owner={fixture.homeOwner} />
-        <span className="truncate text-sm">{fixture.homeOwner || "Unassigned"}</span>
+        <span className="truncate text-[0.72rem]">{fixture.homeOwner || "Unassigned"}</span>
       </div>
-      <span className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.16em] text-muted-foreground">v</span>
-      <div className="flex min-w-0 items-center justify-end gap-3">
-        <span className="truncate text-right text-sm">{fixture.awayOwner || "Unassigned"}</span>
+      <span className="font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">v</span>
+      <div className="flex min-w-0 items-center justify-end gap-2">
+        <span className="truncate text-right text-[0.72rem]">{fixture.awayOwner || "Unassigned"}</span>
         <SmallOwnerAvatar owner={fixture.awayOwner} />
       </div>
     </div>
@@ -225,34 +228,36 @@ function OwnersBand({ fixture }: { fixture: EnrichedFixture }) {
 
 function FixtureCard({ fixture }: { fixture: EnrichedFixture }) {
   return (
-    <article className={cn("brutal-surface px-5 py-5 md:px-6", fixture.status === "live" && "bg-secondary", fixture.isOwnerVsOwner && "bg-accent/40")}>
-      <div className="flex items-center justify-between gap-3">
+    <article className={cn("brutal-surface px-3 py-3", fixture.status === "live" && "bg-secondary", fixture.isOwnerVsOwner && "bg-accent/20")}>
+      <div className="flex items-center justify-between gap-2">
         <StatusBadge tone={fixture.status === "live" ? "destructive" : fixture.status === "scheduled" ? "muted" : "default"}>
           {fixture.status === "scheduled" ? fixture.readableKickoff : statusLabel(fixture)}
         </StatusBadge>
-        <span className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.16em] text-muted-foreground">{fixture.stage}</span>
+        <span className="font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{fixture.stage}</span>
       </div>
 
-      <div className="mt-5 grid gap-5 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-center">
-        <div className="flex items-center gap-4">
+      <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
+        <div className="flex min-w-0 items-center gap-2">
           <TeamCrest team={fixture.homeTeam} code={fixture.homeTeamCode ?? fixture.homeCode} logo={fixture.homeTeamLogo ?? fixture.homeLogo} />
-          <div className="grid gap-2">
-            <strong className="font-display text-3xl font-black">{teamCode(fixture.homeTeam, fixture.homeTeamCode ?? fixture.homeCode)}</strong>
+          <div className="grid min-w-0 gap-1">
+            <strong className="truncate font-display text-base font-black">{teamCode(fixture.homeTeam, fixture.homeTeamCode ?? fixture.homeCode)}</strong>
             <PotBadge pot={fixture.homePot} />
           </div>
         </div>
 
-        <div className="grid place-items-center gap-1 border-2 border-foreground bg-primary px-5 py-4 text-center text-primary-foreground">
-          <strong className="font-display text-4xl font-black md:text-5xl">{scoreLabel(fixture)}</strong>
-          <span className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.16em] text-primary-foreground/80">{fixture.stage}</span>
+        <div className="grid min-w-[88px] place-items-center gap-0.5 bg-primary px-2 py-2 text-center text-primary-foreground">
+          <strong className="font-display text-lg font-black md:text-2xl">{scoreLabel(fixture)}</strong>
+          <span className="font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-primary-foreground/80">{fixture.stage}</span>
         </div>
 
-        <div className="flex items-center gap-4 md:flex-row-reverse md:text-right">
-          <TeamCrest team={fixture.awayTeam} code={fixture.awayTeamCode ?? fixture.awayCode} logo={fixture.awayTeamLogo ?? fixture.awayLogo} />
-          <div className="grid gap-2">
-            <strong className="font-display text-3xl font-black">{teamCode(fixture.awayTeam, fixture.awayTeamCode ?? fixture.awayCode)}</strong>
-            <PotBadge pot={fixture.awayPot} />
+        <div className="flex min-w-0 items-center justify-end gap-2 text-right">
+          <div className="grid min-w-0 gap-1">
+            <strong className="truncate font-display text-base font-black">{teamCode(fixture.awayTeam, fixture.awayTeamCode ?? fixture.awayCode)}</strong>
+            <div className="flex justify-end">
+              <PotBadge pot={fixture.awayPot} />
+            </div>
           </div>
+          <TeamCrest team={fixture.awayTeam} code={fixture.awayTeamCode ?? fixture.awayCode} logo={fixture.awayTeamLogo ?? fixture.awayLogo} />
         </div>
       </div>
 
@@ -308,20 +313,15 @@ export default async function FixturesPage({
       canGoPrevious={canGoPrevious}
       canGoNext={canGoNext}
     >
-      <PageHeader
-        eyebrow="Matchday"
-        title="Fixtures"
-        description={
-          <>
-            {activeDateLabel} • {visibleMatchCount} match{visibleMatchCount === 1 ? "" : "es"}
-          </>
-        }
-      />
-
       <SectionShell marker="Filters" title="Browse Fixtures">
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <div className="grid gap-4">
-            <div className="fixtures-date-scroll flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
+          <div className="grid gap-3">
+            <div className="flex items-center justify-between gap-2 text-[0.72rem] text-muted-foreground">
+              <span>{activeDateLabel}</span>
+              <span>{visibleMatchCount} match{visibleMatchCount === 1 ? "" : "es"}</span>
+            </div>
+
+            <div className="fixtures-date-scroll flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {availableDates.map((day) => {
                 const chip = dayChip(day, todayValue);
                 const dayCount = dateCounts.get(day) ?? 0;
@@ -331,12 +331,12 @@ export default async function FixturesPage({
                     key={day}
                     asChild
                     variant={day === activeDate ? "accent" : "outline"}
-                    className="min-h-[88px] min-w-[144px] items-start justify-start px-4 py-3 text-left"
+                    className="min-h-[72px] min-w-[112px] items-start justify-start px-3 py-2.5 text-left"
                   >
                     <Link href={dateHref(day, activeOwner)} aria-current={day === activeDate ? "date" : undefined}>
-                      <span className="block font-display text-2xl font-black normal-case tracking-[-0.04em]">{chip.title}</span>
-                      <span className="mt-1 block font-mono text-[0.66rem] font-bold uppercase tracking-[0.16em]">{chip.detail}</span>
-                      <span className="mt-2 block text-xs normal-case tracking-normal">
+                      <span className="block font-display text-lg font-black normal-case tracking-[-0.04em]">{chip.title}</span>
+                      <span className="mt-0.5 block font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em]">{chip.detail}</span>
+                      <span className="mt-1.5 block text-[0.68rem] normal-case tracking-normal">
                         {dayCount} match{dayCount === 1 ? "" : "es"}
                       </span>
                     </Link>
@@ -345,25 +345,28 @@ export default async function FixturesPage({
               })}
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2">
               <Button asChild variant="outline" size="sm" className={!canGoPrevious ? "pointer-events-none opacity-40" : ""}>
                 <Link href={dateHref(previousDate, activeOwner)} aria-label={`Go to ${formatLongDate(previousDate)}`}>
-                  Previous
+                  <ArrowLeft />
                 </Link>
               </Button>
               <Button asChild variant={activeDate === todayTarget ? "accent" : "outline"} size="sm">
-                <Link href={dateHref(todayTarget, activeOwner)}>Today</Link>
+                <Link href={dateHref(todayTarget, activeOwner)}>
+                  <CalendarDays />
+                  Today
+                </Link>
               </Button>
               <Button asChild variant="outline" size="sm" className={!canGoNext ? "pointer-events-none opacity-40" : ""}>
                 <Link href={dateHref(nextDate, activeOwner)} aria-label={`Go to ${formatLongDate(nextDate)}`}>
-                  Next
+                  <ArrowRight />
                 </Link>
               </Button>
             </div>
           </div>
 
-          <div className="grid gap-4">
-            <form className="grid gap-2" action="/fixtures">
+          <div className="grid gap-3">
+            <form className="grid gap-2" action={FIXTURES_ACTION}>
               <Label htmlFor="owner">Filter by owner</Label>
               <input type="hidden" name="date" value={activeDate} />
               <select
@@ -380,16 +383,18 @@ export default async function FixturesPage({
                   </option>
                 ))}
               </select>
-              <Button type="submit" variant="accent" className="w-fit">
+              <Button type="submit" variant="accent" size="sm" className="w-fit">
+                <Filter />
                 Apply
               </Button>
             </form>
 
-            <form className="grid gap-2" action="/fixtures">
+            <form className="grid gap-2" action={FIXTURES_ACTION}>
               {activeOwner ? <input type="hidden" name="owner" value={activeOwner} /> : null}
               <Label htmlFor="fixture-date">Pick a date</Label>
               <Input id="fixture-date" name="date" type="date" defaultValue={activeDate} />
-              <Button type="submit" variant="outline" className="w-fit">
+              <Button type="submit" variant="outline" size="sm" className="w-fit">
+                <CalendarDays />
                 Go
               </Button>
             </form>
@@ -398,20 +403,18 @@ export default async function FixturesPage({
       </SectionShell>
 
       {activeOwner ? (
-        <SectionShell marker="Active Filter" title={activeOwner} actions={<Button asChild variant="ghost" size="sm"><Link href={ownerHref("", activeDate)}>Clear</Link></Button>}>
-          <p className="text-sm leading-7 text-muted-foreground">Showing fixtures involving this owner on the selected date.</p>
+        <SectionShell marker="Active Filter" title={activeOwner} actions={<Button asChild variant="ghost" size="sm"><Link href={ownerHref("", activeDate)}><X />Clear</Link></Button>}>
+          <div className="text-[0.72rem] text-muted-foreground">Showing fixtures involving this owner.</div>
         </SectionShell>
       ) : null}
 
-      <SectionShell marker="Fixtures" title="Match List">
         {visibleFixtures.length ? (
-          <div className="grid gap-5">
+          <div className="grid gap-2">
             {visibleFixtures.map((fixture) => <FixtureCard key={`${fixture.id}-${activeDate}`} fixture={fixture} />)}
           </div>
         ) : (
           <EmptyState title="No fixtures found" description="Try another day or owner filter." />
         )}
-      </SectionShell>
     </FixturesSwipeShell>
   );
 }

@@ -55,7 +55,7 @@ const emptyLeaderboards: Leaderboards = {
 };
 
 function TeamBubble({ team, code, logo }: { team: string; code?: string; logo?: string | null }) {
-  return <TeamLogo team={team} code={code} logo={logo} className="h-10 w-10 border-2 border-foreground bg-background p-2" />;
+  return <TeamLogo team={team} code={code} logo={logo} className="h-7 w-7 border-2 border-foreground bg-background p-1 md:h-8 md:w-8" />;
 }
 
 function nextTeam(owner: OwnerSummary) {
@@ -95,74 +95,40 @@ function OverallRow({ owner, rank }: { owner: OwnerSummary; rank: number }) {
 
   return (
     <TableRow className={rank === 1 ? "bg-accent/50" : ""}>
-      <TableCell className="min-w-[180px]">
-        <div className="flex items-center gap-3">
-          <OwnerAvatar owner={owner.owner} className="h-11 w-11 border-2 border-foreground" />
-          <div className="grid gap-0.5">
-            <strong>{owner.owner}</strong>
-            <span className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">#{rank}</span>
+      <TableCell className="min-w-[100px] px-1 py-2 md:min-w-[180px] md:px-3 md:py-3">
+        <div className="flex items-center gap-1.5 md:gap-3">
+          <OwnerAvatar owner={owner.owner} className="h-7 w-7 border-2 border-foreground md:h-11 md:w-11" />
+          <div className="grid min-w-0 gap-0.5">
+            <strong className="truncate text-[0.7rem] md:text-sm">{owner.owner}</strong>
+            <span className="font-mono text-[0.54rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">#{rank}</span>
           </div>
         </div>
       </TableCell>
-      <TableCell className="text-center">{played}</TableCell>
-      <TableCell className="text-center">{owner.wins}</TableCell>
-      <TableCell className="text-center">{owner.draws}</TableCell>
-      <TableCell className="text-center">{owner.losses}</TableCell>
-      <TableCell className="text-center">{owner.goalsFor}/{owner.goalsAgainst}</TableCell>
-      <TableCell className="text-center">{goalDifference > 0 ? `+${goalDifference}` : goalDifference}</TableCell>
-      <TableCell className="text-center">{owner.yellowCards}</TableCell>
-      <TableCell className="text-center">{owner.redCards}</TableCell>
-      <TableCell className="text-center font-display text-2xl font-black">{owner.points}</TableCell>
-      <TableCell>{next ? <TeamBubble team={next.team} code={next.code} logo={next.logo} /> : <span className="text-sm text-muted-foreground">-</span>}</TableCell>
+      <TableCell className="px-1 py-2 text-center text-[0.66rem] md:px-3 md:py-3 md:text-sm">{played}</TableCell>
+      <TableCell className="px-1 py-2 text-center text-[0.66rem] md:px-3 md:py-3 md:text-sm">{owner.wins}</TableCell>
+      <TableCell className="px-1 py-2 text-center text-[0.66rem] md:px-3 md:py-3 md:text-sm">{owner.draws}</TableCell>
+      <TableCell className="px-1 py-2 text-center text-[0.66rem] md:px-3 md:py-3 md:text-sm">{owner.losses}</TableCell>
+      <TableCell className="hidden px-1.5 py-2 text-center text-[0.68rem] md:table-cell md:px-3 md:py-3 md:text-sm">{owner.goalsFor}/{owner.goalsAgainst}</TableCell>
+      <TableCell className="px-1 py-2 text-center text-[0.66rem] md:px-3 md:py-3 md:text-sm">{goalDifference > 0 ? `+${goalDifference}` : goalDifference}</TableCell>
+      <TableCell className="px-1 py-2 text-center text-[0.66rem] md:px-3 md:py-3 md:text-sm">{owner.yellowCards}/{owner.redCards}</TableCell>
+      <TableCell className="px-1 py-2 text-center font-display text-[0.95rem] font-black md:px-3 md:py-3 md:text-2xl">{owner.points}</TableCell>
+      <TableCell className="px-1 py-2 md:px-3 md:py-3">{next ? <TeamBubble team={next.team} code={next.code} logo={next.logo} /> : <span className="text-[0.66rem] text-muted-foreground">-</span>}</TableCell>
     </TableRow>
-  );
-}
-
-function MobileOverallRow({ owner, rank }: { owner: OwnerSummary; rank: number }) {
-  const next = nextTeam(owner);
-  const played = owner.wins + owner.draws + owner.losses;
-  const goalDifference = owner.goalsFor - owner.goalsAgainst;
-
-  return (
-    <article className={cn("grid gap-3 border-2 border-foreground px-4 py-4", rank === 1 ? "bg-accent/50" : "bg-background")}>
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <OwnerAvatar owner={owner.owner} className="h-10 w-10 border-2 border-foreground" />
-          <div className="grid gap-0.5">
-            <strong>{owner.owner}</strong>
-            <span className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">#{rank}</span>
-          </div>
-        </div>
-        <span className="font-display text-3xl font-black">{owner.points}</span>
-      </div>
-      <div className="grid grid-cols-4 gap-3 text-sm">
-        <div><span className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">PL</span><div>{played}</div></div>
-        <div><span className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">WDL</span><div>{owner.wins}-{owner.draws}-{owner.losses}</div></div>
-        <div><span className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">Goals</span><div>{owner.goalsFor}/{owner.goalsAgainst}</div></div>
-        <div><span className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">GD</span><div>{goalDifference > 0 ? `+${goalDifference}` : goalDifference}</div></div>
-      </div>
-      <div className="flex items-center justify-between">
-        <StatusBadge tone="muted">Y/R {owner.yellowCards}/{owner.redCards}</StatusBadge>
-        {next ? <TeamBubble team={next.team} code={next.code} logo={next.logo} /> : <span className="text-xs text-muted-foreground">No next team</span>}
-      </div>
-    </article>
   );
 }
 
 function UnderdogRow({ team }: { team: TeamStats }) {
   return (
-    <div className="grid gap-3 border-2 border-foreground bg-background px-4 py-4">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <TeamBubble team={team.team} code={team.code} logo={team.logo} />
-          <div className="grid gap-0.5">
-            <strong>{team.team}</strong>
-            <span className="text-sm text-muted-foreground">{team.owner}</span>
-          </div>
+    <div className="flex items-center gap-2 border-b border-foreground/20 px-3 py-2.5 text-xs last:border-b-0">
+      <div className="flex min-w-0 items-center gap-2">
+        <TeamBubble team={team.team} code={team.code} logo={team.logo} />
+        <div className="grid min-w-0 gap-0.5">
+          <strong className="truncate">{team.team}</strong>
+          <span className="truncate text-[0.72rem] text-muted-foreground">{team.owner}</span>
         </div>
-        <StatusBadge tone="muted">Pot {team.pot}</StatusBadge>
       </div>
-      <div className="text-sm text-muted-foreground">{team.furthestStage}</div>
+      <span className="ml-auto text-[0.72rem] text-muted-foreground">{team.furthestStage}</span>
+      <StatusBadge tone="muted">P{team.pot}</StatusBadge>
     </div>
   );
 }
@@ -171,18 +137,22 @@ function WallOfShame({ rows = [] }: { rows?: Leaderboards["wallOfShame"] }) {
   return (
     <SectionShell marker="Punishment" title="Wall of Shame">
       {rows.length ? (
-        <div className="grid gap-3">
+        <div className="overflow-hidden bg-red-100/70">
+          <div className="grid grid-cols-[auto_minmax(0,1fr)_auto_auto] items-center gap-2 border-b-2 border-foreground px-3 py-2 font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+            <span>#</span>
+            <span>Owner</span>
+            <span>RC/OG</span>
+            <span>Shots</span>
+          </div>
           {rows.map((row, index) => (
-            <article key={row.owner} className="flex items-center justify-between gap-4 border-2 border-foreground bg-background px-4 py-3">
-              <div className="flex items-center gap-3">
-                <span className="font-mono text-[0.72rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{index + 1}.</span>
-                <OwnerAvatar owner={row.owner} className="h-10 w-10 border-2 border-foreground" />
-                <div className="grid gap-0.5">
-                  <strong>{row.owner}</strong>
-                  <span className="text-sm text-muted-foreground">{row.redCards} red, {row.ownGoals} own goals</span>
-                </div>
+            <article key={row.owner} className="grid grid-cols-[auto_minmax(0,1fr)_auto_auto] items-center gap-2 border-b border-foreground/20 px-3 py-2.5 text-xs last:border-b-0">
+              <span className="font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{index + 1}</span>
+              <div className="flex min-w-0 items-center gap-2">
+                <OwnerAvatar owner={row.owner} className="h-8 w-8 border-2 border-foreground" />
+                <strong className="truncate">{row.owner}</strong>
               </div>
-              <StatusBadge tone="destructive">{row.totalShots} shots</StatusBadge>
+              <span className="text-right text-[0.72rem] text-muted-foreground">{row.redCards}/{row.ownGoals}</span>
+              <StatusBadge tone="destructive">{row.totalShots}</StatusBadge>
             </article>
           ))}
         </div>
@@ -197,16 +167,16 @@ function SquadStrength({ rows }: { rows: Leaderboards["teamsStillAliveByOwner"] 
   return (
     <SectionShell marker="Survival" title="Squad Strength">
       {rows.length ? (
-        <div className="grid gap-4">
+        <div className="grid gap-2">
           {rows.map((row) => {
             const width = ratio(row.teamsStillAlive, row.teamCount);
             return (
-              <div key={row.owner} className="grid gap-2">
-                <div className="flex items-center justify-between gap-4 text-sm">
-                  <span>{row.owner}</span>
-                  <span className="text-muted-foreground">{row.teamsStillAlive}/{row.teamCount} alive</span>
+              <div key={row.owner} className="grid gap-1.5">
+                <div className="flex items-center justify-between gap-3 text-xs">
+                  <span className="truncate">{row.owner}</span>
+                  <span className="text-muted-foreground">{row.teamsStillAlive}/{row.teamCount}</span>
                 </div>
-                <div className="h-4 border-2 border-foreground bg-background">
+                <div className="h-2.5 border-2 border-foreground bg-background">
                   <span className={cn("block h-full bg-accent", width < 25 && "bg-destructive")} style={{ width: `${Math.max(width, row.teamsStillAlive ? 8 : 4)}%` }} />
                 </div>
               </div>
@@ -232,11 +202,11 @@ function PunishmentCard({
   tone: "accent" | "destructive" | "blue" | "muted";
 }) {
   return (
-    <article className="grid gap-3 border-2 border-foreground bg-background px-4 py-4">
+    <article className="grid gap-2 px-3 py-3 text-xs">
       <StatusBadge tone={tone}>{label}</StatusBadge>
-      <strong className="font-display text-3xl font-black">{team?.team ?? "No data"}</strong>
-      <span className="text-sm text-muted-foreground">{team?.owner ?? "Pending"}</span>
-      <em className="text-sm not-italic">{team ? detail : "Pending"}</em>
+      <strong className="truncate font-display text-lg font-black">{team?.team ?? "No data"}</strong>
+      <span className="truncate text-[0.72rem] text-muted-foreground">{team?.owner ?? "Pending"}</span>
+      <em className="text-[0.72rem] not-italic">{team ? detail : "Pending"}</em>
     </article>
   );
 }
@@ -256,52 +226,37 @@ export default async function LeaderboardsPage() {
 
   return (
     <PageShell>
-      <PageHeader
-        eyebrow="Standings"
-        title="Leaderboard"
-        description="Scan the overall table, watch the underdogs, and keep track of who is drifting toward the punishment end of the sweepstake."
-      />
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
-        <div className="grid gap-6">
-          <SectionShell marker="Overall" title="Owner Table" contentClassName="p-0">
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="grid gap-4">
             {overall.length ? (
-              <>
-                <div className="hidden md:block">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Owner</TableHead>
-                        <TableHead className="text-center">PL</TableHead>
-                        <TableHead className="text-center">W</TableHead>
-                        <TableHead className="text-center">D</TableHead>
-                        <TableHead className="text-center">L</TableHead>
-                        <TableHead className="text-center">+/-</TableHead>
-                        <TableHead className="text-center">GD</TableHead>
-                        <TableHead className="text-center">YC</TableHead>
-                        <TableHead className="text-center">RC</TableHead>
-                        <TableHead className="text-center">PTS</TableHead>
-                        <TableHead>Next</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {overall.map((owner, index) => <OverallRow key={owner.owner} owner={owner} rank={index + 1} />)}
-                    </TableBody>
-                  </Table>
-                </div>
-                <div className="grid gap-3 px-5 py-5 md:hidden">
-                  {overall.map((owner, index) => <MobileOverallRow key={owner.owner} owner={owner} rank={index + 1} />)}
-                </div>
-              </>
+              <Table className="text-xs md:text-sm">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="h-10 px-1 text-[0.54rem] md:h-12 md:px-3 md:text-[0.68rem]">Owner</TableHead>
+                    <TableHead className="h-10 px-1 text-center text-[0.54rem] md:h-12 md:px-3 md:text-[0.68rem]">PL</TableHead>
+                    <TableHead className="h-10 px-1 text-center text-[0.54rem] md:h-12 md:px-3 md:text-[0.68rem]">W</TableHead>
+                    <TableHead className="h-10 px-1 text-center text-[0.54rem] md:h-12 md:px-3 md:text-[0.68rem]">D</TableHead>
+                    <TableHead className="h-10 px-1 text-center text-[0.54rem] md:h-12 md:px-3 md:text-[0.68rem]">L</TableHead>
+                    <TableHead className="hidden h-10 px-1.5 text-center text-[0.56rem] md:table-cell md:h-12 md:px-3 md:text-[0.68rem]">+/-</TableHead>
+                    <TableHead className="h-10 px-1 text-center text-[0.54rem] md:h-12 md:px-3 md:text-[0.68rem]">GD</TableHead>
+                    <TableHead className="h-10 px-1 text-center text-[0.54rem] md:h-12 md:px-3 md:text-[0.68rem]">Y/R</TableHead>
+                    <TableHead className="h-10 px-1 text-center text-[0.54rem] md:h-12 md:px-3 md:text-[0.68rem]">PTS</TableHead>
+                    <TableHead className="h-10 px-1 text-[0.54rem] md:h-12 md:px-3 md:text-[0.68rem]">Next</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {overall.map((owner, index) => <OverallRow key={owner.owner} owner={owner} rank={index + 1} />)}
+                </TableBody>
+              </Table>
             ) : (
               <div className="px-5 py-5">
                 <EmptyState title="No leaderboard data yet" description="Owner rankings will appear once the API returns standings." />
               </div>
             )}
-          </SectionShell>
 
           <SectionShell marker="Punishments" title="Tracker">
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-4">
               <PunishmentCard
                 label="Most Goals Conceded"
                 team={mostConceded}
@@ -330,11 +285,11 @@ export default async function LeaderboardsPage() {
           </SectionShell>
         </div>
 
-        <aside className="grid gap-6">
+        <aside className="grid gap-4">
           <WallOfShame rows={leaderboards.wallOfShame ?? []} />
           <SectionShell marker="Watchlist" title="Underdogs">
             {underdogs.length ? (
-              <div className="grid gap-3">
+              <div className="overflow-hidden">
                 {underdogs.map((team) => <UnderdogRow key={`${team.owner}-${team.team}`} team={team} />)}
               </div>
             ) : (

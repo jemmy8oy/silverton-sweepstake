@@ -17,6 +17,7 @@ export default function StatusBadge({
     <Badge
       variant="outline"
       className={cn(
+        "min-h-5 px-1.5 py-0 text-[0.58rem] tracking-[0.12em]",
         tone === "default" && "bg-primary text-primary-foreground",
         tone === "accent" && "bg-accent text-accent-foreground",
         tone === "destructive" && "bg-destructive text-destructive-foreground",

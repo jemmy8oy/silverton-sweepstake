@@ -22,17 +22,17 @@ export function SideNavLinks() {
   const pathname = usePathname();
 
   return (
-    <nav className="grid flex-1 gap-2 px-4">
+    <nav className="grid flex-1 gap-1.5 px-3">
       {navItems.map((item) => (
         <Link
           key={item.href}
           className={cn(
-            "flex items-center gap-3 border-2 border-transparent px-4 py-3 font-mono text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground transition duration-150 ease-out hover:border-foreground hover:bg-secondary hover:text-foreground",
+            "flex items-center gap-2 border-2 border-transparent px-3 py-2.5 font-mono text-[0.68rem] font-bold uppercase tracking-[0.12em] text-muted-foreground transition duration-150 ease-out hover:border-foreground hover:bg-secondary hover:text-foreground",
             isActive(pathname, item.href) && "border-foreground bg-accent text-accent-foreground"
           )}
           href={item.href}
         >
-          <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
+          <span className="material-symbols-outlined text-[18px]" aria-hidden="true">
             {item.icon}
           </span>
           <span>{item.label}</span>
@@ -51,12 +51,12 @@ export function BottomNavLinks() {
         <Link
           key={item.href}
           className={cn(
-            "flex min-w-[68px] flex-col items-center justify-center gap-1 border-2 border-transparent px-3 py-1.5 font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-muted-foreground transition duration-150 ease-out",
+            "flex min-w-[60px] flex-col items-center justify-center gap-0.5 border-2 border-transparent px-2 py-1 font-mono text-[0.54rem] font-bold uppercase tracking-[0.12em] text-muted-foreground transition duration-150 ease-out",
             isActive(pathname, item.href) && "border-foreground bg-accent text-accent-foreground"
           )}
           href={item.href}
         >
-          <span className="material-symbols-outlined text-[22px]" aria-hidden="true">
+          <span className="material-symbols-outlined text-[19px]" aria-hidden="true">
             {item.icon}
           </span>
           <span>{item.label}</span>

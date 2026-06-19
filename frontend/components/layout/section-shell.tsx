@@ -15,24 +15,23 @@ export default function SectionShell({
   children,
   title,
   marker,
-  description,
+  description: _description,
   actions,
   className,
   contentClassName
 }: SectionShellProps) {
   return (
     <section className={cn("brutal-surface", className)}>
-      {title || marker || description || actions ? (
-        <header className="grid gap-3 border-b-2 border-foreground px-5 py-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:px-6">
-          <div className="grid gap-2">
-            {marker ? <span className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{marker}</span> : null}
-            {title ? <h2 className="text-3xl font-black leading-none md:text-4xl">{title}</h2> : null}
-            {description ? <div className="text-sm leading-7 text-muted-foreground">{description}</div> : null}
+      {title || marker || actions ? (
+        <header className="grid gap-2 border-b-2 border-foreground px-4 py-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:px-5">
+          <div className="grid gap-1">
+            {marker ? <span className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{marker}</span> : null}
+            {title ? <h2 className="text-2xl font-black leading-none md:text-3xl">{title}</h2> : null}
           </div>
-          {actions ? <div className="flex flex-wrap items-center gap-3">{actions}</div> : null}
+          {actions ? <div className="flex flex-wrap items-center gap-2">{actions}</div> : null}
         </header>
       ) : null}
-      <div className={cn("px-5 py-5 md:px-6", contentClassName)}>{children}</div>
+      <div className={cn("px-4 py-4 md:px-5", contentClassName)}>{children}</div>
     </section>
   );
 }
