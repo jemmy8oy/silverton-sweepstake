@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ownerAvatarSrc, ownerInitials } from "@/lib/owner-avatars";
 import type { ReactNode } from "react";
+import { cn } from "@/lib/cn";
 
 type OwnerAvatarProps = {
   owner: string;
@@ -12,11 +13,13 @@ export default function OwnerAvatar({ owner, className, children }: OwnerAvatarP
   const src = ownerAvatarSrc(owner);
 
   return (
-    <div className={src ? `${className} has-image` : className} aria-hidden="true">
+    <div className={cn("relative overflow-hidden", src ? "bg-secondary" : "bg-primary text-primary-foreground", className)} aria-hidden="true">
       {src ? (
-        <Image src={src} alt="" fill sizes="104px" className="owner-avatar-image" />
+        <Image src={src} alt="" fill sizes="104px" className="object-cover" />
       ) : (
-        <span className="owner-avatar-fallback">{ownerInitials(owner || "?")}</span>
+        <span className="grid h-full w-full place-items-center font-mono text-[0.72rem] font-extrabold uppercase tracking-[0.14em]">
+          {ownerInitials(owner || "?")}
+        </span>
       )}
       {children}
     </div>

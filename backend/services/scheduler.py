@@ -58,6 +58,11 @@ def _acquire_single_instance_lock() -> bool:
         handle.close()
         return False
 
+    handle.seek(0)
+    handle.truncate()
+    handle.write(str(os.getpid()))
+    handle.flush()
+
     _lock_handle = handle
     return True
 

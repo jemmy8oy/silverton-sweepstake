@@ -71,6 +71,23 @@ def get_match_summary(event_id: str) -> dict[str, Any]:
     return response.json()
 
 
+def get_fixture_detail(event_id: str) -> dict[str, Any] | None:
+    fixture = next((item for item in get_fixtures() if str(item.get("id")) == str(event_id)), None)
+    if fixture is None:
+        return None
+
+    summary = get_match_summary(str(event_id))
+    refreshed_fixture = {
+        **fixture,
+        "events": extract_match_events(summary),
+        "lineups": extract_match_lineups(summary),
+    }
+    return {
+        "fixture": hydrate_fixture_teams(refreshed_fixture),
+        "lineups": refreshed_fixture["lineups"],
+    }
+
+
 def extract_fixtures(scoreboard: dict[str, Any]) -> list[dict[str, Any]]:
     fixtures = []
 
@@ -115,7 +132,8 @@ def extract_fixtures(scoreboard: dict[str, Any]) -> list[dict[str, Any]]:
             "awayWinner": away_winner,
             "stage": _normalise_stage(event),
             "group": None,
-            "events": []
+            "events": [],
+            "lineups": {},
         })
 
     return fixtures
@@ -149,12 +167,15 @@ def hydrate_fixtures(start: date = TOURNAMENT_START, end: date = TOURNAMENT_END)
     pending = [fixture for fixture in fixtures if fixture["status"] in ("finished", "live")]
     for fixture in fixtures:
         fixture["events"] = []
+        fixture["lineups"] = {}
 
     if pending:
         with ThreadPoolExecutor(max_workers=SUMMARY_WORKERS) as executor:
-            futures = {executor.submit(_safe_match_events, fixture["id"]): fixture for fixture in pending}
+            futures = {executor.submit(_safe_match_detail, fixture["id"]): fixture for fixture in pending}
             for future in as_completed(futures):
-                futures[future]["events"] = future.result()
+                detail = future.result()
+                futures[future]["events"] = detail["events"]
+                futures[future]["lineups"] = detail["lineups"]
 
     hydrated = [hydrate_fixture_teams(fixture) for fixture in fixtures]
     return sorted(hydrated, key=lambda item: item["kickoff"])
@@ -170,22 +191,72 @@ def _safe_match_events(event_id: str) -> list[dict[str, Any]]:
         return []
 
 
+def _safe_match_detail(event_id: str) -> dict[str, Any]:
+    try:
+        summary = get_match_summary(event_id)
+        return {
+            "events": extract_match_events(summary),
+            "lineups": extract_match_lineups(summary),
+        }
+    except (requests.RequestException, ValueError, KeyError, TypeError):
+        return {"events": [], "lineups": {}}
+
+
 def extract_match_events(summary: dict[str, Any]) -> list[dict[str, Any]]:
     events = []
     seen = set()
 
     for play in summary.get("keyEvents", []):
         play_type = (play.get("type", {}).get("type") or "").lower()
-        if play.get("scoringPlay") is True or play_type in {"goal", "goal---header", "own-goal"}:
+        if play_type == "own-goal":
+            event_type = "own_goal"
+            team = _own_goal_responsible_team(summary, play)
+            beneficiary = hydrate_team_ref(name=play.get("team", {}).get("displayName"), code=play.get("team", {}).get("abbreviation"))
+        elif play.get("scoringPlay") is True or play_type in {"goal", "goal---header"}:
             event_type = "goal"
+            team = hydrate_team_ref(name=play.get("team", {}).get("displayName"), code=play.get("team", {}).get("abbreviation"))
         elif play_type == "red-card":
             event_type = "red_card"
+            team = hydrate_team_ref(name=play.get("team", {}).get("displayName"), code=play.get("team", {}).get("abbreviation"))
         elif play_type == "yellow-card":
             event_type = "yellow_card"
+            team = hydrate_team_ref(name=play.get("team", {}).get("displayName"), code=play.get("team", {}).get("abbreviation"))
+        elif play_type == "substitution":
+            team = hydrate_team_ref(name=play.get("team", {}).get("displayName"), code=play.get("team", {}).get("abbreviation"))
+            if not team["team"]:
+                continue
+
+            minute = _event_minute(play)
+            sub_in_player, sub_out_player = _substitution_players(play)
+            if sub_in_player:
+                event = {
+                    "team": team["team"],
+                    "teamCode": team["code"],
+                    "type": "sub_on",
+                    "minute": minute,
+                    "player": sub_in_player,
+                }
+                dedupe_key = (event["team"], event["type"], event["minute"], event.get("player"))
+                if dedupe_key not in seen:
+                    seen.add(dedupe_key)
+                    events.append(event)
+
+            if sub_out_player:
+                event = {
+                    "team": team["team"],
+                    "teamCode": team["code"],
+                    "type": "sub_off",
+                    "minute": minute,
+                    "player": sub_out_player,
+                }
+                dedupe_key = (event["team"], event["type"], event["minute"], event.get("player"))
+                if dedupe_key not in seen:
+                    seen.add(dedupe_key)
+                    events.append(event)
+            continue
         else:
             continue
 
-        team = hydrate_team_ref(name=play.get("team", {}).get("displayName"), code=play.get("team", {}).get("abbreviation"))
         if not team["team"]:
             continue
 
@@ -195,6 +266,9 @@ def extract_match_events(summary: dict[str, Any]) -> list[dict[str, Any]]:
             "type": event_type,
             "minute": _event_minute(play),
         }
+        if event_type == "own_goal" and beneficiary["team"]:
+            event["beneficiaryTeam"] = beneficiary["team"]
+            event["beneficiaryTeamCode"] = beneficiary["code"]
         player = _event_player(play)
         if player:
             event["player"] = player
@@ -206,6 +280,83 @@ def extract_match_events(summary: dict[str, Any]) -> list[dict[str, Any]]:
         events.append(event)
 
     return events
+
+
+def extract_match_lineups(summary: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    lineups: dict[str, dict[str, Any]] = {}
+
+    for roster in summary.get("rosters", []):
+        side = (roster.get("homeAway") or "").lower()
+        if side not in {"home", "away"}:
+            continue
+
+        team = hydrate_team_ref(
+            name=roster.get("team", {}).get("displayName"),
+            code=roster.get("team", {}).get("abbreviation"),
+        )
+
+        players = [_normalise_lineup_player(player) for player in roster.get("roster", [])]
+        starters = sorted((player for player in players if player["starter"]), key=_lineup_sort_key)
+        bench = sorted((player for player in players if not player["starter"]), key=_lineup_sort_key)
+
+        lineups[side] = {
+            "team": team["team"],
+            "teamCode": team["code"],
+            "teamLogo": team["logo"],
+            "formation": roster.get("formation"),
+            "winner": bool(roster.get("winner")) if roster.get("winner") is not None else None,
+            "starters": starters,
+            "bench": bench,
+        }
+
+    return lineups
+
+def _own_goal_responsible_team(summary: dict[str, Any], play: dict[str, Any]) -> dict[str, Any]:
+    beneficiary = hydrate_team_ref(name=play.get("team", {}).get("displayName"), code=play.get("team", {}).get("abbreviation"))
+    competitors = (((summary.get("header") or {}).get("competitions") or [{}])[0].get("competitors") or [])
+
+    for competitor in competitors:
+        team = hydrate_team_ref(name=competitor.get("team", {}).get("displayName"), code=competitor.get("team", {}).get("abbreviation"))
+        if not team["team"]:
+            continue
+        if beneficiary["code"] and team["code"] == beneficiary["code"]:
+            continue
+        if team["team"] == beneficiary["team"]:
+            continue
+        return team
+
+    # Fallback if the summary payload is missing competitors. This preserves the
+    # prior behaviour rather than dropping the event entirely.
+    return beneficiary
+
+
+def _normalise_lineup_player(player: dict[str, Any]) -> dict[str, Any]:
+    athlete = player.get("athlete", {})
+    position = player.get("position", {})
+
+    return {
+        "id": athlete.get("id"),
+        "name": athlete.get("displayName") or athlete.get("fullName") or athlete.get("shortName") or "Unknown player",
+        "shortName": athlete.get("shortName") or athlete.get("displayName") or athlete.get("fullName") or "Unknown player",
+        "jersey": player.get("jersey"),
+        "starter": bool(player.get("starter")),
+        "subbedIn": bool(player.get("subbedIn")),
+        "subbedOut": bool(player.get("subbedOut")),
+        "formationPlace": player.get("formationPlace"),
+        "position": position.get("displayName") or position.get("name"),
+        "positionCode": position.get("abbreviation"),
+    }
+
+
+def _lineup_sort_key(player: dict[str, Any]) -> tuple[int, str]:
+    place = player.get("formationPlace")
+    try:
+        numeric_place = int(str(place))
+    except (TypeError, ValueError):
+        numeric_place = 999
+
+    name = str(player.get("name") or "")
+    return numeric_place, name
 
 
 def _normalise_status(status_type: dict[str, Any]) -> str:
@@ -286,3 +437,18 @@ def _event_player(play: dict[str, Any]) -> str | None:
     if not participants:
         return None
     return participants[0].get("athlete", {}).get("displayName")
+
+
+def _substitution_players(play: dict[str, Any]) -> tuple[str | None, str | None]:
+    participants = play.get("participants") or []
+    names = [participant.get("athlete", {}).get("displayName") for participant in participants if participant.get("athlete", {}).get("displayName")]
+
+    if len(names) >= 2:
+        return names[0], names[1]
+
+    text = (play.get("text") or "").strip()
+    match = re.search(r"\.\s*(?P<in>.+?)\s+replaces\s+(?P<out>.+?)(?:\.|$)", text)
+    if match:
+        return match.group("in").strip(), match.group("out").strip()
+
+    return (names[0], None) if names else (None, None)

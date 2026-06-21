@@ -110,6 +110,16 @@ def hydrate_fixture_teams(fixture: dict[str, Any]) -> dict[str, Any]:
         team = hydrate_team_ref(name=event.get("team"), code=event.get("teamCode"))
         events.append({**event, "team": team["team"], "teamCode": team["code"], "teamLogo": team["logo"]})
 
+    lineups: dict[str, dict[str, Any]] = {}
+    for side, lineup in (fixture.get("lineups") or {}).items():
+        team = hydrate_team_ref(name=lineup.get("team"), code=lineup.get("teamCode"))
+        lineups[side] = {
+            **lineup,
+            "team": team["team"],
+            "teamCode": team["code"],
+            "teamLogo": team["logo"],
+        }
+
     return {
         **fixture,
         "homeTeam": home["team"],
@@ -118,7 +128,8 @@ def hydrate_fixture_teams(fixture: dict[str, Any]) -> dict[str, Any]:
         "awayTeam": away["team"],
         "awayCode": away["code"],
         "awayLogo": away["logo"],
-        "events": events
+        "events": events,
+        "lineups": lineups,
     }
 
 
