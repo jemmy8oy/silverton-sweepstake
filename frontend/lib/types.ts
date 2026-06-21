@@ -2,7 +2,7 @@ export type MatchEvent = {
   team: string;
   teamCode?: string;
   teamLogo?: string | null;
-  type: "goal" | "own_goal" | "red_card" | "yellow_card" | string;
+  type: "goal" | "own_goal" | "red_card" | "yellow_card" | "sub_on" | "sub_off" | string;
   minute: number;
   player?: string;
 };
@@ -25,6 +25,34 @@ export type Fixture = {
   stage: string;
   group?: string;
   events?: MatchEvent[];
+};
+
+export type MatchLineupPlayer = {
+  id?: string;
+  name: string;
+  shortName?: string;
+  jersey?: string;
+  starter: boolean;
+  subbedIn: boolean;
+  subbedOut: boolean;
+  formationPlace?: string | null;
+  position?: string;
+  positionCode?: string;
+};
+
+export type TeamLineup = {
+  team: string;
+  teamCode?: string;
+  teamLogo?: string | null;
+  formation?: string | null;
+  winner?: boolean | null;
+  starters: MatchLineupPlayer[];
+  bench: MatchLineupPlayer[];
+};
+
+export type FixtureDetail = {
+  fixture: EnrichedFixture;
+  lineups: Partial<Record<"home" | "away", TeamLineup>>;
 };
 
 export type EnrichedFixture = Fixture & {

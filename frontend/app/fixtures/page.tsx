@@ -6,6 +6,7 @@ import StatusBadge from "@/components/common/status-badge";
 import FixturesSwipeShell from "@/components/FixturesSwipeShell";
 import PageHeader from "@/components/layout/page-header";
 import SectionShell from "@/components/layout/section-shell";
+import { buildMatchSlug } from "@/lib/match-slug";
 import OwnerAvatar from "@/components/OwnerAvatar";
 import { teamCode } from "@/lib/format";
 import TeamLogo from "@/components/TeamLogo";
@@ -228,41 +229,43 @@ function OwnersBand({ fixture }: { fixture: EnrichedFixture }) {
 
 function FixtureCard({ fixture }: { fixture: EnrichedFixture }) {
   return (
-    <article className={cn("brutal-surface px-3 py-3", fixture.status === "live" && "bg-secondary", fixture.isOwnerVsOwner && "bg-accent/20")}>
-      <div className="flex items-center justify-between gap-2">
-        <StatusBadge tone={fixture.status === "live" ? "destructive" : fixture.status === "scheduled" ? "muted" : "default"}>
-          {fixture.status === "scheduled" ? fixture.readableKickoff : statusLabel(fixture)}
-        </StatusBadge>
-        <span className="font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{fixture.stage}</span>
-      </div>
-
-      <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
-        <div className="flex min-w-0 items-center gap-2">
-          <TeamCrest team={fixture.homeTeam} code={fixture.homeTeamCode ?? fixture.homeCode} logo={fixture.homeTeamLogo ?? fixture.homeLogo} />
-          <div className="grid min-w-0 gap-1">
-            <strong className="truncate font-display text-base font-black">{teamCode(fixture.homeTeam, fixture.homeTeamCode ?? fixture.homeCode)}</strong>
-            <PotBadge pot={fixture.homePot} />
-          </div>
+    <Link href={`/match/${buildMatchSlug(fixture)}`} className="block">
+      <article className={cn("brutal-surface px-3 py-3", fixture.status === "live" && "bg-secondary", fixture.isOwnerVsOwner && "bg-accent/20")}>
+        <div className="flex items-center justify-between gap-2">
+          <StatusBadge tone={fixture.status === "live" ? "destructive" : fixture.status === "scheduled" ? "muted" : "default"}>
+            {fixture.status === "scheduled" ? fixture.readableKickoff : statusLabel(fixture)}
+          </StatusBadge>
+          <span className="font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{fixture.stage}</span>
         </div>
 
-        <div className="grid min-w-[88px] place-items-center gap-0.5 bg-primary px-2 py-2 text-center text-primary-foreground">
-          <strong className="font-display text-lg font-black md:text-2xl">{scoreLabel(fixture)}</strong>
-          <span className="font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-primary-foreground/80">{fixture.stage}</span>
-        </div>
-
-        <div className="flex min-w-0 items-center justify-end gap-2 text-right">
-          <div className="grid min-w-0 gap-1">
-            <strong className="truncate font-display text-base font-black">{teamCode(fixture.awayTeam, fixture.awayTeamCode ?? fixture.awayCode)}</strong>
-            <div className="flex justify-end">
-              <PotBadge pot={fixture.awayPot} />
+        <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
+          <div className="flex min-w-0 items-center gap-2">
+            <TeamCrest team={fixture.homeTeam} code={fixture.homeTeamCode ?? fixture.homeCode} logo={fixture.homeTeamLogo ?? fixture.homeLogo} />
+            <div className="grid min-w-0 gap-1">
+              <strong className="truncate font-display text-base font-black">{teamCode(fixture.homeTeam, fixture.homeTeamCode ?? fixture.homeCode)}</strong>
+              <PotBadge pot={fixture.homePot} />
             </div>
           </div>
-          <TeamCrest team={fixture.awayTeam} code={fixture.awayTeamCode ?? fixture.awayCode} logo={fixture.awayTeamLogo ?? fixture.awayLogo} />
-        </div>
-      </div>
 
-      <OwnersBand fixture={fixture} />
-    </article>
+          <div className="grid min-w-[88px] place-items-center gap-0.5 bg-primary px-2 py-2 text-center text-primary-foreground">
+            <strong className="font-display text-lg font-black md:text-2xl">{scoreLabel(fixture)}</strong>
+            <span className="font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-primary-foreground/80">{fixture.stage}</span>
+          </div>
+
+          <div className="flex min-w-0 items-center justify-end gap-2 text-right">
+            <div className="grid min-w-0 gap-1">
+              <strong className="truncate font-display text-base font-black">{teamCode(fixture.awayTeam, fixture.awayTeamCode ?? fixture.awayCode)}</strong>
+              <div className="flex justify-end">
+                <PotBadge pot={fixture.awayPot} />
+              </div>
+            </div>
+            <TeamCrest team={fixture.awayTeam} code={fixture.awayTeamCode ?? fixture.awayCode} logo={fixture.awayTeamLogo ?? fixture.awayLogo} />
+          </div>
+        </div>
+
+        <OwnersBand fixture={fixture} />
+      </article>
+    </Link>
   );
 }
 

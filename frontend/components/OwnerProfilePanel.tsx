@@ -1,8 +1,10 @@
+import Link from "next/link";
 import OwnerAvatar from "@/components/OwnerAvatar";
 import StatusBadge from "@/components/common/status-badge";
 import TeamLogo from "@/components/TeamLogo";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import { cn } from "@/lib/cn";
+import { buildMatchSlug } from "@/lib/match-slug";
 import type { EnrichedFixture, OwnerSummary, OwnerTeam, TeamStats } from "@/lib/types";
 
 function winRate(owner: OwnerSummary) {
@@ -66,22 +68,24 @@ function TeamTile({ team }: { team: OwnerTeam }) {
 
 function JourneyRow({ fixture, owner }: { fixture: EnrichedFixture; owner: string }) {
   return (
-    <article
-      className={cn(
-        "flex items-center justify-between gap-3 px-3 py-2.5 text-xs",
-        fixture.status === "live"
-          ? "bg-secondary"
-          : "bg-background"
-      )}
-    >
-      <div className="grid gap-1">
-        <span className="font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">
-          {fixture.status === "finished" ? "Final" : fixture.status === "live" ? "Live" : fixture.readableKickoff}
-        </span>
-        <strong>{matchTeamLabel(fixture, owner)}</strong>
-      </div>
-      <strong className="font-display text-lg font-black">{scoreLabel(fixture, owner)}</strong>
-    </article>
+    <Link href={`/match/${buildMatchSlug(fixture)}`} className="block">
+      <article
+        className={cn(
+          "flex items-center justify-between gap-3 px-3 py-2.5 text-xs",
+          fixture.status === "live"
+            ? "bg-secondary"
+            : "bg-background"
+        )}
+      >
+        <div className="grid gap-1">
+          <span className="font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+            {fixture.status === "finished" ? "Final" : fixture.status === "live" ? "Live" : fixture.readableKickoff}
+          </span>
+          <strong>{matchTeamLabel(fixture, owner)}</strong>
+        </div>
+        <strong className="font-display text-lg font-black">{scoreLabel(fixture, owner)}</strong>
+      </article>
+    </Link>
   );
 }
 
@@ -200,15 +204,16 @@ export default function OwnerProfilePanel({ owner, rank }: { owner: OwnerSummary
                 headToHeads.map((fixture) => {
                   const rival = fixture.homeOwner === owner.owner ? fixture.awayOwner : fixture.homeOwner;
                   return (
-                    <div
-                      key={`${owner.owner}-h2h-${fixture.id}`}
-                      className="flex items-center justify-between gap-3 bg-background px-3 py-2.5 text-xs"
-                    >
-                      <span className="text-muted-foreground">vs {rival}</span>
-                      <strong className="font-display text-lg font-black">
-                        {scoreLabel(fixture, owner.owner)}
-                      </strong>
-                    </div>
+                    <Link href={`/match/${buildMatchSlug(fixture)}`} key={`${owner.owner}-h2h-${fixture.id}`} className="block">
+                      <div
+                        className="flex items-center justify-between gap-3 bg-background px-3 py-2.5 text-xs"
+                      >
+                        <span className="text-muted-foreground">vs {rival}</span>
+                        <strong className="font-display text-lg font-black">
+                          {scoreLabel(fixture, owner.owner)}
+                        </strong>
+                      </div>
+                    </Link>
                   );
                 })
               ) : (

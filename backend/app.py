@@ -9,6 +9,7 @@ from requests import RequestException
 from services.cache import clear_cache, get_cached, set_cached
 from services.data_loader import build_team_lookup, load_draw
 from services.football_api import get_fixtures as provider_get_fixtures
+from services.football_api import get_fixture_detail
 from services.football_api import refresh_all
 from services.scheduler import start_scheduler
 from services.sweepstake import (
@@ -109,6 +110,32 @@ def owner_detail(owner: str):
 @app.get("/api/fixtures")
 def fixtures():
     return jsonify(_base_payload()["enriched"])
+
+
+@app.get("/api/fixtures/<fixture_id>")
+def fixture_detail(fixture_id: str):
+    payload = _base_payload()
+    fixture = next((item for item in payload["enriched"] if str(item.get("id")) == fixture_id), None)
+    if not fixture:
+        return _json_error(f"Fixture not found: {fixture_id}", 404)
+
+    cached_fixture = next((item for item in provider_get_fixtures() if str(item.get("id")) == fixture_id), None)
+
+    try:
+        detail = get_fixture_detail(fixture_id)
+    except RequestException:
+        detail = {
+            "fixture": fixture,
+            "lineups": (cached_fixture or {}).get("lineups", {}),
+        }
+
+    if not detail:
+        return _json_error(f"Fixture not found: {fixture_id}", 404)
+
+    return jsonify({
+        "fixture": detail.get("fixture", fixture),
+        "lineups": detail.get("lineups", {}),
+    })
 
 
 @app.get("/api/fixtures/today")

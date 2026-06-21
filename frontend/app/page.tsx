@@ -9,6 +9,7 @@ import SectionShell from "@/components/layout/section-shell";
 import OwnerAvatar from "@/components/OwnerAvatar";
 import TeamLogo from "@/components/TeamLogo";
 import { Button } from "@/components/ui/button";
+import { buildMatchSlug } from "@/lib/match-slug";
 import { cn } from "@/lib/utils";
 import type { EnrichedFixture, Leaderboards, OwnerSummary, UnderdogTracker } from "@/lib/types";
 
@@ -166,66 +167,70 @@ function FeaturedMatch({ fixture }: { fixture: EnrichedFixture | null }) {
   }
 
   return (
-    <SectionShell
-      marker="Live Match"
-      title="Featured Fixture"
-      actions={<StatusBadge tone={fixture.status === "live" ? "destructive" : "accent"}>{statusLabel(fixture)}</StatusBadge>}
-      contentClassName="p-0"
-    >
-      <div className="grid divide-y-2 divide-foreground">
-        <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 px-3 py-3 md:px-4">
-          <div className="flex min-w-0 items-center gap-2.5">
-            <TeamMark team={fixture.homeTeam} code={fixture.homeTeamCode ?? fixture.homeCode} logo={fixture.homeTeamLogo ?? fixture.homeLogo} size="lg" />
-            <div className="grid min-w-0 gap-0.5">
-              <h3 className="truncate text-sm font-black md:text-lg">{fixture.homeTeam}</h3>
-              <OwnerLine owner={fixture.homeOwner} />
+    <Link href={`/match/${buildMatchSlug(fixture)}`} className="block">
+      <SectionShell
+        marker="Live Match"
+        title="Featured Fixture"
+        actions={<StatusBadge tone={fixture.status === "live" ? "destructive" : "accent"}>{statusLabel(fixture)}</StatusBadge>}
+        contentClassName="p-0"
+      >
+        <div className="grid divide-y-2 divide-foreground">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 px-3 py-3 md:px-4">
+            <div className="flex min-w-0 items-center gap-2.5">
+              <TeamMark team={fixture.homeTeam} code={fixture.homeTeamCode ?? fixture.homeCode} logo={fixture.homeTeamLogo ?? fixture.homeLogo} size="lg" />
+              <div className="grid min-w-0 gap-0.5">
+                <h3 className="truncate text-sm font-black md:text-lg">{fixture.homeTeam}</h3>
+                <OwnerLine owner={fixture.homeOwner} />
+              </div>
+            </div>
+
+            <div className="grid min-w-[92px] place-items-center gap-0.5 bg-accent px-2 py-2 text-center">
+              <strong className="font-display text-xl font-black md:text-3xl">{scoreLabel(fixture)}</strong>
+              <span className="font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-foreground/75">{fixture.stage}</span>
+            </div>
+
+            <div className="flex min-w-0 items-center justify-end gap-2.5 text-right">
+              <div className="grid min-w-0 gap-0.5">
+                <h3 className="truncate text-sm font-black md:text-lg">{fixture.awayTeam}</h3>
+                <OwnerLine owner={fixture.awayOwner} />
+              </div>
+              <TeamMark team={fixture.awayTeam} code={fixture.awayTeamCode ?? fixture.awayCode} logo={fixture.awayTeamLogo ?? fixture.awayLogo} size="lg" />
             </div>
           </div>
-
-          <div className="grid min-w-[92px] place-items-center gap-0.5 bg-accent px-2 py-2 text-center">
-            <strong className="font-display text-xl font-black md:text-3xl">{scoreLabel(fixture)}</strong>
-            <span className="font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-foreground/75">{fixture.stage}</span>
-          </div>
-
-          <div className="flex min-w-0 items-center justify-end gap-2.5 text-right">
-            <div className="grid min-w-0 gap-0.5">
-              <h3 className="truncate text-sm font-black md:text-lg">{fixture.awayTeam}</h3>
-              <OwnerLine owner={fixture.awayOwner} />
-            </div>
-            <TeamMark team={fixture.awayTeam} code={fixture.awayTeamCode ?? fixture.awayCode} logo={fixture.awayTeamLogo ?? fixture.awayLogo} size="lg" />
-          </div>
+          <FeaturedScorers fixture={fixture} />
         </div>
-        <FeaturedScorers fixture={fixture} />
-      </div>
-    </SectionShell>
+      </SectionShell>
+    </Link>
   );
 }
 
 function MiniMatch({ fixture }: { fixture: EnrichedFixture }) {
   return (
-    <article className="brutal-surface grid gap-2 px-3 py-3">
-      <div className="flex items-center justify-between gap-2">
-        <span className="font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{fixture.readableKickoff}</span>
-        <StatusBadge tone={fixture.status === "live" ? "destructive" : "muted"}>{statusLabel(fixture)}</StatusBadge>
-      </div>
-      <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
-        <div className="flex min-w-0 items-center gap-2">
-          <TeamMark team={fixture.homeTeam} code={fixture.homeTeamCode ?? fixture.homeCode} logo={fixture.homeTeamLogo ?? fixture.homeLogo} size="sm" />
-          <div className="grid min-w-0 gap-0.5">
-            <strong className="truncate text-xs">{fixture.homeTeam}</strong>
-            <OwnerLine owner={fixture.homeOwner} />
+    <Link href={`/match/${buildMatchSlug(fixture)}`} className="block">
+      <article className="brutal-surface grid gap-2 px-3 py-3">
+        <div className="flex items-center justify-between gap-2">
+          <span className="font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{fixture.readableKickoff}</span>
+          <StatusBadge tone={fixture.status === "live" ? "destructive" : "muted"}>{statusLabel(fixture)}</StatusBadge>
+        </div>
+        <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
+          <div className="flex min-w-0 items-center gap-2">
+            <TeamMark team={fixture.homeTeam} code={fixture.homeTeamCode ?? fixture.homeCode} logo={fixture.homeTeamLogo ?? fixture.homeLogo} size="sm" />
+            <div className="grid min-w-0 gap-0.5">
+              <strong className="truncate text-xs">{fixture.homeTeam}</strong>
+              <OwnerLine owner={fixture.homeOwner} />
+            </div>
+          </div>
+          <span className="font-display text-lg font-black">{scoreLabel(fixture)}</span>
+          <div className="flex min-w-0 items-center justify-end gap-2 text-right">
+            <div className="grid min-w-0 gap-0.5">
+              <strong className="truncate text-xs">{fixture.awayTeam}</strong>
+              <OwnerLine owner={fixture.awayOwner} />
+            </div>
+            <TeamMark team={fixture.awayTeam} code={fixture.awayTeamCode ?? fixture.awayCode} logo={fixture.awayTeamLogo ?? fixture.awayLogo} size="sm" />
           </div>
         </div>
-        <span className="font-display text-lg font-black">{scoreLabel(fixture)}</span>
-        <div className="flex min-w-0 items-center justify-end gap-2 text-right">
-          <div className="grid min-w-0 gap-0.5">
-            <strong className="truncate text-xs">{fixture.awayTeam}</strong>
-            <OwnerLine owner={fixture.awayOwner} />
-          </div>
-          <TeamMark team={fixture.awayTeam} code={fixture.awayTeamCode ?? fixture.awayCode} logo={fixture.awayTeamLogo ?? fixture.awayLogo} size="sm" />
-        </div>
-      </div>
-    </article>
+      </article>
+    </Link>
   );
 }
 
@@ -235,12 +240,11 @@ function LeaderboardPanel({ owners }: { owners: OwnerSummary[] }) {
   return (
     <SectionShell
       marker="Standings"
-      title="Quick Leaderboard"
+      title="Leaderboard"
       actions={
         <Button asChild variant="outline" size="sm">
           <Link href="/leaderboards">
             <Trophy />
-            Full Table
           </Link>
         </Button>
       }
@@ -281,7 +285,7 @@ function UnderdogPanel({ tracker }: { tracker: UnderdogTracker }) {
   const leader = tracker.leader ?? tracker.standings[0];
 
   return (
-    <SectionShell marker="Prize Watch" title="Underdog" actions={<StatusBadge tone="accent">Yellow Jersey</StatusBadge>}>
+    <SectionShell marker="Prize Watch" title="Underdog">
       {leader ? (
         <div className="flex items-center gap-2.5 px-3 py-3">
           <TeamMark team={leader.team} code={leader.code} logo={leader.logo} size="sm" />
@@ -302,29 +306,31 @@ function UnderdogPanel({ tracker }: { tracker: UnderdogTracker }) {
 
 function BattleCard({ fixture, tone }: { fixture: EnrichedFixture; tone: "accent" | "destructive" | "blue" }) {
   return (
-    <article className="brutal-surface grid gap-2 px-3 py-3">
-      <div className="flex items-center justify-between gap-2">
-        <StatusBadge tone={tone}>{fixture.isSelfMatch ? "Friendly Fire" : "Rivalry Match"}</StatusBadge>
-        <strong className="font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{fixture.readableKickoff}</strong>
-      </div>
-      <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
-        <div className="flex min-w-0 items-center gap-2">
-          <TeamMark team={fixture.homeTeam} code={fixture.homeTeamCode ?? fixture.homeCode} logo={fixture.homeTeamLogo ?? fixture.homeLogo} />
-          <div className="grid min-w-0 gap-0.5">
-            <span className="truncate font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{fixture.homeTeam}</span>
-            <strong className="truncate text-xs">{fixture.homeOwner}</strong>
+    <Link href={`/match/${buildMatchSlug(fixture)}`} className="block">
+      <article className="brutal-surface grid gap-2 px-3 py-3">
+        <div className="flex items-center justify-between gap-2">
+          <StatusBadge tone={tone}>{fixture.isSelfMatch ? "Friendly Fire" : "Battle"}</StatusBadge>
+          <strong className="font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{fixture.readableKickoff}</strong>
+        </div>
+        <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
+          <div className="flex min-w-0 items-center gap-2">
+            <TeamMark team={fixture.homeTeam} code={fixture.homeTeamCode ?? fixture.homeCode} logo={fixture.homeTeamLogo ?? fixture.homeLogo} />
+            <div className="grid min-w-0 gap-0.5">
+              <span className="truncate font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{fixture.homeTeam}</span>
+              <strong className="truncate text-xs">{fixture.homeOwner}</strong>
+            </div>
+          </div>
+          <span className="justify-self-center font-display text-base font-black">VS</span>
+          <div className="flex min-w-0 items-center justify-end gap-2 text-right">
+            <div className="grid min-w-0 gap-0.5">
+              <span className="truncate font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{fixture.awayTeam}</span>
+              <strong className="truncate text-xs">{fixture.awayOwner}</strong>
+            </div>
+            <TeamMark team={fixture.awayTeam} code={fixture.awayTeamCode ?? fixture.awayCode} logo={fixture.awayTeamLogo ?? fixture.awayLogo} />
           </div>
         </div>
-        <span className="justify-self-center font-display text-base font-black">VS</span>
-        <div className="flex min-w-0 items-center justify-end gap-2 text-right">
-          <div className="grid min-w-0 gap-0.5">
-            <span className="truncate font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{fixture.awayTeam}</span>
-            <strong className="truncate text-xs">{fixture.awayOwner}</strong>
-          </div>
-          <TeamMark team={fixture.awayTeam} code={fixture.awayTeamCode ?? fixture.awayCode} logo={fixture.awayTeamLogo ?? fixture.awayLogo} />
-        </div>
-      </div>
-    </article>
+      </article>
+    </Link>
   );
 }
 

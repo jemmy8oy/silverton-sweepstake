@@ -1,5 +1,6 @@
 import type {
   DrawTeam,
+  FixtureDetail,
   EnrichedFixture,
   Leaderboards,
   OwnerSummary,
@@ -44,6 +45,10 @@ export function getOwner(owner: string) {
 
 export function getFixtures() {
   return fetchJson<EnrichedFixture[]>("/api/fixtures");
+}
+
+export function getFixtureDetail(fixtureId: string) {
+  return fetchJson<FixtureDetail>(`/api/fixtures/${encodeURIComponent(fixtureId)}`);
 }
 
 export function getTodayFixtures() {
