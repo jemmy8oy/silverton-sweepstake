@@ -9,4 +9,5 @@ node_modules/
 out/
 *.tsbuildinfo
 backend/cache/*.json
+backend/cache/.scheduler.lock
 !backend/cache/.gitkeep
