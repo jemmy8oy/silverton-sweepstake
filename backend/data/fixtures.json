@@ -30956,17 +30956,17 @@
   {
     "id": "760453",
     "kickoff": "2026-06-21T16:00Z",
-    "status": "live",
-    "espnStatus": "STATUS_SECOND_HALF",
-    "minute": "90'+7'",
+    "status": "finished",
+    "espnStatus": "STATUS_FULL_TIME",
+    "minute": null,
     "homeTeam": "Spain",
     "homeCode": "ESP",
     "awayTeam": "Saudi Arabia",
     "awayCode": "KSA",
     "homeScore": 4,
     "awayScore": 0,
-    "homeWinner": null,
-    "awayWinner": null,
+    "homeWinner": true,
+    "awayWinner": false,
     "stage": "Group stage",
     "group": null,
     "events": [
@@ -31187,7 +31187,7 @@
         "teamCode": "ESP",
         "teamLogo": "https://a.espncdn.com/i/teamlogos/countries/500/esp.png",
         "formation": "4-3-3",
-        "winner": false,
+        "winner": true,
         "starters": [
           {
             "id": "222375",
