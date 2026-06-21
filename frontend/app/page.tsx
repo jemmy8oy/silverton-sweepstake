@@ -158,12 +158,7 @@ function FeaturedScorers({ fixture }: { fixture: EnrichedFixture }) {
 
 function FeaturedMatch({ fixture }: { fixture: EnrichedFixture | null }) {
   if (!fixture) {
-    return (
-      <EmptyState
-        title="No featured match"
-        description="Live and upcoming fixtures will appear here as soon as match data is available."
-      />
-    );
+    return null;
   }
 
   return (
@@ -365,9 +360,10 @@ export default async function HomePage() {
   ]);
 
   const featured = live[0] ?? today.find((fixture) => fixture.status === "live") ?? null;
-  const todayMatches = today.filter((fixture) => fixture.id !== featured?.id).slice(0, 2);
-  const fallbackMatches = fixtures.filter((fixture) => fixture.status !== "finished").slice(0, 2);
-  const visibleMatches = todayMatches.length ? todayMatches : fallbackMatches;
+  const visibleMatches = [...fixtures]
+    .filter((fixture) => fixture.status === "finished")
+    .sort((left, right) => new Date(right.kickoff).getTime() - new Date(left.kickoff).getTime())
+    .slice(0, 4);
   const standings = leaderboards.overall.length ? leaderboards.overall : owners;
   const battles = fixtures
     .filter((fixture) => fixture.status === "scheduled" && fixture.isOwnerVsOwner)
@@ -380,10 +376,11 @@ export default async function HomePage() {
           <FeaturedMatch fixture={featured} />
 
           <div className="grid gap-3">
+            <h2 className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">Recent Matches</h2>
             {visibleMatches.length ? (
               visibleMatches.map((fixture) => <MiniMatch key={fixture.id} fixture={fixture} />)
             ) : (
-              <EmptyState title="No fixtures available" description="Upcoming or live fixtures will show here when match data is available." />
+              <EmptyState title="No recent matches" description="Completed fixtures will appear here once results are available." />
             )}
           </div>
         </section>
@@ -394,6 +391,8 @@ export default async function HomePage() {
         </aside>
       </div>
 
+      <section className="grid gap-3">
+        <h2 className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">Upcoming Battles</h2>
         {battles.length ? (
           <div className="grid gap-3">
             {battles.map((fixture, index) => (
@@ -407,6 +406,7 @@ export default async function HomePage() {
         ) : (
           <EmptyState title="No owner battles scheduled" description="Head-to-head owner clashes will appear here when upcoming fixtures are available." />
         )}
+      </section>
     </PageShell>
   );
 }
