@@ -1,4 +1,3 @@
-import PageHeader from "@/components/layout/page-header";
 import PageShell from "@/components/layout/page-shell";
 import SectionShell from "@/components/layout/section-shell";
 import EmptyState from "@/components/common/empty-state";
@@ -55,7 +54,7 @@ const emptyLeaderboards: Leaderboards = {
 };
 
 function TeamBubble({ team, code, logo }: { team: string; code?: string; logo?: string | null }) {
-  return <TeamLogo team={team} code={code} logo={logo} className="h-7 w-7 border-2 border-foreground bg-background p-1 md:h-8 md:w-8" />;
+  return <TeamLogo team={team} code={code} logo={logo} className="h-7 w-7 rounded-none border-0 bg-transparent p-0 md:h-8 md:w-8" />;
 }
 
 function nextTeam(owner: OwnerSummary) {
@@ -94,13 +93,13 @@ function OverallRow({ owner, rank }: { owner: OwnerSummary; rank: number }) {
   const goalDifference = owner.goalsFor - owner.goalsAgainst;
 
   return (
-    <TableRow className={rank === 1 ? "bg-accent/50" : ""}>
+    <TableRow className={rank === 1 ? "bg-emerald-50" : ""}>
       <TableCell className="min-w-[100px] px-1 py-2 md:min-w-[180px] md:px-3 md:py-3">
         <div className="flex items-center gap-1.5 md:gap-3">
-          <OwnerAvatar owner={owner.owner} className="h-7 w-7 border-2 border-foreground md:h-11 md:w-11" />
+          <OwnerAvatar owner={owner.owner} className="h-7 w-7 rounded-full md:h-10 md:w-10" />
           <div className="grid min-w-0 gap-0.5">
             <strong className="truncate text-[0.7rem] md:text-sm">{owner.owner}</strong>
-            <span className="font-mono text-[0.54rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">#{rank}</span>
+            <span className="text-[0.62rem] font-medium text-neutral-400">#{rank}</span>
           </div>
         </div>
       </TableCell>
@@ -111,7 +110,7 @@ function OverallRow({ owner, rank }: { owner: OwnerSummary; rank: number }) {
       <TableCell className="hidden px-1.5 py-2 text-center text-[0.68rem] md:table-cell md:px-3 md:py-3 md:text-sm">{owner.goalsFor}/{owner.goalsAgainst}</TableCell>
       <TableCell className="px-1 py-2 text-center text-[0.66rem] md:px-3 md:py-3 md:text-sm">{goalDifference > 0 ? `+${goalDifference}` : goalDifference}</TableCell>
       <TableCell className="px-1 py-2 text-center text-[0.66rem] md:px-3 md:py-3 md:text-sm">{owner.yellowCards}/{owner.redCards}</TableCell>
-      <TableCell className="px-1 py-2 text-center font-display text-[0.95rem] font-black md:px-3 md:py-3 md:text-2xl">{owner.points}</TableCell>
+      <TableCell className="px-1 py-2 text-center text-base font-bold md:px-3 md:py-3 md:text-xl">{owner.points}</TableCell>
       <TableCell className="px-1 py-2 md:px-3 md:py-3">{next ? <TeamBubble team={next.team} code={next.code} logo={next.logo} /> : <span className="text-[0.66rem] text-muted-foreground">-</span>}</TableCell>
     </TableRow>
   );
@@ -119,7 +118,7 @@ function OverallRow({ owner, rank }: { owner: OwnerSummary; rank: number }) {
 
 function UnderdogRow({ team }: { team: TeamStats }) {
   return (
-    <div className="flex items-center gap-2 border-b border-foreground/20 px-3 py-2.5 text-xs last:border-b-0">
+    <div className="flex items-center gap-2 border-b border-neutral-100 px-3 py-2.5 text-xs last:border-b-0">
       <div className="flex min-w-0 items-center gap-2">
         <TeamBubble team={team.team} code={team.code} logo={team.logo} />
         <div className="grid min-w-0 gap-0.5">
@@ -127,7 +126,7 @@ function UnderdogRow({ team }: { team: TeamStats }) {
           <span className="truncate text-[0.72rem] text-muted-foreground">{team.owner}</span>
         </div>
       </div>
-      <span className="ml-auto text-[0.72rem] text-muted-foreground">{team.furthestStage}</span>
+      <span className="ml-auto text-[0.72rem] text-neutral-400">{team.furthestStage}</span>
       <StatusBadge tone="muted">P{team.pot}</StatusBadge>
     </div>
   );
@@ -135,23 +134,23 @@ function UnderdogRow({ team }: { team: TeamStats }) {
 
 function WallOfShame({ rows = [] }: { rows?: Leaderboards["wallOfShame"] }) {
   return (
-    <SectionShell marker="Punishment" title="Wall of Shame">
+    <SectionShell marker="Punishment" title="Wall of Shame" contentClassName="p-0">
       {rows.length ? (
-        <div className="overflow-hidden bg-red-100/70">
-          <div className="grid grid-cols-[auto_minmax(0,1fr)_auto_auto] items-center gap-2 border-b-2 border-foreground px-3 py-2 font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+        <div className="overflow-hidden bg-red-50">
+          <div className="grid grid-cols-[auto_minmax(0,1fr)_auto_auto] items-center gap-2 border-b border-red-100 px-3 py-2 text-[0.62rem] font-medium text-red-700/70">
             <span>#</span>
             <span>Owner</span>
             <span>RC/OG</span>
             <span>Shots</span>
           </div>
           {rows.map((row, index) => (
-            <article key={row.owner} className="grid grid-cols-[auto_minmax(0,1fr)_auto_auto] items-center gap-2 border-b border-foreground/20 px-3 py-2.5 text-xs last:border-b-0">
-              <span className="font-mono text-[0.56rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{index + 1}</span>
+            <article key={row.owner} className="grid grid-cols-[auto_minmax(0,1fr)_auto_auto] items-center gap-2 border-b border-red-100 px-3 py-2.5 text-xs last:border-b-0">
+              <span className="text-[0.62rem] font-medium text-red-700/60">{index + 1}</span>
               <div className="flex min-w-0 items-center gap-2">
-                <OwnerAvatar owner={row.owner} className="h-8 w-8 border-2 border-foreground" />
+                <OwnerAvatar owner={row.owner} className="h-8 w-8 rounded-full" />
                 <strong className="truncate">{row.owner}</strong>
               </div>
-              <span className="text-right text-[0.72rem] text-muted-foreground">{row.redCards}/{row.ownGoals}</span>
+              <span className="text-right text-[0.72rem] text-red-700/70">{row.redCards}/{row.ownGoals}</span>
               <StatusBadge tone="destructive">{row.totalShots}</StatusBadge>
             </article>
           ))}
@@ -167,7 +166,7 @@ function SquadStrength({ rows }: { rows: Leaderboards["teamsStillAliveByOwner"] 
   return (
     <SectionShell marker="Survival" title="Squad Strength">
       {rows.length ? (
-        <div className="grid gap-2">
+        <div className="grid gap-2.5">
           {rows.map((row) => {
             const width = ratio(row.teamsStillAlive, row.teamCount);
             return (
@@ -176,8 +175,8 @@ function SquadStrength({ rows }: { rows: Leaderboards["teamsStillAliveByOwner"] 
                   <span className="truncate">{row.owner}</span>
                   <span className="text-muted-foreground">{row.teamsStillAlive}/{row.teamCount}</span>
                 </div>
-                <div className="h-2.5 border-2 border-foreground bg-background">
-                  <span className={cn("block h-full bg-accent", width < 25 && "bg-destructive")} style={{ width: `${Math.max(width, row.teamsStillAlive ? 8 : 4)}%` }} />
+                <div className="h-2 overflow-hidden rounded-full bg-neutral-100">
+                  <span className={cn("block h-full rounded-full bg-emerald-500", width < 25 && "bg-rose-500")} style={{ width: `${Math.max(width, row.teamsStillAlive ? 8 : 4)}%` }} />
                 </div>
               </div>
             );
@@ -202,10 +201,13 @@ function PunishmentCard({
   tone: "accent" | "destructive" | "blue" | "muted";
 }) {
   return (
-    <article className="grid gap-2 px-3 py-3 text-xs">
+    <article className="grid gap-2 rounded-xl bg-neutral-50 px-3 py-3 text-xs">
       <StatusBadge tone={tone}>{label}</StatusBadge>
-      <strong className="truncate font-display text-lg font-black">{team?.team ?? "No data"}</strong>
-      <span className="truncate text-[0.72rem] text-muted-foreground">{team?.owner ?? "Pending"}</span>
+      <div className="flex min-w-0 items-center gap-2">
+        {team ? <TeamBubble team={team.team} code={team.code} logo={team.logo} /> : null}
+        <strong className="truncate text-base font-semibold text-neutral-800">{team?.team ?? "No data"}</strong>
+      </div>
+      <span className="truncate text-[0.72rem] text-neutral-400">{team?.owner ?? "Pending"}</span>
       <em className="text-[0.72rem] not-italic">{team ? detail : "Pending"}</em>
     </article>
   );
@@ -229,6 +231,7 @@ export default async function LeaderboardsPage() {
 
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
         <div className="grid gap-4">
+          <SectionShell marker="Standings" title="Overall Leaderboard" contentClassName="p-0">
             {overall.length ? (
               <Table className="text-xs md:text-sm">
                 <TableHeader>
@@ -254,6 +257,7 @@ export default async function LeaderboardsPage() {
                 <EmptyState title="No leaderboard data yet" description="Owner rankings will appear once the API returns standings." />
               </div>
             )}
+          </SectionShell>
 
           <SectionShell marker="Punishments" title="Tracker">
             <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-4">

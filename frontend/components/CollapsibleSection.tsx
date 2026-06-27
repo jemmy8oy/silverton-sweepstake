@@ -44,28 +44,28 @@ export default function CollapsibleSection({
       collapsible
       value={open ? "content" : undefined}
       onValueChange={(value) => setOpen(value === "content")}
-      className={cn("brutal-surface", className)}
+      className={cn("overflow-hidden rounded-2xl border border-neutral-100 bg-white shadow-sm", className)}
     >
       <AccordionItem value="content" className="border-b-0">
         <AccordionTrigger
           className={cn(
-            "px-3 py-3 hover:no-underline md:px-4",
+            "bg-neutral-100 px-3 py-3 hover:no-underline md:px-4",
             headingClassName === "compact" && "py-2.5"
           )}
         >
-          <span className="flex min-w-0 items-center gap-2">
-            <span className="material-symbols-outlined text-[18px] text-[color:var(--color-signal-blue)]" aria-hidden="true">
+          <span className="flex min-w-0 flex-1 items-center gap-2 pr-3">
+            <span className="material-symbols-outlined text-[18px] text-emerald-600" aria-hidden="true">
               {icon}
             </span>
-            <span className="font-display text-xl font-black normal-case tracking-[-0.04em] text-foreground md:text-2xl">
+            <span className="truncate text-sm font-medium normal-case text-neutral-800">
               {title}
             </span>
           </span>
-          <span className="mr-2 flex items-center gap-2 font-mono text-[0.58rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+          <span className="mr-2 max-w-[42%] shrink text-right text-[0.68rem] font-medium leading-tight text-neutral-500 sm:max-w-none">
             {meta}
           </span>
         </AccordionTrigger>
-        <AccordionContent className="border-t-2 border-foreground px-3 py-3 md:px-4">
+        <AccordionContent className="border-t border-neutral-100 px-3 py-3 md:px-4">
           {children}
         </AccordionContent>
       </AccordionItem>

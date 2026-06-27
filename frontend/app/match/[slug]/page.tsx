@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRightLeft } from "lucide-react";
+import type { ReactNode } from "react";
+import { ArrowLeft } from "lucide-react";
 import EmptyState from "@/components/common/empty-state";
 import StatusBadge from "@/components/common/status-badge";
 import PageShell from "@/components/layout/page-shell";
@@ -75,16 +76,6 @@ function statusLabel(status: FixtureDetail["fixture"]["status"], minute?: string
   return "Upcoming";
 }
 
-function toneForStatus(status: FixtureDetail["fixture"]["status"]) {
-  if (status === "live") {
-    return "destructive" as const;
-  }
-  if (status === "finished") {
-    return "accent" as const;
-  }
-  return "muted" as const;
-}
-
 function numericFormationPlace(player: MatchLineupPlayer) {
   const value = Number(player.formationPlace ?? 999);
   return Number.isFinite(value) ? value : 999;
@@ -132,16 +123,6 @@ function initials(name: string) {
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase() ?? "")
     .join("");
-}
-
-function playerAccent(player: MatchLineupPlayer) {
-  if (player.subbedIn && !player.starter) {
-    return "bg-accent text-black";
-  }
-  if (player.subbedOut) {
-    return "bg-destructive text-white";
-  }
-  return "bg-secondary text-black";
 }
 
 function normaliseName(value: string) {
@@ -234,25 +215,6 @@ function benchPositionLabel(player: MatchLineupPlayer) {
   return label;
 }
 
-function eventTone(event: MatchEvent) {
-    if (event.type === "red_card") {
-    return "bg-destructive text-white";
-  }
-  if (event.type === "yellow_card") {
-    return "bg-accent text-black";
-  }
-  if (event.type === "goal" || event.type === "own_goal") {
-    return "bg-[color:#2f9e44] text-white";
-  }
-  if (event.type === "sub_on") {
-    return "bg-accent text-black";
-  }
-  if (event.type === "sub_off") {
-    return "bg-destructive text-white";
-  }
-  return "bg-primary text-primary-foreground";
-}
-
 function MatchBallGlyph() {
   return (
     <svg aria-hidden="true" viewBox="0 0 14 14" className="h-3.5 w-3.5 fill-current">
@@ -262,31 +224,204 @@ function MatchBallGlyph() {
   );
 }
 
-function EventGlyph({ event }: { event: MatchEvent }) {
-  if (event.type === "goal" || event.type === "own_goal") {
-    return <MatchBallGlyph />;
-  }
-  if (event.type === "sub_on") {
-    return <span aria-hidden="true">&rarr;</span>;
-  }
-  if (event.type === "sub_off") {
-    return <span aria-hidden="true">&larr;</span>;
-  }
-  return <span className="block h-3.5 w-3.5" aria-hidden="true" />;
+type PitchOrientation = "horizontal" | "vertical";
+type LineupSide = "home" | "away";
+
+type PlayerEventSummary = {
+  subOn?: MatchEvent;
+  subOff?: MatchEvent;
+  goals: MatchEvent[];
+  ownGoals: MatchEvent[];
+  yellowCards: MatchEvent[];
+  redCards: MatchEvent[];
+  assists: MatchEvent[];
+};
+
+function playerEventSummary(player: MatchLineupPlayer, lineup: TeamLineup | undefined, events: MatchEvent[] | undefined): PlayerEventSummary {
+  const matchedEvents = playerEvents(player, lineup, events);
+
+  return {
+    subOn: matchedEvents.find((event) => event.type === "sub_on"),
+    subOff: matchedEvents.find((event) => event.type === "sub_off"),
+    goals: matchedEvents.filter((event) => event.type === "goal"),
+    ownGoals: matchedEvents.filter((event) => event.type === "own_goal"),
+    yellowCards: matchedEvents.filter((event) => event.type === "yellow_card"),
+    redCards: matchedEvents.filter((event) => event.type === "red_card"),
+    assists: matchedEvents.filter((event) => event.type === "assist" || event.type === "goal_assist")
+  };
 }
 
-function PlayerEventOverlay({ event }: { event: MatchEvent }) {
+function formatMinute(minute?: number | null) {
+  return typeof minute === "number" ? `${minute}\u2019` : null;
+}
+
+function compactCount(count: number) {
+  return count > 1 ? `x${count}` : null;
+}
+
+function formationLane(rowLength: number, playerIndex: number) {
+  if (rowLength <= 1) {
+    return 50;
+  }
+  if (rowLength === 2) {
+    return playerIndex === 0 ? 25 : 75;
+  }
+
+  return 13 + (playerIndex / (rowLength - 1)) * 74;
+}
+
+function lineupPosition({
+  rowIndex,
+  rowLength,
+  playerIndex,
+  totalRows,
+  side,
+  orientation
+}: {
+  rowIndex: number;
+  rowLength: number;
+  playerIndex: number;
+  totalRows: number;
+  side: LineupSide;
+  orientation: PitchOrientation;
+}) {
+  const rowProgress = totalRows <= 1 ? 0.5 : rowIndex / (totalRows - 1);
+  const lane = formationLane(rowLength, playerIndex);
+
+  if (orientation === "vertical") {
+    return {
+      left: lane,
+      top: side === "home" ? 8 + rowProgress * 38 : 92 - rowProgress * 38
+    };
+  }
+
+  return {
+    left: side === "home" ? 5 + rowProgress * 40 : 95 - rowProgress * 40,
+    top: lane
+  };
+}
+
+function CardGlyph({ tone }: { tone: "yellow" | "red" }) {
   return (
-    <div className="flex flex-col items-center">
-      <span className="text-[0.68rem] font-medium leading-4 text-foreground">{event.minute}&rsquo;</span>
-      <div className={cn("flex min-h-5 min-w-7 items-center justify-center border border-foreground px-1.5 py-0.5 text-center text-[0.62rem] font-bold", eventTone(event))}>
-        <EventGlyph event={event} />
-      </div>
-    </div>
+    <span
+      aria-hidden="true"
+      className={cn(
+        "block h-3.5 w-2.5 rounded-[2px]",
+        tone === "yellow" ? "bg-amber-400" : "bg-rose-600"
+      )}
+    />
   );
 }
 
-function PlayerMarker({
+function SubstitutionGlyph({ direction }: { direction: "on" | "off" }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 14 14" className="h-3 w-3">
+      <path
+        className={cn(direction === "on" ? "fill-emerald-600" : "fill-rose-500")}
+        d="M7 .33A6.67 6.67 0 1 1 7 13.67 6.67 6.67 0 0 1 7 .33Zm2.92 6.22L7.72 4.35a.6.6 0 0 0-.85.85l1.17 1.17H3.8a.63.63 0 0 0 0 1.26h4.24L6.87 8.8a.6.6 0 0 0 .85.85l2.2-2.2a.64.64 0 0 0 0-.9Z"
+      />
+    </svg>
+  );
+}
+
+function AssistGlyph() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 14 14" className="h-3.5 w-3.5 fill-zinc-800">
+      <path d="M12.6 5.7c-.18.1-.38.21-.6.34-.16.09-.32.19-.49.3-.81.52-6.65 4.11-7.84 4.79s-3.04.93-3.56.02 1.03-1.95 1.95-3.06C3.11 6.83 4.48 5.46 4.48 5.46c-.09-.43.33-.71.49-.81.02-.01.04-.02.06-.03-.12-.5.63-.93.63-.93l1.15-2.51a.23.23 0 0 1 .3-.12l1.03.43c.67.28-.77 1.89-.47 1.96a1.67 1.67 0 0 0 1.04-.27c.28-.17.53-.38.74-.62.48-.56-.03-1.38.25-1.54.1-.05.29-.03.64.1 1.4.53 2.2 2.21 2.78 3.25.4.71.12.97-.51 1.33ZM4.59 6.39a.08.08 0 0 0-.08.02l-.63.62a.08.08 0 0 0 .04.14l3.23.67a.09.09 0 0 0 .06-.01l.98-.56a.08.08 0 0 0-.02-.15l-3.58-.73Zm5.56-.42-4.41-.84a.09.09 0 0 0-.07.02l-.63.62a.08.08 0 0 0 .04.14l3.99.81a.09.09 0 0 0 .06-.01l1.04-.58a.08.08 0 0 0-.02-.16Z" />
+    </svg>
+  );
+}
+
+function EventCircle({
+  children,
+  label,
+  className
+}: {
+  children: ReactNode;
+  label: string;
+  className?: string;
+}) {
+  return (
+    <span
+      aria-label={label}
+      title={label}
+      className={cn(
+        "grid h-5 min-w-5 place-items-center rounded-full border border-gray-200 bg-white px-1 text-[0.6rem] font-bold leading-none text-zinc-800 shadow-sm",
+        className
+      )}
+    >
+      {children}
+    </span>
+  );
+}
+
+function PlayerEventBadges({ summary }: { summary: PlayerEventSummary }) {
+  const substitution = summary.subOff ?? summary.subOn;
+  const substitutionType = summary.subOff ? "off" : summary.subOn ? "on" : null;
+  const cardEvents = [...summary.yellowCards.map(() => "yellow" as const), ...summary.redCards.map(() => "red" as const)];
+  const goalCount = summary.goals.length;
+  const ownGoalCount = summary.ownGoals.length;
+  const assistCount = summary.assists.length;
+
+  return (
+    <>
+      {substitution && substitutionType ? (
+        <span className="absolute -right-5 -top-3 flex flex-col items-center gap-0.5">
+          <span className="text-[0.62rem] font-semibold leading-none text-white drop-shadow">{formatMinute(substitution.minute)}</span>
+          <EventCircle label={`Substituted ${substitutionType} at ${formatMinute(substitution.minute)}`}>
+            <SubstitutionGlyph direction={substitutionType} />
+          </EventCircle>
+        </span>
+      ) : null}
+
+      {cardEvents.length ? (
+        <span className="absolute -right-4 bottom-1 flex">
+          {cardEvents.slice(0, 3).map((tone, index) => (
+            <EventCircle key={`${tone}-${index}`} label={`${tone} card`} className={cn(index > 0 && "-ml-2.5")}>
+              <CardGlyph tone={tone} />
+            </EventCircle>
+          ))}
+          {cardEvents.length > 3 ? (
+            <EventCircle label={`${cardEvents.length} cards`} className="-ml-2.5">
+              +{cardEvents.length - 3}
+            </EventCircle>
+          ) : null}
+        </span>
+      ) : null}
+
+      {goalCount || ownGoalCount || assistCount ? (
+        <span className="absolute -bottom-2 -left-4 flex">
+          {goalCount ? (
+            <EventCircle label={`${goalCount} goal${goalCount === 1 ? "" : "s"}`}>
+              <span className="flex items-center gap-0.5">
+                <MatchBallGlyph />
+                {compactCount(goalCount)}
+              </span>
+            </EventCircle>
+          ) : null}
+          {ownGoalCount ? (
+            <EventCircle label={`${ownGoalCount} own goal${ownGoalCount === 1 ? "" : "s"}`} className={goalCount ? "-ml-2.5" : undefined}>
+              <span className="text-[0.55rem] text-rose-600">OG{ownGoalCount > 1 ? ownGoalCount : ""}</span>
+            </EventCircle>
+          ) : null}
+          {assistCount ? (
+            <EventCircle
+              label={`${assistCount} assist${assistCount === 1 ? "" : "s"}`}
+              className={goalCount || ownGoalCount ? "-ml-2.5" : undefined}
+            >
+              <span className="flex items-center gap-0.5">
+                <AssistGlyph />
+                {compactCount(assistCount)}
+              </span>
+            </EventCircle>
+          ) : null}
+        </span>
+      ) : null}
+    </>
+  );
+}
+
+function FotmobPlayerMarker({
   player,
   lineup,
   events
@@ -295,218 +430,250 @@ function PlayerMarker({
   lineup?: TeamLineup;
   events?: MatchEvent[];
 }) {
-  const highlights = playerEvents(player, lineup, events);
+  const summary = playerEventSummary(player, lineup, events);
+  const displayName = player.shortName ?? player.name;
 
   return (
-    <div className="pointer-events-auto grid justify-items-center gap-2 pt-6 text-center">
+    <div className="pointer-events-auto flex max-w-[5.8rem] flex-col items-center pt-5 text-center">
       <div className="relative">
-        <div className="flex h-12 w-12 items-end justify-center overflow-hidden border-2 border-foreground bg-secondary">
-          <div className="grid h-10 w-10 place-items-center bg-background text-[0.72rem] font-bold text-foreground">
-            {initials(player.shortName ?? player.name)}
-          </div>
+        <div className="box-content flex h-11 min-h-11 w-11 min-w-11 items-center justify-center rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.18)]">
+          <span className="grid h-9 w-9 place-items-center rounded-full bg-emerald-50 text-[0.68rem] font-bold text-emerald-800">
+            {player.jersey ?? initials(displayName)}
+          </span>
         </div>
-        {highlights.length ? (
-          <div className="absolute bottom-8 right-7 flex flex-col items-center gap-1">
-            {highlights.slice(0, 2).map((event, index) => (
-              <PlayerEventOverlay key={`${player.id ?? player.name}-${event.type}-${event.minute}-${index}`} event={event} />
-            ))}
-          </div>
-        ) : player.subbedIn || player.subbedOut ? (
-          <div className={cn("absolute bottom-8 right-7 border border-foreground px-1.5 py-0.5 text-[0.62rem] font-bold", playerAccent(player))}>
-            {player.subbedIn && !player.starter ? "ON" : player.subbedOut ? "OFF" : ""}
-          </div>
-        ) : null}
+        <PlayerEventBadges summary={summary} />
       </div>
-      <span className="max-w-[7.5rem] break-words px-0.5 text-sm leading-4 text-foreground">
-        <span className="mr-1 inline-block font-medium text-muted-foreground">{player.jersey ?? "--"}</span>
-        {player.shortName ?? player.name}
+      <span
+        title={player.name}
+        className="mt-3 line-clamp-2 max-w-full break-words px-0.5 text-center text-[0.72rem] font-medium leading-4 text-white drop-shadow"
+      >
+        <span className="mr-1 inline-block text-white/75">{player.jersey ?? "--"}</span>
+        {displayName}
       </span>
     </div>
   );
 }
 
-function TeamHeader({ lineup, reverse = false }: { lineup?: TeamLineup; reverse?: boolean }) {
+function TeamPitchMarkers({
+  lineup,
+  side,
+  events,
+  orientation
+}: {
+  lineup?: TeamLineup;
+  side: LineupSide;
+  events?: MatchEvent[];
+  orientation: PitchOrientation;
+}) {
+  const rows = formationRows(lineup);
+
+  if (!rows.length) {
+    return (
+      <div
+        className={cn(
+          "absolute grid place-items-center px-6 text-center text-xs font-medium text-white/75",
+          orientation === "horizontal" ? (side === "home" ? "inset-y-0 left-0 w-1/2" : "inset-y-0 right-0 w-1/2") : side === "home" ? "inset-x-0 top-0 h-1/2" : "inset-x-0 bottom-0 h-1/2"
+        )}
+      >
+        {side === "home" ? "Home lineup has not been published yet." : "Away lineup has not been published yet."}
+      </div>
+    );
+  }
+
   return (
-    <div className={cn("flex items-center gap-6", reverse && "flex-row-reverse")}>
-      <div className={cn("flex items-center gap-2.5", reverse && "flex-row-reverse")}>
+    <>
+      {rows.flatMap((row, rowIndex) =>
+        row.map((player, playerIndex) => {
+          const position = lineupPosition({
+            rowIndex,
+            rowLength: row.length,
+            playerIndex,
+            totalRows: rows.length,
+            side,
+            orientation
+          });
+
+          return (
+            <div
+              key={`${orientation}-${side}-${player.id ?? player.name}-${rowIndex}-${playerIndex}`}
+              className="absolute z-10"
+              style={{
+                left: `${position.left}%`,
+                top: `${position.top}%`,
+                transform: "translate(-50%, -50%)"
+              }}
+            >
+              <FotmobPlayerMarker player={player} lineup={lineup} events={events} />
+            </div>
+          );
+        })
+      )}
+    </>
+  );
+}
+
+function PitchMarkings({ orientation }: { orientation: PitchOrientation }) {
+  if (orientation === "vertical") {
+    return (
+      <>
+        <div className="absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 bg-emerald-500/80 after:absolute after:left-1/2 after:top-1/2 after:h-28 after:w-28 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:border-[5px] after:border-emerald-500/80 after:content-['']" />
+        <div className="absolute left-1/2 top-0 h-24 w-36 -translate-x-1/2 rounded-b-full border-x-[5px] border-b-[5px] border-emerald-500/80" />
+        <div className="absolute bottom-0 left-1/2 h-24 w-36 -translate-x-1/2 rounded-t-full border-x-[5px] border-t-[5px] border-emerald-500/80" />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div className="absolute inset-y-0 left-1/2 w-1 -translate-x-1/2 bg-emerald-500/80 after:absolute after:left-1/2 after:top-1/2 after:h-36 after:w-36 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:border-[6px] after:border-emerald-500/80 after:content-['']" />
+      <div className="absolute left-0 top-1/2 h-48 w-24 -translate-y-1/2 rounded-r-full border-y-[6px] border-r-[6px] border-emerald-500/80" />
+      <div className="absolute right-0 top-1/2 h-48 w-24 -translate-y-1/2 rounded-l-full border-y-[6px] border-l-[6px] border-emerald-500/80" />
+    </>
+  );
+}
+
+function FotmobTeamHeader({ lineup, reverse = false }: { lineup?: TeamLineup; reverse?: boolean }) {
+  return (
+    <div className={cn("flex min-w-0 items-center gap-3 md:gap-6", reverse && "flex-row-reverse")}>
+      <div className={cn("flex min-w-0 items-center gap-2.5", reverse && "flex-row-reverse")}>
         <TeamLogo
           team={lineup?.team ?? "Pending"}
           code={lineup?.teamCode}
           logo={lineup?.teamLogo}
-          className="h-7 w-7 border border-foreground bg-background p-1"
+          className="h-7 w-7 rounded-none border-0 bg-transparent p-0"
         />
-        <h2 className={cn("text-sm text-foreground", reverse && "text-right")}>{lineup?.team ?? "Lineup pending"}</h2>
+        <h2 className={cn("truncate text-sm font-medium text-white", reverse && "text-right")}>{lineup?.team ?? "Lineup pending"}</h2>
       </div>
-      <span className="text-sm font-medium leading-5 text-foreground">{lineup?.formation ?? "TBD"}</span>
+      <span className="whitespace-nowrap text-sm font-medium leading-5 text-white">{lineup?.formation ?? "TBD"}</span>
     </div>
   );
 }
 
-function TopBand({ detail, homeLineup, awayLineup }: { detail: FixtureDetail; homeLineup?: TeamLineup; awayLineup?: TeamLineup }) {
+function ScorerStrip({ detail }: { detail: FixtureDetail }) {
   const homeScorers = buildScorerLines(detail.fixture, "home");
   const awayScorers = buildScorerLines(detail.fixture, "away");
   const hasScorers = homeScorers.length || awayScorers.length;
 
+  if (!hasScorers) {
+    return null;
+  }
+
   return (
-    <section className="brutal-surface overflow-hidden">
-      <header className="grid h-auto gap-4 border-b-2 border-foreground px-4 py-4 lg:grid-cols-[1fr_auto_1fr] lg:items-center">
-        <TeamHeader lineup={homeLineup} />
-        <div className="flex items-center justify-center gap-3 text-center">
-          <StatusBadge tone={toneForStatus(detail.fixture.status)}>
+    <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-start gap-2 border-b border-emerald-500/80 px-3 py-2 text-xs text-white/90 md:px-4">
+      <div className="grid gap-1">
+        {homeScorers.map((scorer) => (
+          <p key={`home-${scorer.player}`} className="truncate font-medium">
+            {scorer.player}
+            <span className="ml-1 text-white/60">{scorer.minutes.join(", ")}</span>
+          </p>
+        ))}
+      </div>
+      <MatchBallGlyph />
+      <div className="grid gap-1 text-right">
+        {awayScorers.map((scorer) => (
+          <p key={`away-${scorer.player}`} className="truncate font-medium">
+            {scorer.player}
+            <span className="ml-1 text-white/60">{scorer.minutes.join(", ")}</span>
+          </p>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function FotmobLineupBoard({
+  detail,
+  homeLineup,
+  awayLineup
+}: {
+  detail: FixtureDetail;
+  homeLineup?: TeamLineup;
+  awayLineup?: TeamLineup;
+}) {
+  return (
+    <section className="overflow-hidden rounded-2xl bg-emerald-600 text-white shadow-sm">
+      <header className="grid min-h-16 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 border-b border-emerald-500/80 px-3 py-3 md:px-4">
+        <FotmobTeamHeader lineup={homeLineup} />
+        <div className="grid justify-items-center gap-1 text-center">
+          <span className="rounded-full bg-white/15 px-2 py-0.5 text-[0.65rem] font-medium text-white/90">
             {statusLabel(detail.fixture.status, detail.fixture.minute)}
-          </StatusBadge>
-          <div className="grid gap-1">
-            <strong className="font-display text-xl font-black text-foreground lg:text-2xl">{scoreLabel(detail.fixture)}</strong>
-            <span className="text-xs text-muted-foreground">{detail.fixture.readableKickoff}</span>
-          </div>
+          </span>
+          <strong className="text-lg font-bold leading-none text-white md:text-xl">{scoreLabel(detail.fixture)}</strong>
+          <span className="hidden text-[0.68rem] text-white/70 sm:block">{detail.fixture.readableKickoff}</span>
         </div>
-        <TeamHeader lineup={awayLineup} reverse />
+        <FotmobTeamHeader lineup={awayLineup} reverse />
       </header>
 
-      <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-start gap-2 px-3 py-3 md:gap-3 md:px-4">
-        <div className="grid gap-1.5">
-          {homeScorers.length ? (
-            homeScorers.map((scorer) => (
-              <p key={`home-${scorer.player}`} className="text-xs font-bold text-foreground md:text-sm">
-                <span>{scorer.player}</span>
-                <span className="ml-1.5 font-mono text-[0.58rem] uppercase tracking-[0.14em] text-muted-foreground md:text-[0.68rem]">
-                  {scorer.minutes.join(", ")}
-                </span>
-              </p>
-            ))
-          ) : (
-            <p className="font-mono text-[0.58rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">
-              {hasScorers ? "No goals yet" : "Waiting for the first breakthrough"}
-            </p>
-          )}
-        </div>
+      <ScorerStrip detail={detail} />
 
-        <div className="flex items-center justify-center gap-1.5 text-muted-foreground">
-          <MatchBallGlyph />
-        </div>
+      <div className="relative hidden h-[550px] overflow-hidden bg-emerald-600 md:block">
+        <PitchMarkings orientation="horizontal" />
+        <TeamPitchMarkers lineup={homeLineup} side="home" events={detail.fixture.events} orientation="horizontal" />
+        <TeamPitchMarkers lineup={awayLineup} side="away" events={detail.fixture.events} orientation="horizontal" />
+      </div>
 
-        <div className="grid gap-1.5 text-right">
-          {awayScorers.length ? (
-            awayScorers.map((scorer) => (
-              <p key={`away-${scorer.player}`} className="text-xs font-bold text-foreground md:text-sm">
-                <span>{scorer.player}</span>
-                <span className="ml-1.5 font-mono text-[0.58rem] uppercase tracking-[0.14em] text-muted-foreground md:text-[0.68rem]">
-                  {scorer.minutes.join(", ")}
-                </span>
-              </p>
-            ))
-          ) : hasScorers ? (
-            <p className="font-mono text-[0.58rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">No goals yet</p>
-          ) : (
-            <p className="font-mono text-[0.58rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">Waiting for the first breakthrough</p>
-          )}
-        </div>
+      <div className="relative h-[760px] overflow-hidden bg-emerald-600 md:hidden">
+        <PitchMarkings orientation="vertical" />
+        <TeamPitchMarkers lineup={homeLineup} side="home" events={detail.fixture.events} orientation="vertical" />
+        <TeamPitchMarkers lineup={awayLineup} side="away" events={detail.fixture.events} orientation="vertical" />
       </div>
     </section>
   );
 }
 
-function PitchView({
-  home,
-  away,
+function BenchEventCluster({
+  player,
+  lineup,
   events
 }: {
-  home?: TeamLineup;
-  away?: TeamLineup;
+  player: MatchLineupPlayer;
+  lineup?: TeamLineup;
   events?: MatchEvent[];
 }) {
-  const homeRows = formationRows(home);
-  const awayRows = formationRows(away);
+  const summary = playerEventSummary(player, lineup, events);
+  const subMinute = summary.subOn?.minute ?? summary.subOff?.minute ?? null;
 
   return (
-    <section className="relative h-[550px] w-full overflow-hidden border-2 border-foreground bg-[linear-gradient(rgba(26,26,26,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(26,26,26,0.08)_1px,transparent_1px),linear-gradient(180deg,#ebe3d6_0%,#f5f0e8_100%)] bg-[length:24px_24px,24px_24px,100%_100%]">
-      <div className="absolute -left-0.5 top-[36%] -translate-x-[22%] -rotate-90 text-foreground">
-        <svg xmlns="http://www.w3.org/2000/svg" width="276" viewBox="0 0 316 174" className="h-40 fill-current">
-          <g transform="translate(84.168)">
-            <path d="M57 0h5.907v50.136a5.92 5.92 0 0 0 5.907 5.9H192.85a5.92 5.92 0 0 0 5.907-5.9V0h5.907v50.136a11.84 11.84 0 0 1-11.813 11.8H68.813A11.84 11.84 0 0 1 57 50.136z" transform="translate(-57)" />
-          </g>
-          <path d="M11.813 150.407h90.813a76.778 76.778 0 0 0 110.748 0h90.813A11.839 11.839 0 0 0 316 138.61V0h-5.906v138.61a5.92 5.92 0 0 1-5.907 5.9H11.813a5.92 5.92 0 0 1-5.907-5.9V0H0v138.61a11.84 11.84 0 0 0 11.813 11.797zm193 0a70.761 70.761 0 0 1-93.619 0z" />
-        </svg>
-      </div>
-
-      <div className="absolute -right-0.5 top-[36%] translate-y-[-39%] rotate-90 text-foreground">
-        <svg xmlns="http://www.w3.org/2000/svg" width="276" viewBox="0 0 316 174" className="h-40 fill-current">
-          <g transform="translate(84.168)">
-            <path d="M57 0h5.907v50.136a5.92 5.92 0 0 0 5.907 5.9H192.85a5.92 5.92 0 0 0 5.907-5.9V0h5.907v50.136a11.84 11.84 0 0 1-11.813 11.8H68.813A11.84 11.84 0 0 1 57 50.136z" transform="translate(-57)" />
-          </g>
-          <path d="M11.813 150.407h90.813a76.778 76.778 0 0 0 110.748 0h90.813A11.839 11.839 0 0 0 316 138.61V0h-5.906v138.61a5.92 5.92 0 0 1-5.907 5.9H11.813a5.92 5.92 0 0 1-5.907-5.9V0H0v138.61a11.84 11.84 0 0 0 11.813 11.797zm193 0a70.761 70.761 0 0 1-93.619 0z" />
-        </svg>
-      </div>
-
-      <div className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-foreground after:absolute after:left-1/2 after:top-1/2 after:h-36 after:w-36 after:-translate-x-1/2 after:-translate-y-1/2 after:border-2 after:border-foreground after:content-['']" />
-
-      <div className="relative grid h-full grid-cols-2">
-        <div className="relative h-full">
-          {homeRows.length ? (
-            homeRows.map((row, index) => {
-              const total = homeRows.length;
-              const top = total === 1 ? 50 : (index / (total - 1)) * 75;
-              return (
-                <div
-                  key={`home-row-${index}`}
-                  className="absolute left-0 flex h-1/4 w-full items-center justify-center"
-                  style={{ top: `${top}%`, transform: "translateY(-50%)" }}
-                >
-                  <div className="grid w-full grid-flow-col auto-cols-fr gap-2 px-3">
-                    {row.map((player) => (
-                      <PlayerMarker key={`home-${player.id ?? player.name}-${index}`} player={player} lineup={home} events={events} />
-                    ))}
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            <div className="grid h-full place-items-center px-6 text-center text-sm text-muted-foreground">
-              Home lineup has not been published yet.
-            </div>
-          )}
-        </div>
-
-        <div className="relative h-full">
-          {awayRows.length ? (
-            awayRows.map((row, index) => {
-              const total = awayRows.length;
-              const top = total === 1 ? 50 : 75 - (index / (total - 1)) * 75;
-              return (
-                <div
-                  key={`away-row-${index}`}
-                  className="absolute left-0 flex h-1/4 w-full items-center justify-center"
-                  style={{ top: `${top}%`, transform: "translateY(-50%)" }}
-                >
-                  <div className="grid w-full grid-flow-col auto-cols-fr gap-2 px-3">
-                    {row.map((player) => (
-                      <PlayerMarker key={`away-${player.id ?? player.name}-${index}`} player={player} lineup={away} events={events} />
-                    ))}
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            <div className="grid h-full place-items-center px-6 text-center text-sm text-muted-foreground">
-              Away lineup has not been published yet.
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
+    <div className="flex items-center justify-end gap-1">
+      {summary.yellowCards.map((event, index) => (
+        <EventCircle key={`yellow-${event.minute}-${index}`} label={`Yellow card ${formatMinute(event.minute)}`}>
+          <CardGlyph tone="yellow" />
+        </EventCircle>
+      ))}
+      {summary.redCards.map((event, index) => (
+        <EventCircle key={`red-${event.minute}-${index}`} label={`Red card ${formatMinute(event.minute)}`}>
+          <CardGlyph tone="red" />
+        </EventCircle>
+      ))}
+      {summary.goals.length ? (
+        <EventCircle label={`${summary.goals.length} goal${summary.goals.length === 1 ? "" : "s"}`}>
+          <span className="flex items-center gap-0.5">
+            <MatchBallGlyph />
+            {compactCount(summary.goals.length)}
+          </span>
+        </EventCircle>
+      ) : null}
+      {subMinute !== null ? (
+        <span className="flex items-center gap-1 text-emerald-600">
+          <span className="text-xs font-medium">{formatMinute(subMinute)}</span>
+          <EventCircle label={`Substitution ${formatMinute(subMinute)}`}>
+            <SubstitutionGlyph direction={summary.subOn ? "on" : "off"} />
+          </EventCircle>
+        </span>
+      ) : null}
+    </div>
   );
 }
 
-function BenchList({
+function FotmobBenchList({
   lineup,
   side,
   events
 }: {
   lineup?: TeamLineup;
-  side: "home" | "away";
+  side: LineupSide;
   events?: MatchEvent[];
 }) {
-  const title = lineup ? `${lineup.team} Bench` : `${side} bench`;
   const orderedBench = [...(lineup?.bench ?? [])].sort((left, right) => {
     const leftMinute = substitutionMinute(left, lineup, events, "sub_on");
     const rightMinute = substitutionMinute(right, lineup, events, "sub_on");
@@ -522,59 +689,47 @@ function BenchList({
     }
     return left.name.localeCompare(right.name);
   });
+  const reverse = side === "away";
 
   return (
-    <section className="brutal-surface overflow-hidden">
-      <header className="flex items-center justify-between gap-3 border-b-2 border-foreground px-4 py-4">
-        <div className="grid gap-1">
-          <h2 className="text-lg font-medium text-foreground">{title}</h2>
-        </div>
-        <span className="border-2 border-foreground bg-secondary px-3 py-1 text-xs font-medium text-foreground">
-          {lineup?.bench.length ?? 0} players
-        </span>
+    <section className="overflow-hidden rounded-2xl border border-neutral-100 bg-white shadow-sm">
+      <header className="flex h-12 items-center justify-center border-b border-neutral-100 px-4">
+        <h2 className="text-sm font-medium text-neutral-800">{lineup ? `${lineup.team} Substitutes` : `${side} substitutes`}</h2>
       </header>
 
       {orderedBench.length ? (
-        <div className="grid">
+        <ul className="grid">
           {orderedBench.map((player) => {
-            const onMinute = substitutionMinute(player, lineup, events, "sub_on");
             const positionLabel = benchPositionLabel(player);
 
             return (
-              <div
+              <li
                 key={`${side}-${player.id ?? player.name}`}
-                className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border-b-2 border-foreground bg-background px-4 py-3 last:border-b-0"
-              >
-                <div className="grid h-10 w-10 place-items-center border-2 border-foreground bg-secondary text-xs font-bold text-black">
-                  {initials(player.shortName ?? player.name)}
-                </div>
-                <div className="grid gap-1">
-                  <strong className="truncate text-sm font-medium text-foreground">
-                    <span className="mr-1 text-muted-foreground">{player.jersey ?? "--"}</span>
-                    {player.name}
-                  </strong>
-                  {positionLabel ? <span className="text-xs text-muted-foreground">{positionLabel}</span> : null}
-                </div>
-                {onMinute !== null ? (
-                  <div className="grid justify-items-end gap-1">
-                    <span className="text-[0.68rem] font-medium leading-4 text-foreground">{onMinute}&rsquo;</span>
-                    <span className={cn("flex min-h-5 min-w-7 items-center justify-center border border-foreground px-1.5 py-0.5 text-[0.68rem] font-medium", playerAccent(player))}>
-                      <span aria-hidden="true">&rarr;</span>
-                    </span>
-                  </div>
-                ) : (
-                  <span aria-hidden="true" />
+                className={cn(
+                  "flex min-h-16 items-center justify-between gap-3 border-b border-neutral-100 px-3 py-2 last:border-b-0",
+                  reverse && "flex-row-reverse"
                 )}
-              </div>
+              >
+                <div className={cn("flex min-w-0 items-center gap-3", reverse && "flex-row-reverse")}>
+                  <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-neutral-100 text-[0.62rem] font-bold text-neutral-700">
+                    {player.jersey ?? initials(player.shortName ?? player.name)}
+                  </div>
+                  <div className={cn("min-w-0", reverse && "text-right")}>
+                    <p className="truncate text-sm font-medium text-neutral-800">
+                      <span className="mr-1 text-neutral-400">{player.jersey ?? "--"}</span>
+                      {player.name}
+                    </p>
+                    {positionLabel ? <p className="truncate text-xs text-neutral-400">{positionLabel}</p> : null}
+                  </div>
+                </div>
+                <BenchEventCluster player={player} lineup={lineup} events={events} />
+              </li>
             );
           })}
-        </div>
+        </ul>
       ) : (
         <div className="px-4 py-6">
-          <EmptyState
-            title="Bench unavailable"
-            description="ESPN has not published the substitutes list for this side yet."
-          />
+          <EmptyState title="Bench unavailable" description="ESPN has not published the substitutes list for this side yet." />
         </div>
       )}
     </section>
@@ -625,12 +780,11 @@ export default async function MatchDetailPage({ params }: MatchPageProps) {
         <StatusBadge tone="blue">{resolvedDetail.fixture.stage}</StatusBadge>
       </div>
 
-      <TopBand detail={resolvedDetail} homeLineup={homeLineup} awayLineup={awayLineup} />
-      <PitchView home={homeLineup} away={awayLineup} events={resolvedDetail.fixture.events} />
+      <FotmobLineupBoard detail={resolvedDetail} homeLineup={homeLineup} awayLineup={awayLineup} />
 
       <div className="grid gap-4 xl:grid-cols-2">
-        <BenchList lineup={homeLineup} side="home" events={resolvedDetail.fixture.events} />
-        <BenchList lineup={awayLineup} side="away" events={resolvedDetail.fixture.events} />
+        <FotmobBenchList lineup={homeLineup} side="home" events={resolvedDetail.fixture.events} />
+        <FotmobBenchList lineup={awayLineup} side="away" events={resolvedDetail.fixture.events} />
       </div>
     </PageShell>
   );
