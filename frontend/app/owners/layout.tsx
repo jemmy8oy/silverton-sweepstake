@@ -1,6 +1,5 @@
 import OwnersClientShell from "@/components/OwnersClientShell";
 import EmptyState from "@/components/common/empty-state";
-import PageHeader from "@/components/layout/page-header";
 import PageShell from "@/components/layout/page-shell";
 import { getOwners } from "@/lib/api";
 import type { ReactNode } from "react";

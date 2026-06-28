@@ -25,7 +25,7 @@ function Tabs({
 }
 
 const tabsListVariants = cva(
-  "group/tabs-list inline-flex w-fit items-center justify-center gap-2 border-2 border-foreground bg-background p-2 text-muted-foreground group-data-horizontal/tabs:h-fit group-data-vertical/tabs:h-fit group-data-vertical/tabs:flex-col data-[variant=line]:rounded-none",
+  "group/tabs-list inline-flex w-fit items-center justify-center gap-1 rounded-2xl border border-neutral-100 bg-white p-1 text-muted-foreground group-data-horizontal/tabs:h-fit group-data-vertical/tabs:h-fit group-data-vertical/tabs:flex-col data-[variant=line]:rounded-none",
   {
     variants: {
       variant: {
@@ -63,9 +63,9 @@ function TabsTrigger({
     <TabsPrimitive.Trigger
       data-slot="tabs-trigger"
       className={cn(
-        "relative inline-flex min-h-11 flex-1 items-center justify-center gap-1.5 border-2 border-transparent px-3 py-2 text-xs font-black whitespace-nowrap uppercase tracking-[0.14em] text-foreground/70 transition-all group-data-vertical/tabs:w-full group-data-vertical/tabs:justify-start brutal-focus disabled:pointer-events-none disabled:opacity-50 has-data-[icon=inline-end]:pr-1 has-data-[icon=inline-start]:pl-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        "group-data-[variant=line]/tabs-list:border-b-2 group-data-[variant=line]/tabs-list:border-foreground group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-active:bg-accent",
-        "data-active:border-foreground data-active:bg-accent data-active:text-accent-foreground",
+        "relative inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-xl border border-transparent px-3 py-2 text-xs font-medium whitespace-nowrap text-neutral-500 transition-all group-data-vertical/tabs:w-full group-data-vertical/tabs:justify-start brutal-focus disabled:pointer-events-none disabled:opacity-50 has-data-[icon=inline-end]:pr-1 has-data-[icon=inline-start]:pl-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "group-data-[variant=line]/tabs-list:border-b group-data-[variant=line]/tabs-list:border-neutral-100 group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-active:bg-neutral-100",
+        "data-active:border-neutral-100 data-active:bg-neutral-100 data-active:text-neutral-800",
         className
       )}
       {...props}

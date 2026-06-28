@@ -5,23 +5,23 @@ import { Slot } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center border-2 border-foreground text-[0.68rem] font-black whitespace-nowrap uppercase tracking-[0.12em] transition-all outline-none select-none brutal-focus disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-4 aria-invalid:ring-destructive/25 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5",
+  "group/button inline-flex shrink-0 items-center justify-center border text-xs font-medium whitespace-nowrap transition-all outline-none select-none brutal-focus disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/25 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-background hover:text-foreground brutal-offset",
-        outline: "bg-background text-foreground hover:bg-primary hover:text-primary-foreground",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground",
-        ghost: "border-transparent bg-transparent text-foreground hover:border-foreground hover:bg-secondary",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-background hover:text-destructive",
+        default: "border-neutral-200 bg-white text-neutral-800 hover:bg-neutral-100",
+        outline: "border-neutral-200 bg-white text-neutral-800 hover:bg-neutral-100",
+        secondary: "border-neutral-200 bg-neutral-100 text-neutral-800 hover:bg-neutral-200",
+        ghost: "border-transparent bg-transparent text-neutral-700 hover:bg-neutral-100",
+        destructive: "border-red-500 bg-red-500 text-white hover:bg-red-600",
         link: "border-transparent bg-transparent px-0 text-[color:var(--color-signal-blue)] underline underline-offset-4 hover:text-foreground",
-        accent: "bg-accent text-accent-foreground hover:bg-primary hover:text-primary-foreground brutal-offset",
+        accent: "border-emerald-500 bg-emerald-500 text-white hover:bg-emerald-600",
       },
       size: {
-        default: "min-h-9 gap-1.5 px-3 py-2",
-        xs: "min-h-7 gap-1 px-2 py-1 text-[0.58rem]",
-        sm: "min-h-8 gap-1.5 px-2.5 py-1.5 text-[0.62rem]",
-        lg: "min-h-10 gap-2 px-4 py-2.5 text-xs",
+        default: "min-h-8 gap-1.5 rounded-3xl px-3 py-1.5",
+        xs: "min-h-7 gap-1 rounded-3xl px-2 py-1 text-[0.68rem]",
+        sm: "min-h-7 gap-1.5 rounded-3xl px-2.5 py-1 text-xs",
+        lg: "min-h-10 gap-2 rounded-3xl px-4 py-2 text-sm",
         icon: "size-9",
         "icon-xs": "size-7",
         "icon-sm": "size-8",

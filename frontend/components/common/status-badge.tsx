@@ -17,12 +17,12 @@ export default function StatusBadge({
     <Badge
       variant="outline"
       className={cn(
-        "min-h-5 px-1.5 py-0 text-[0.58rem] tracking-[0.12em]",
-        tone === "default" && "bg-primary text-primary-foreground",
-        tone === "accent" && "bg-accent text-accent-foreground",
-        tone === "destructive" && "bg-destructive text-destructive-foreground",
-        tone === "blue" && "bg-[color:var(--color-signal-blue)] text-white",
-        tone === "muted" && "bg-secondary text-secondary-foreground",
+        "min-h-5 px-1.5 py-0 text-[0.58rem]",
+        tone === "default" && "border-neutral-200 bg-neutral-100 text-neutral-700",
+        tone === "accent" && "border-emerald-500 bg-emerald-500 text-white",
+        tone === "destructive" && "border-red-500 bg-red-500 text-white",
+        tone === "blue" && "border-blue-500 bg-blue-500 text-white",
+        tone === "muted" && "border-neutral-200 bg-neutral-100 text-neutral-500",
         className
       )}
     >

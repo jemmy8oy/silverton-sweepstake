@@ -12,7 +12,7 @@ type TeamLogoProps = {
 export default function TeamLogo({ team, code, logo, className }: TeamLogoProps) {
   if (logo) {
     return (
-      <div className={cn("relative overflow-hidden", className)} aria-label={team}>
+      <div className={cn("relative shrink-0 overflow-hidden", className)} aria-label={team}>
         <Image src={logo} alt={`${team} logo`} fill sizes="88px" className="object-contain" />
       </div>
     );
@@ -21,7 +21,7 @@ export default function TeamLogo({ team, code, logo, className }: TeamLogoProps)
   return (
     <div
       className={cn(
-        "relative grid place-items-center overflow-hidden border-2 border-foreground bg-background font-mono text-xs font-extrabold uppercase tracking-[0.16em] text-foreground",
+        "relative grid shrink-0 place-items-center overflow-hidden rounded-md bg-neutral-100 text-[0.62rem] font-semibold uppercase text-neutral-500",
         className
       )}
       aria-label={team}

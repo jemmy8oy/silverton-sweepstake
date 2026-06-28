@@ -22,13 +22,13 @@ export function SideNavLinks() {
   const pathname = usePathname();
 
   return (
-    <nav className="grid flex-1 gap-1.5 px-3">
+    <nav className="grid flex-1 gap-1 px-3">
       {navItems.map((item) => (
         <Link
           key={item.href}
           className={cn(
-            "flex items-center gap-2 border-2 border-transparent px-3 py-2.5 font-mono text-[0.68rem] font-bold uppercase tracking-[0.12em] text-muted-foreground transition duration-150 ease-out hover:border-foreground hover:bg-secondary hover:text-foreground",
-            isActive(pathname, item.href) && "border-foreground bg-accent text-accent-foreground"
+            "flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition duration-150 ease-out hover:bg-neutral-100 hover:text-neutral-800",
+            isActive(pathname, item.href) && "bg-neutral-100 text-neutral-800"
           )}
           href={item.href}
         >
@@ -51,8 +51,8 @@ export function BottomNavLinks() {
         <Link
           key={item.href}
           className={cn(
-            "flex min-w-[60px] flex-col items-center justify-center gap-0.5 border-2 border-transparent px-2 py-1 font-mono text-[0.54rem] font-bold uppercase tracking-[0.12em] text-muted-foreground transition duration-150 ease-out",
-            isActive(pathname, item.href) && "border-foreground bg-accent text-accent-foreground"
+            "flex min-w-[60px] flex-col items-center justify-center gap-1 rounded-xl px-2 py-1 text-[0.62rem] font-medium text-muted-foreground transition duration-150 ease-out",
+            isActive(pathname, item.href) && "bg-neutral-100 text-neutral-800"
           )}
           href={item.href}
         >

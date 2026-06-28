@@ -13,11 +13,11 @@ export default function OwnerAvatar({ owner, className, children }: OwnerAvatarP
   const src = ownerAvatarSrc(owner);
 
   return (
-    <div className={cn("relative overflow-hidden", src ? "bg-secondary" : "bg-primary text-primary-foreground", className)} aria-hidden="true">
+    <div className={cn("relative shrink-0 overflow-hidden", src ? "bg-neutral-100" : "bg-neutral-800 text-white", className)} aria-hidden="true">
       {src ? (
         <Image src={src} alt="" fill sizes="104px" className="object-cover" />
       ) : (
-        <span className="grid h-full w-full place-items-center font-mono text-[0.72rem] font-extrabold uppercase tracking-[0.14em]">
+        <span className="grid h-full w-full place-items-center text-[0.72rem] font-semibold uppercase">
           {ownerInitials(owner || "?")}
         </span>
       )}

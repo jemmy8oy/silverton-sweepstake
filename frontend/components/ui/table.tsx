@@ -12,7 +12,7 @@ function Table({ className, ...props }: React.ComponentProps<"table">) {
     >
       <table
         data-slot="table"
-        className={cn("w-full border-2 border-foreground caption-bottom text-xs md:text-sm", className)}
+        className={cn("w-full caption-bottom text-xs md:text-sm", className)}
         {...props}
       />
     </div>
@@ -23,7 +23,7 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
   return (
     <thead
       data-slot="table-header"
-      className={cn("bg-secondary [&_tr]:border-b-2 [&_tr]:border-foreground", className)}
+      className={cn("bg-neutral-100 text-neutral-500 [&_tr]:border-b [&_tr]:border-neutral-100", className)}
       {...props}
     />
   )
@@ -44,7 +44,7 @@ function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
     <tfoot
       data-slot="table-footer"
       className={cn(
-        "border-t-2 border-foreground bg-secondary font-medium [&>tr]:last:border-b-0",
+        "border-t border-neutral-100 bg-neutral-100 font-medium [&>tr]:last:border-b-0",
         className
       )}
       {...props}
@@ -57,7 +57,7 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
     <tr
       data-slot="table-row"
       className={cn(
-        "border-b border-foreground/20 transition-colors hover:bg-secondary has-aria-expanded:bg-secondary data-[state=selected]:bg-accent",
+        "border-b border-neutral-100 transition-colors hover:bg-neutral-50 has-aria-expanded:bg-neutral-50 data-[state=selected]:bg-emerald-50",
         className
       )}
       {...props}
@@ -70,7 +70,7 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
     <th
       data-slot="table-head"
       className={cn(
-        "h-9 px-2 text-left align-middle font-mono text-[0.58rem] font-bold whitespace-nowrap uppercase tracking-[0.14em] text-foreground [&:has([role=checkbox])]:pr-0 md:h-10 md:px-2.5 md:text-[0.62rem]",
+        "h-9 px-2 text-left align-middle text-xs font-medium whitespace-nowrap text-neutral-500 [&:has([role=checkbox])]:pr-0 md:h-10 md:px-2.5",
         className
       )}
       {...props}

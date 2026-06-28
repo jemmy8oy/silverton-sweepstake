@@ -23,15 +23,15 @@ export default function SectionShell({
   return (
     <section className={cn("brutal-surface", className)}>
       {title || marker || actions ? (
-        <header className="grid gap-2 border-b-2 border-foreground px-4 py-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:px-5">
-          <div className="grid gap-1">
-            {marker ? <span className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{marker}</span> : null}
-            {title ? <h2 className="text-2xl font-black leading-none md:text-3xl">{title}</h2> : null}
+        <header className="grid gap-2 border-b border-neutral-100 bg-neutral-100 px-4 py-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+          <div className="flex min-w-0 items-center gap-2">
+            {marker ? <span className="text-xs font-medium text-neutral-500">{marker}</span> : null}
+            {title ? <h2 className="truncate text-sm font-medium leading-5 text-neutral-800">{title}</h2> : null}
           </div>
           {actions ? <div className="flex flex-wrap items-center gap-2">{actions}</div> : null}
         </header>
       ) : null}
-      <div className={cn("px-4 py-4 md:px-5", contentClassName)}>{children}</div>
+      <div className={cn("px-4 py-4", contentClassName)}>{children}</div>
     </section>
   );
 }
